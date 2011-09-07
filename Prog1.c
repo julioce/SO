@@ -6,30 +6,41 @@
 
 int main(void){
 	int	status, id, j;
+	char mensagem[255];
 	
 	//Insira um comando para pegar o PID do processo corrente e mostre na tela da console.
 	printf("Processo Corrente - %i\n\n", getpid());
 	
 	//Cria o canal de comunicação inter-processos
-	int comunicacao[2];
-	pipe(comunicacao);
+	int canalPai[2];
+	int canalFilho[2];
+	pipe(canalPai);
+	pipe(canalFilho);
 	
 	id = fork();
 	
 	if (id != 0){
 		//Faça com que o processo pai execute este trecho de código
 		//Mostre na console o PID do processo pai e do processo filho
-		printf("Sou o processo Pai - %i e tenho o processo Filho - %i\n", getpid(), id);
+		printf("Sou o processo Pai de PID %i e tenho o processo Filho de PID %i\n", getpid(), id);
 		
 		//Monte uma mensagem e a envie para o processo filho
-		char mensagemEnviada[255] = "Olá processo filho!";
-		close(comunicacao[0]); //Fecha o canal de leitura
-		write(comunicacao[1], mensagemEnviada, 255); //Escreve a mensagem no canal de escrita
+		strcpy(mensagem, "Olá processo Filho!");
+		close(canalPai[0]); //Fecha o canal de leitura
+		write(canalPai[1], mensagem, 255); //Escreve a mensagem no canal de escrita
+		
+		//Mostre na tela o texto da mensagem enviada
+		printf("Mensagem enviada ao Filho: %s\n", mensagem);
+		
+		//Aguarde a resposta do processo filho
+		wait(&status);
+		
+		//Mostre na tela o texto recebido do processo filho
+		read(canalFilho[0], mensagem, sizeof(mensagem));//Lê a mensagem no canal de leitura
+		close(canalFilho[1]); //Fecha o canal de escrita
+		printf("Mensagem enviada pelo processo Filho - %s\n" , mensagem);
 		
 		/*
-		***** Mostre na tela o texto da mensagem enviada
-		***** Aguarde a resposta do processo filho
-		***** Mostre na tela o texto recebido do processo filho
 		***** Aguarde mensagem do filho e mostre o texto recebido
 		***** Aguarde o término do processo filho
 		***** Informe na tela que o filho terminou e que o processo pai também vai encerrar
@@ -37,17 +48,19 @@ int main(void){
 	}else{
 		//Faça com que o processo filho execute este trecho de código
 		//Mostre na tela o PID do processo corrente e do processo pai
-		printf("Sou o processo - %i e tenho o Processo Pai - %i\n", getpid(), id);
+		printf("Sou o processo de PID %i e tenho o Processo Pai de PID %i\n", getpid(), getppid());
 		
 		//Aguarde a mensagem do processo pai e ao receber mostre o texto na tela
-		char mensagemRecebida[255];
-		read(comunicacao[0], mensagemRecebida, sizeof(mensagemRecebida));//Lê a mensagem no canal de leitura
-		close(comunicacao[1]); //Fecha o canal de escrita
-		printf("Mensagem enviada pelo processo Pai - %s" , mensagemRecebida);
+		read(canalPai[0], mensagem, sizeof(mensagem));//Lê a mensagem no canal de leitura
+		close(canalPai[1]); //Fecha o canal de escrita
+		printf("Mensagem enviada pelo processo Pai - %s\n" , mensagem);
+		
+		//Envie uma mensagem resposta ao pai
+		strcpy(mensagem, "Olá processo Pai!");
+		close(canalFilho[0]); //Fecha o canal de leitura
+		write(canalFilho[1], mensagem, 255); //Escreve a mensagem no canal de escrita
 		
 		/*
-		***** 
-		***** Envie uma mensagem resposta ao pai
 		***** Execute o comando “for” abaixo
 		for (j = 0; j <= 10000; i++);
 			***** Envie mensagem ao processo pai com o valor final de “j”
@@ -56,7 +69,7 @@ int main(void){
 			***** O que acontece após este comando?
 			***** O que pode acontecer se o comando “execl” falhar?
 		 */
+		exit(0);
 	}
 	
-	exit(0);
 }

@@ -67,7 +67,6 @@ int main(void){
 		close(canalFilho[0]); //Fecha o canal de leitura
 		write(canalFilho[1], mensagem, 255); //Escreve a mensagem no canal de escrita
 		
-		
 		//Execute o comando “for” abaixo
 		for (j = 0; j <= 10000; j++);
 			
@@ -77,14 +76,20 @@ int main(void){
 		write(canalFilho[1], mensagem, 255); //Escreve a mensagem no canal de escrita
 
 		//Execute o comando abaixo e responda às perguntas
-		execl("/Bin/ls", "ls", NULL);
+		execl("/bin/ls", "ls", NULL);
 		/*
 			***** O que acontece após este comando?
-			O processo filho continua o seu fluxo de código e termina sua execução,
-			retornando ao processo o seu status de terminado.
+			O processo filho cria esse processo e SO passa a executa-lo
+			de forma independente.
+			Nesse caso, nem o processo filho nem pai possuem mais controle
+			sobre execução do processo gerado pelo execl. Esse comando
+			será executado pelo SO de forma dissociada dos demais. Não
+			respeitando assim nenhuma ordem de execução estabelecida no
+			código do Prog1.
 
 			***** O que pode acontecer se o comando “execl” falhar?
-			Não é exibido nada nada tela e portanto o processo é encerrado com erro.
+			Caso falhe ele não retornará nada e criado em questão se
+			tornará um processo zumbi.
 		 */
 		exit(0);
 	}

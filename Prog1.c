@@ -51,13 +51,14 @@ int main(void){
 
 		//Informe na tela que o filho terminou e que o processo pai também vai encerrar
 		printf("O Processo Filho terminou e o pai também se encerrará.");
-		
+		exit(0);
 	}else{
 		//Faça com que o processo filho execute este trecho de código
 		//Mostre na tela o PID do processo corrente e do processo pai
 		printf("Sou o processo de PID %i e tenho o Processo Pai de PID %i\n", getpid(), getppid());
 		
 		//Aguarde a mensagem do processo pai e ao receber mostre o texto na tela
+        wait(&canalPai[1]);
 		read(canalPai[0], mensagem, sizeof(mensagem));//Lê a mensagem no canal de leitura
 		close(canalPai[1]); //Fecha o canal de escrita
 		printf("Mensagem enviada pelo processo Pai - %s\n" , mensagem);
@@ -71,7 +72,7 @@ int main(void){
 		for (j = 0; j <= 10000; j++);
 			
 		//Envie mensagem ao processo pai com o valor final de “j”
-		sprintf(mensagem, "%i", j, 10);
+		sprintf(mensagem, "j=%i", j, 10);
 		close(canalFilho[0]); //Fecha o canal de leitura
 		write(canalFilho[1], mensagem, 255); //Escreve a mensagem no canal de escrita
 

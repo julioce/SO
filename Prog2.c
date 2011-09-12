@@ -3,7 +3,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#define m 1;
+#define m 2
 
 int i, j, id, d1, d2, status;
 
@@ -13,7 +13,7 @@ int main(void) {
 	d2 = 10;
 	
 	//mostre o PID do processo corrente e os valores de d1 e d2 na tela da console
-	printf("PID do processo corrente = %i\nd1 = %i e d2 = %i", getpid(), d1, d2);
+	printf("PID do processo corrente = %i e d1 = %i e d2 = %i\n\n", getpid(), d1, d2);
 	
 	/*
 	**** responda: quais processos executarão este trecho do código?
@@ -24,7 +24,7 @@ int main(void) {
 	
 	for (i = 0; i <= m; i++){
 		//mostre na tela da console, a cada passagem, os seguintes valores: PID do processo corrente; “i”, “d1”, “d2” e “m”
-		printf("PID do processo corrente = %i\nd1 = %i , d2 = %i e m = %i", getpid(), d1, d2, m);
+		printf("PID do processo corrente = %i e d1 = %i , d2 = %i e m = %i\n", getpid(), d1, d2, m);
 		
 		/*
 		***** responda: quais processos executam este trecho do código?
@@ -39,7 +39,7 @@ int main(void) {
 			d2 = d2 + d1 * 3;
 			
 			//mostre na tela da console, a cada passagem, os seguintes valores: PID do processo corrente; “i”, “d1”, “d2”, “m” e informe estar no ramo “then” do “if”
-			printf("PID do processo corrente = %i\nd1 = %i , d2 = %i e m = %i - Ramo if", getpid(), d1, d2, m);
+			printf("PID do processo corrente = %i e d1 = %i , d2 = %i e m = %i - Ramo if\n", getpid(), d1, d2, m);
 			
 			/*
 			***** responda: quais processos executam este trecho do código?
@@ -54,7 +54,7 @@ int main(void) {
 			j = i + 1;
 			
 			//mostre na tela da console, a cada passagem, os seguintes valores: PID do processo corrente; “i”, “d1”, “d2”, “m” e informe estar no ramo “else” do “if”
-			printf("PID do processo corrente = %i\nd1 = %i , d2 = %i e m = %i - Ramo else", getpid(), d1, d2, m);
+			printf("PID do processo corrente = %i e d1 = %i , d2 = %i e m = %i - Ramo else\n", getpid(), d1, d2, m);
 			
 			/*
 			***** responda: quais processos executam este trecho do código?
@@ -72,7 +72,7 @@ int main(void) {
 	
 	if (id != 0) {
 		//mostre na console o PID do processo corrente e verifique quais processos executam este trecho do código
-		printf("PID do processo corrente = %i", getpid());
+		printf("PID do processo corrente = %i\n", getpid());
 		
 		for (i = j; i == m; i++){
 			/*
@@ -81,7 +81,7 @@ int main(void) {
 			*/
 			
 			//mostre na console o PID do processo corrente e o número de filhos que ele aguardou ou está aguardando
-			printf("PID do processo corrente = %i e número de filhos = %i", getpid(), j);
+			printf("PID do processo corrente = %i e número de filhos = %i\n", getpid(), j*m+1);
 			
 			wait(&status);
 			

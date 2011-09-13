@@ -80,17 +80,16 @@ int main(void){
 		execl("/bin/ls", "ls", NULL);
 		/*
 			***** O que acontece após este comando?
-			O processo filho cria esse processo e SO passa a executa-lo
-			de forma independente.
-			Nesse caso, nem o processo filho nem pai possuem mais controle
-			sobre execução do processo gerado pelo execl. Esse comando
-			será executado pelo SO de forma dissociada dos demais. Não
-			respeitando assim nenhuma ordem de execução estabelecida no
-			código do Prog1.
+			O  processo filho executa o comando execl que é criado pelo SO de forma independente.
+			Isso ocorre pois o ls não é uma instância de Prog1, diferentemente dos processos filho e pai.
+			Sendo assim, esse comando será executado pelo SO de forma dissociada dos demais, 
+			não respeitando nenhuma ordem de execução estabelecida no código do Prog1.
+			
+			Após a execução de execl os processos voltam a ser executados normalmente.
 
 			***** O que pode acontecer se o comando “execl” falhar?
-			Caso falhe ele não retornará nada e criado em questão se
-			tornará um processo zumbi.
+			Como o ls é um processo independente do Prog1, quando o comando execl falha 
+			o Prog1 continua sua execução normalmente. 
 		 */
 		exit(0);
 	}

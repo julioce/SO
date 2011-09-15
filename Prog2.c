@@ -100,7 +100,7 @@ int main(void) {
 			*/
 			
 			//mostre na console o PID do processo corrente e o número de filhos que ele aguardou ou está aguardando
-			printf("PID do processo corrente = %i e número de filhos = %i\n", getpid(), j);
+			printf("PID do processo corrente = %i e número de filhos = %i\n", getpid(), i);
 			
 			//Mostra os processos que estão sendo esperados no momento
 			printf("\nO processo de PID = %i está esperando os seguintes filhos: %s\n\n", getpid(), pid_list);

@@ -14,13 +14,22 @@
 int main(void){
 	int	status, id, j;
 
-	//Cria as estruturas de IPC
+	//Cria as estruturas de IPC e o canal de comunicação POSIX
 	mqd_t msgq_id;
 	unsigned int sender;
 	char msgcontent[MSG_SIZE];
 	char msgcontentRCV[MAX_MSG_SIZE];
 	struct mq_attr msgq_attr;
 	int msgsz;
+	
+	msgq_id = mq_open(MSGQOBJ_NAME, O_RDWR | O_CREAT | O_EXCL, S_IRWXU | S_IRWXG, NULL);
+	if (msgq_id < 0) {
+		msgq_id = mq_open(MSGQOBJ_NAME, O_RDWR);
+		if(msgq_id < 0){
+			perror("mq_open");
+			exit(1);
+		}
+	}
 	
 	//Insira um comando para pegar o PID do processo corrente e mostre na tela da console.
 	printf("Processo Corrente - %i\n\n", getpid());
@@ -33,13 +42,6 @@ int main(void){
 		printf("Sou o processo Pai de PID %i e tenho o processo Filho de PID %i\n", getpid(), id);
 
 		
-		//Abre o queue
-		msgq_id = mq_open(MSGQOBJ_NAME, O_RDWR | O_CREAT | O_EXCL, S_IRWXU | S_IRWXG, NULL);
-		if (msgq_id < 0) {
-		    msgq_id = mq_open(MSGQOBJ_NAME, O_RDWR);
-		}
-
-
 		//Monte uma mensagem e a envie para o processo filho
 		strcpy(msgcontent, "Olá processo Filho!");
 		mq_send(msgq_id, msgcontent, strlen(msgcontent)+1, 10);
@@ -49,16 +51,15 @@ int main(void){
 		printf("Mensagem enviada ao Filho: %s\n", msgcontent);	
 
 
-		//Aguarde o término do processo filho
-		wait(&status);
-		
-		
 		//Aguarde a resposta do processo filho
+		wait(&status);
 		msgsz = mq_receive(msgq_id, msgcontentRCV, MAX_MSG_SIZE, &sender);
 		if (msgsz == -1) {
 			perror("In mq_receive()");
 			exit(1);
 		}
+		
+		//Mostre na tela o texto recebido do processo filho
 		printf("1a Mensagem enviada pelo filho - %s\n", msgcontentRCV);
 		
 		
@@ -71,7 +72,10 @@ int main(void){
 		printf("2a Mensagem enviada pelo filho - %s\n", msgcontentRCV);
 		
 		
+		//Aguarde o término do processo filho
+		wait(&status);
 		mq_close(msgq_id);
+
 		
 		//Informe na tela que o filho terminou e que o processo pai também vai encerrar
 		printf("O Processo Filho terminou e o pai também se encerrará.\n");
@@ -81,13 +85,6 @@ int main(void){
 		//Mostre na tela o PID do processo corrente e do processo pai
 		printf("Sou o processo de PID %i e tenho o Processo Pai de PID %i\n", getpid(), getppid());
 		
-		//Abre o message queue
-		msgq_id = mq_open(MSGQOBJ_NAME, O_RDWR);
-		if (msgq_id == (mqd_t)-1) {
-			perror("In mq_open()");
-			exit(1);
-		}
-
 		
 		//Aguarde a mensagem do processo pai e ao receber mostre o texto na tela
 		mq_getattr(msgq_id, &msgq_attr);

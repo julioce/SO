@@ -41,7 +41,7 @@ int main(void) {
 		/*
 		=================================================================================================================
 		Responda: Quais processos executam este trecho do código?
-		Novamente todos os processos executam este trecho já que nenhum fork() foi realizado.
+		Todos os processos executam este trecho já que neste trecho o fork() ainda não foi realizado.
 		------------------------------------------------------------------------------------------------------------------
 		*/
 		id = fork();
@@ -75,8 +75,7 @@ int main(void) {
 			/*
 			=================================================================================================================
 			Responda: Quais processos executam este trecho do código?
-			Todos os processos executam este código exceto o processo pai original.
-			Nesse caso ele é um processo pai de algum outro subprocesso.
+			Todos os processos que possuem algum subprocesso associado a ele, ou seja, todos os processos pai.
 			------------------------------------------------------------------------------------------------------------------
 			*/
 		}else{
@@ -93,8 +92,8 @@ int main(void) {
 			/*
 			=================================================================================================================
 			Responda: Quais processos executam este trecho do código?
-			Este trecho de código é executado por todos os processos exceto o processo pai original.
-			Nesse caso ele é um subprocesso. Uma folha na árvore de subprocessos.
+			Este trecho de código é executado por todos os processos que possuem um pai, ou seja, por todos os processos exceto 
+			o processo pai original. 
 			------------------------------------------------------------------------------------------------------------------
 			*/
 		}
@@ -103,7 +102,7 @@ int main(void) {
 	/*
 	=================================================================================================================
 	Responda: Quais processos executam este trecho do código?
-	Todos os processos executam esse código exceto o os subprocessos sem filhos.
+	Todos os processos executam este trecho.
 	------------------------------------------------------------------------------------------------------------------
 	*/
 	
@@ -115,19 +114,19 @@ int main(void) {
 		for (i = j; i <= m; i++){
 			/*
 			=================================================================================================================
-			Explique o papel da variável “j” e verifique se o comando “for” está correto de forma a que cada processo pai
-			aguarde pelo término de todos seus processos filhos
-			
-			"j" contabiliza a altura da árvore de processos onde os processos são filhos e pais ao mesmo tempo.
-			Ou seja, ele mostra a quantidade de níveis de processos excetuando-se o processo pai original e os processos
-			filhos contido nas folhas.
-			Dessa forma o comando for(i = j; i == m; i++) está incorreto porque ele se refere somente ao último pai.
-			O correto seria for(i = j; i<=m; i++) conforme implementado.
+			Responda: Explique o papel da variável “j”
+			A variável "j" contabiliza a altura da árvore genealógica a partir dos processos que são filho e pai ao mesmo tempo.
+			Desta forma, o processo pai original e os procesos folhas (processos filhos que não possuem filhos) não são considerados. 
+				
+			Responda: Verifique se o comando “for” está correto de forma que cada processo pai aguarde pelo término de todos seus
+			processos filhos
+			O comando for(i = j; i == m; i++) está incorreto porque ele se refere somente ao último pai.
+			O correto seria for(i = j; i<=m; i++), garantindo que cada processo pai tenha conhecimento de todos os seus filhos e aguarde
+			pelo término deles.
 			------------------------------------------------------------------------------------------------------------------			
 			*/
 			
 			//mostre na console o PID do processo corrente e o número de filhos que ele aguardou ou está aguardando
-
 			printf("PID do processo corrente = %i e número de filhos = %i", getpid(), nFilhos);
 
 			//Mostra os processos que estão sendo esperados no momento
@@ -141,14 +140,14 @@ int main(void) {
 				/*
 				=================================================================================================================
 				Responda: o que ocorre quando este trecho é executado?
-				Os filhos referentes ao processo corrente terminaram a sua execução com sucesso.
+				Os processos filhos referentes ao processo corrente terminaram a sua execução com sucesso.
 				------------------------------------------------------------------------------------------------------------------			
 				*/
 			}else{
 				/*
 				=================================================================================================================
 				Responda: o que ocorre quando este trecho é executado?
-				Os filhos referentes ao processo corrente ainda não terminaram sua execução ou terminaram com falhas.
+				Os processos filhos referentes ao processo corrente ainda não terminaram sua execução ou terminaram com falhas.
 				------------------------------------------------------------------------------------------------------------------			
 				*/
 

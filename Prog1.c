@@ -60,7 +60,7 @@ int main(void){
 		}
 		
 		//Mostre na tela o texto recebido do processo filho
-		printf("1a Mensagem enviada pelo filho - %s\n", msgcontentRCV);
+		printf("\n1a Mensagem enviada pelo filho - %s\n", msgcontentRCV);
 		
 		
 		//Aguarde mensagem do filho e mostre o texto recebido
@@ -111,20 +111,27 @@ int main(void){
 
 
 		//Execute o comando abaixo e responda às perguntas
+		printf("\n");
 		execl("/bin/ls", "ls", NULL);
-		/*
-			***** O que acontece após este comando?
-			O  processo filho executa o comando execl que é criado pelo SO de forma independente.
-			Isso ocorre pois o ls não é uma instância de Prog1, diferentemente dos processos filho e pai.
-			Sendo assim, esse comando será executado pelo SO de forma dissociada dos demais, 
-			não respeitando nenhuma ordem de execução estabelecida no código do Prog1.
-			
-			Após a execução de execl os processos voltam a ser executados normalmente.
 
-			***** O que pode acontecer se o comando “execl” falhar?
-			Como o ls é um processo independente do Prog1, quando o comando execl falha 
-			o Prog1 continua sua execução normalmente. 
-		*/
+		/*
+		======================================================================================================================
+		Responda:O que acontece após este comando?
+ 			O processo filho executa o comando execl que é criado pelo SO de forma independente.
+			Isso ocorre, pois o ls não é uma instância de Prog1, diferentemente dos processos filho e pai.
+			Sendo assim, esse comando será executado pelo SO de forma dissociada dos demais.
+			Quando a execução do execl() é bem sucedida, o segmento de instruções do processo filho (processo corrente) é
+			substituído pelo segmento do processo que foi chamado pelo execl(), portanto o processo filho não continua em execução. 
+			Por sua vez, o processo pai identifica que o processo filho não existe mais e continua sua própria execução.
+
+
+		Responda:O que pode acontecer se o comando “execl” falhar?
+			O comando execl() retorna o valor -1, indicando que houve falha na sua execução. 
+			Neste caso, o processo filho (processo corrente) retorna sua execução normalmente.
+		----------------------------------------------------------------------------------------------------------------------
+		*/		
+
+
 		mq_close(msgq_id);
 		exit(0);
 	}

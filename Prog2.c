@@ -1,16 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <math.h>
 #include <string.h>
 #include <sys/wait.h>
 #include <unistd.h>
 
-
+#define MAX_PID 1000*100
 #define m 2
 
 int i, j, k, id, d1, d2, status;
 int nFilhos = 0;
-char pid[8];
-char pid_list[1000][256];
+char pid[16];
+char pid_list[MAX_PID][256];
+int n_child[MAX_PID];
 
 int main(void) {
 
@@ -22,6 +24,7 @@ int main(void) {
 	printf("\n");
 	//mostre o PID do processo corrente e os valores de d1 e d2 na tela da console
 	printf("PID do processo corrente = %i    |    d1 = %i    |    d2 = %i\n\n", getpid(), d1, d2);
+	
 	
 	/*
 	======================================================================================================================
@@ -44,8 +47,7 @@ int main(void) {
 		*/
 		id = fork();
 		
-		//Armazena o PID do filho criado
-		sprintf(pid, "%i ", id);
+		
 		
 		if (id){
 			//altere os valores de d1 e d2 de diferentes maneiras como exemplificado abaixo
@@ -56,10 +58,12 @@ int main(void) {
 			// PID do processo corrente, "i", "d1", "d2", "m" e informe estar no ramo “then” do “if”
 			printf("PID do processo corrente = %i    |    d1 = %i    |    d2 = %i    |   m = %i  |  iteração i = %i  |    valor de j = %i  |  Ramo if [PAI] \n\n", getpid(), d1, d2, m, i,j);
 			
-			//Armazenando os processos filhos
-			strcat(pid_list[getpid()-16000], pid);
+			//Armazena o PID do filho criado
+			sprintf(pid, "%i ", id);
+			strcat(pid_list[getpid()], pid);
 			//contabilizando o número de filhos
-			nFilhos++;			
+			n_child[getpid()]++; 
+					
 
 			/*
 			=================================================================================================================
@@ -117,10 +121,10 @@ int main(void) {
 			
 			//mostre na console o PID do processo corrente e o número de filhos que ele aguardou ou está aguardando
 
-			printf("PID do processo corrente = %i e número de filhos = %i", getpid(), nFilhos);
+			printf("PID do processo corrente = %i e número de filhos = %i", getpid(), n_child[getpid()]);
 
 			//Mostra os processos que estão sendo esperados no momento
-			printf("\nO processo de PID = %i está esperando os seguintes filhos: %s\n\n", getpid(), pid_list[getpid()-16000]);
+			printf("\nO processo de PID = %i está esperando os seguintes filhos: %s\n\n", getpid(), pid_list[getpid()]);
 
 
 			wait(&status);

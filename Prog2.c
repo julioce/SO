@@ -5,14 +5,13 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-#define MAX_PID 1000*100
-#define m 2
+#define m 1
 
 int i, j, k, id, d1, d2, status;
 int nFilhos = 0;
+int meuPID = -1;
 char pid[16];
-char pid_list[MAX_PID][256];
-int n_child[MAX_PID];
+char pid_list[512];
 
 int main(void) {
 
@@ -37,7 +36,7 @@ int main(void) {
 	
 	for (i = 0; i <= m; i++){
 		//mostre na tela da console, a cada passagem, os seguintes valores: PID do processo corrente; “i”, “d1”, “d2” e “m”
-		printf("PID do processo corrente = %i    |    d1 = %i    |    d2 = %i    |   m = %i  |  iteração i = %i\n\n", getpid(), d1, d2, m,i);
+		printf("PID do processo corrente = %i    |    d1 = %i    |    d2 = %i    |   m = %i\n\n", getpid(), d1, d2, m,i);
 		
 		/*
 		=================================================================================================================
@@ -47,6 +46,13 @@ int main(void) {
 		*/
 		id = fork();
 		
+		//Verifica validade da atualização
+		if(meuPID != getpid()){
+			meuPID = getpid();
+			nFilhos = 0;
+			//Limpa o meu vetor
+			memset(pid_list, 0, sizeof(pid_list));
+		}
 		
 		
 		if (id){
@@ -56,13 +62,14 @@ int main(void) {
 			
 			// mostre na tela da console, a cada passagem, os seguintes valores: 
 			// PID do processo corrente, "i", "d1", "d2", "m" e informe estar no ramo “then” do “if”
-			printf("PID do processo corrente = %i    |    d1 = %i    |    d2 = %i    |   m = %i  |  iteração i = %i  |    valor de j = %i  |  Ramo if [PAI] \n\n", getpid(), d1, d2, m, i,j);
+			printf("PID do processo corrente = %i    |    d1 = %i    |    d2 = %i    |   m = %i  Ramo if\n\n", getpid(), d1, d2, m, i,j);
 			
-			//Armazena o PID do filho criado
+			//Contabilizando o número de filhos
+			nFilhos++;
+
+			//Armazenando os processos filhos criados
 			sprintf(pid, "%i ", id);
-			strcat(pid_list[getpid()], pid);
-			//contabilizando o número de filhos
-			n_child[getpid()]++; 
+			strcat(pid_list, pid);
 					
 
 			/*
@@ -81,7 +88,7 @@ int main(void) {
 			j = i + 1;
 			
 			//mostre na tela da console, a cada passagem, os seguintes valores: PID do processo corrente; “i”, “d1”, “d2”, “m” e informe 				estar no ramo “else” do “if”
-			printf("PID do processo corrente = %i    |    d1 = %i    |    d2 = %i    |   m = %i  |  iteração i = %i  |  valor de j = %i  |  Ramo else [FILHO]\n\n", getpid(), d1, d2, m, i,j);
+			printf("PID do processo corrente = %i    |    d1 = %i    |    d2 = %i    |   m = %i  Ramo else\n\n", getpid(), d1, d2, m, i,j);
 			
 			/*
 			=================================================================================================================
@@ -121,10 +128,10 @@ int main(void) {
 			
 			//mostre na console o PID do processo corrente e o número de filhos que ele aguardou ou está aguardando
 
-			printf("PID do processo corrente = %i e número de filhos = %i", getpid(), n_child[getpid()]);
+			printf("PID do processo corrente = %i e número de filhos = %i", getpid(), nFilhos);
 
 			//Mostra os processos que estão sendo esperados no momento
-			printf("\nO processo de PID = %i está esperando os seguintes filhos: %s\n\n", getpid(), pid_list[getpid()]);
+			printf("\nO processo de PID = %i está esperando os seguintes filhos: %s\n\n", getpid(), pid_list);
 
 
 			wait(&status);

@@ -87,8 +87,7 @@ int main(void){
 	int **matriz, *produtoInterno, i, j, menor_i, menor_j, maior_i, maior_j, k, m, menor, maior, somatorio;
 	double soma, soma_desvio, desvio_padrao, tempo_execucao;
 	srand((unsigned)time(NULL));
-	struct timeb inicio_execucao;
-	struct timeb fim_execucao;
+	struct timeb inicio_execucao, fim_execucao;
 	
 	
 	//Recebe os valores iniciais de m e k
@@ -124,11 +123,10 @@ int main(void){
 				matriz[i][j] = (rand()%201)-100;
 			}
 		}
-		printf(" Concluído!\n");
+		printf(" Concluído!\n\n");
 		
 		
 		//Calcula o somatório
-		printf("\nCalculando o Produto Interno...");
 		for(i=0; i<m; i++){
 			somatorio = 0;
 			
@@ -153,7 +151,6 @@ int main(void){
 			produtoInterno[i] = somatorio;
 			soma += produtoInterno[i];
 		}
-		printf(" Concluído!\n\n");
 		
 		
 		//Calcula o desvio padrão

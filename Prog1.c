@@ -9,7 +9,7 @@
 
 #define MSG_SIZE 256
 #define MAX_MSG_SIZE 10000
-#define MSGQOBJ_NAME "/IPC_CHANNEL"
+#define MSGQOBJ_NAME "/IPC_CHANNEL1"
 
 int main(void){
 	int	status, id, j;
@@ -55,7 +55,7 @@ int main(void){
 		wait(&status);
 		msgsz = mq_receive(msgq_id, msgcontentRCV, MAX_MSG_SIZE, &sender);
 		if (msgsz == -1) {
-			perror("In mq_receive()");
+			perror("mq_receive()");
 			exit(1);
 		}
 		
@@ -66,7 +66,7 @@ int main(void){
 		//Aguarde mensagem do filho e mostre o texto recebido
 		msgsz = mq_receive(msgq_id, msgcontentRCV, MAX_MSG_SIZE, &sender);
 		if (msgsz == -1) {
-			perror("In mq_receive()");
+			perror("mq_receive()");
 			exit(1);
 		}
 		printf("2a Mensagem enviada pelo filho - %s\n", msgcontentRCV);
@@ -90,7 +90,7 @@ int main(void){
 		mq_getattr(msgq_id, &msgq_attr);
 		msgsz = mq_receive(msgq_id, msgcontentRCV, MAX_MSG_SIZE, &sender);
 		if (msgsz == -1) {
-			perror("In mq_receive()");
+			perror("mq_receive()");
 			exit(1);
 		}
 		printf("Mensagem enviada pelo pai - %s\n", msgcontentRCV);

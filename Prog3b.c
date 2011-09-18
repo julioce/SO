@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <math.h>
 #include <sys/timeb.h>
+#include <sys/wait.h>
 
 int **aloca_matriz(int m, int k) {
 	//ponteiro para a matriz e variável de iteração
@@ -84,7 +85,9 @@ int *aloca_vetor(int m){
 
 
 int main(void){
-	int **matriz, *produtoInterno, i, j, menor_i, menor_j, maior_i, maior_j, k, m, menor, maior, somatorio;
+	int i, j, menor_i, menor_j, maior_i, maior_j,
+		k, m, menor, maior, somatorio,
+		id, status, **matriz, *produtoInterno;
 	double soma, soma_desvio, desvio_padrao, tempo_execucao;
 	srand((unsigned)time(NULL));
 	struct timeb inicio_execucao;
@@ -131,22 +134,30 @@ int main(void){
 		printf("\nCalculando o Produto Interno...");
 		for(i=0; i<m; i++){
 			somatorio = 0;
+			id = fork();
 			
-			for(j=0; j<k; j++){
-				//Realiza o produto interno
-				somatorio += matriz[i][j] * matriz[j][i];
-				
-				//detecta o maior e menor
-				if(matriz[i][j] <= menor){
-					menor = matriz[i][j];
-					menor_i = i+1;
-					menor_j = j+1;
+			if(id==0){
+				for(j=0; j<k; j++){
+					//Realiza o produto interno
+					somatorio += matriz[i][j] * matriz[j][i];
+					
+					//detecta o maior e menor
+					if(matriz[i][j] <= menor){
+						menor = matriz[i][j];
+						menor_i = i+1;
+						menor_j = j+1;
+					}
+					if(matriz[i][j] >= maior){
+						maior = matriz[i][j];
+						maior_i = i+1;
+						maior_j = j+1;
+					}
 				}
-				if(matriz[i][j] >= maior){
-					maior = matriz[i][j];
-					maior_i = i+1;
-					maior_j = j+1;
-				}
+			}else if(id > 0){
+				wait(&status);
+			}else{
+				perror("fork");
+				exit(1);
 			}
 			
 			//Armazena o PI(i) e soma para cálculo de média

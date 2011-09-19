@@ -21,8 +21,8 @@ int **aloca_matriz(int m, int k) {
 	int **v, i;
 	
 	//Veririfica os parâmetros
-	if(m < 1 || k < 1){
-		printf ("\n\nErro: Parâmetro invalido!\n\n");
+	if(m < 1 || k < 1 || m != k){
+		printf ("\n\nErro: Valores de m e k inválidos!\n\n");
 		exit(1);
 	}
 	

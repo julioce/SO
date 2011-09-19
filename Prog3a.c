@@ -14,7 +14,6 @@ int **aloca_matriz(int m, int k) {
 		exit(1);
 	}
 	
-	printf("\nGerando Matriz...");
 	//Aloca a linha da matriz
 	v = (int **) calloc (m, sizeof(int *));
 	if(v == NULL){
@@ -90,10 +89,11 @@ int main(void){
 	struct timeb inicio_execucao, fim_execucao;
 	
 	
+	printf("\nMontando a matriz... \n\n");
 	//Recebe os valores iniciais de m e k
-	printf("Digite o valor para m:");
+	printf("Defina o número de linhas  -> m = ");
 	scanf("%i", &m);
-	printf("Digite o valor para k:");
+	printf("Defina o número de colunas -> k = ");
 	scanf("%i", &k);
 	
 	
@@ -126,6 +126,8 @@ int main(void){
 		printf(" Concluído!\n\n");
 		
 		
+		printf("\nCalculando a Produto Interno...");
+		fflush(stdout);
 		//Calcula o somatório
 		for(i=0; i<m; i++){
 			somatorio = 0;
@@ -151,6 +153,7 @@ int main(void){
 			produtoInterno[i] = somatorio;
 			soma += produtoInterno[i];
 		}
+		printf(" Concluído!\n");
 		
 		
 		//Calcula o desvio padrão
@@ -171,18 +174,22 @@ int main(void){
 		
 		
 		//Exibe os valores resultantes
-		printf("Valores Aferidos----------------------------------------------------\n");
+		printf("--------------------------Valores Aferidos--------------------------\n");
 		printf("Menor valor = %i (i=%i, j=%i) e Maior valor = %i (i=%i, j=%i)\n", menor, menor_i, menor_j, maior, maior_i, maior_j);
 		printf("Desvio Padrão = %f\n", desvio_padrao);
 		printf("Tempo de execução = %.3f segundos\n", tempo_execucao);
-		printf("--------------------------------------------------------------------\n");
+		printf("---------------------------------------------------------------------\n");
 		
 		//Recebe os valores de m e k para nova iteração
-		printf("Digite o valor para m:");
+		printf("\nMontando a matriz da nova iteração\n\n");
+		printf("Defina o número de linhas  -> m = ");
 		scanf("%i", &m);
-		printf("Digite o valor para k:");
+		printf("Defina o número de colunas -> k = ");
 		scanf("%i", &k);
+
+
 	}
 	
 	exit(0);
 }
+

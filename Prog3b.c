@@ -26,7 +26,6 @@ int **aloca_matriz(int m, int k) {
 		exit(1);
 	}
 	
-	printf("\nGerando Matriz...");
 	//Aloca a linha da matriz
 	v = (int **) calloc (m, sizeof(int *));
 	if(v == NULL){
@@ -42,7 +41,7 @@ int **aloca_matriz(int m, int k) {
 			exit(1);
 		}
 	}
-	printf(" Conluído!\n");
+	printf(" Concluído!\n");
 	
 	//Retorna a matriz
 	return (v);
@@ -94,13 +93,6 @@ int *aloca_vetor(int m){
 	return (v);
 }
 
-void cria_shared(int *value, int shmid){
-	if((value = shmat(shmid, NULL, 0)) == (int *) -1){
-		perror("shmat");
-		exit(1);
-	}
-}
-
 
 int main(void){
 	int i, j, m, k, somatorio, **matriz, *produtoInterno, *pids, id, status;
@@ -112,10 +104,11 @@ int main(void){
 	srand((unsigned)time(NULL));
 	
 	
+	printf("\nMontando a matriz... \n\n");
 	//Recebe os valores iniciais de m e k
-	printf("Digite o valor para m:");
+	printf("Defina o número de linhas  -> m = ");
 	scanf("%i", &m);
-	printf("Digite o valor para k:");
+	printf("Defina o número de colunas -> k = ");
 	scanf("%i", &k);
 	
 	
@@ -135,19 +128,38 @@ int main(void){
 		
 		
 		//Cria o compartilhamento de memória
-		if((compartilhado.shmid = shmget(IPC_PRIVATE, (m * sizeof(int)), IPC_CREAT | SHM_W | SHM_R)) < 0){
+		if((compartilhado.shmid = shmget(IPC_PRIVATE, 2*m*sizeof(int), IPC_CREAT | SHM_W | SHM_R)) < 0){
 			perror("shmget");
 			exit(1);
 		}
-		cria_shared(compartilhado.produtoInterno, compartilhado.shmid);
-		cria_shared(compartilhado.produtoInterno_compartilhado, compartilhado.shmid);
-		cria_shared(compartilhado.menor, compartilhado.shmid);
-		cria_shared(compartilhado.maior, compartilhado.shmid);
-		cria_shared(compartilhado.menor_i, compartilhado.shmid);
-		cria_shared(compartilhado.maior_i, compartilhado.shmid);
-		cria_shared(compartilhado.menor_j, compartilhado.shmid);
-		cria_shared(compartilhado.maior_j, compartilhado.shmid);
-		
+		if((compartilhado.produtoInterno_compartilhado = shmat(compartilhado.shmid, NULL, 0)) == (int *) -1){
+			perror("shmat");
+			exit(1);
+		}
+		if((compartilhado.menor = shmat(compartilhado.shmid, NULL, 0)) == (int *) -1){
+			perror("shmat");
+			exit(1);
+		}
+		if((compartilhado.maior = shmat(compartilhado.shmid, NULL, 0)) == (int *) -1){
+			perror("shmat");
+			exit(1);
+		}
+		if((compartilhado.menor_i = shmat(compartilhado.shmid, NULL, 0)) == (int *) -1){
+			perror("shmat");
+			exit(1);
+		}
+		if((compartilhado.maior_i = shmat(compartilhado.shmid, NULL, 0)) == (int *) -1){
+			perror("shmat");
+			exit(1);
+		}
+		if((compartilhado.menor_j = shmat(compartilhado.shmid, NULL, 0)) == (int *) -1){
+			perror("shmat");
+			exit(1);
+		}
+		if((compartilhado.maior_j = shmat(compartilhado.shmid, NULL, 0)) == (int *) -1){
+			perror("shmat");
+			exit(1);
+		}
 		if((compartilhado.variancia = shmat(compartilhado.shmid, NULL, 0)) == (double *) -1){
 			perror("shmat");
 			exit(1);
@@ -170,7 +182,8 @@ int main(void){
 		}
 		printf(" Concluído!\n");
 		
-		
+		printf("\nCalculando a Produto Interno...");
+		fflush(stdout);
 		//Calcula o somatório
 		for(i=0; i<m; i++){
 			somatorio = 0;
@@ -194,13 +207,14 @@ int main(void){
 					}
 				}
 				
-				//Armazena o PI(i) e soma para cálculo de média
+				//Armazena o PI(i) e soma para cálculo de média para o desvio padrão
 				compartilhado.produtoInterno_compartilhado[i] = somatorio;
 				*compartilhado.variancia += compartilhado.produtoInterno_compartilhado[i];
 				exit(0);
 				
 			}
 		}
+		printf(" Concluído!\n");
 		
 		
 		//Calcula o desvio padrão
@@ -221,16 +235,18 @@ int main(void){
 		
 		
 		//Exibe os valores resultantes
-		printf("Valores Aferidos--------------------------\n");
+		printf("--------------------------Valores Aferidos--------------------------\n");
 		printf("Menor valor = %i (i=%i, j=%i) e Maior valor = %i (i=%i, j=%i)\n", *compartilhado.menor, *compartilhado.menor_i, *compartilhado.menor_j, *compartilhado.maior, *compartilhado.maior_i, *compartilhado.maior_j);
 		printf("Desvio Padrão = %f\n", desvio_padrao);
-		printf("Tempo de execução = %.3f segundos\n\n", tempo_execucao);
+		printf("Tempo de execução = %.3f segundos\n", tempo_execucao);
+		printf("---------------------------------------------------------------------\n");
 		
 		
 		//Recebe os valores de m e k para nova iteração
-		printf("Digite o valor para m:");
+		printf("\nMontando a matriz da nova iteração\n\n");
+		printf("Defina o número de linhas  -> m = ");
 		scanf("%i", &m);
-		printf("Digite o valor para k:");
+		printf("Defina o número de colunas -> k = ");
 		scanf("%i", &k);
 	}
 	

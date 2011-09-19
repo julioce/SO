@@ -9,8 +9,8 @@ int **aloca_matriz(int m, int k) {
 	int **v, i;
 	
 	//Veririfica os parâmetros
-	if(m < 1 || k < 1){
-		printf ("\n\nErro: Parâmetro invalido!\n\n");
+	if(m < 1 || k < 1 || m != k){
+		printf ("\n\nErro: Valores de m e k inválidos!\n\n");
 		exit(1);
 	}
 	
@@ -25,12 +25,12 @@ int **aloca_matriz(int m, int k) {
 	//Aloca as colunas
 	for( i = 0; i < m; i++ ){
 		v[i] = (int*) calloc (k, sizeof(int));
-		if (v[i] == NULL){
+		if(v[i] == NULL){
 			printf ("\n\nErro: Memória insuficiente!\n\n");
 			exit(1);
 		}
 	}
-	printf(" Conluído!\n");
+	printf(" Concluído!\n");
 	
 	//Retorna a matriz
 	return (v);
@@ -46,17 +46,17 @@ int **free_matriz(int m, int k, int **v){
 	
 	//Verifica parâmetros
 	if(m < 1 || k < 1){
-		printf ("\n\nErro: Parâmetro invalido!\n\n");
-		return (v);
+		printf("\n\nErro: Parâmetro invalido!\n\n");
+		return(v);
 	}
 	
 	//Libera as linhas da matriz
 	for(i=0; i<m; i++){
-		free (v[i]);
+		free(v[i]);
 	}
 	
 	//Libera a matriz
-	free (v);
+	free(v);
 	return (NULL);
 }
 
@@ -171,10 +171,11 @@ int main(void){
 		
 		
 		//Exibe os valores resultantes
-		printf("Valores Aferidos--------------------------\n");
+		printf("Valores Aferidos----------------------------------------------------\n");
 		printf("Menor valor = %i (i=%i, j=%i) e Maior valor = %i (i=%i, j=%i)\n", menor, menor_i, menor_j, maior, maior_i, maior_j);
 		printf("Desvio Padrão = %f\n", desvio_padrao);
-		printf("Tempo de execução = %.3f segundos\n\n", tempo_execucao);
+		printf("Tempo de execução = %.3f segundos\n", tempo_execucao);
+		printf("--------------------------------------------------------------------\n");
 		
 		//Recebe os valores de m e k para nova iteração
 		printf("Digite o valor para m:");

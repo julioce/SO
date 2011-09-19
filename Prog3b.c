@@ -94,6 +94,13 @@ int *aloca_vetor(int m){
 	return (v);
 }
 
+void cria_shared(int *value, int shmid){
+	if((value = shmat(shmid, NULL, 0)) == (int *) -1){
+		perror("shmat");
+		exit(1);
+	}
+}
+
 
 int main(void){
 	int i, j, m, k, somatorio, **matriz, *produtoInterno, *pids, id, status;
@@ -132,34 +139,14 @@ int main(void){
 			perror("shmget");
 			exit(1);
 		}
-		if((compartilhado.produtoInterno_compartilhado = shmat(compartilhado.shmid, NULL, 0)) == (int *) -1){
-			perror("shmat");
-			exit(1);
-		}
-		if((compartilhado.menor = shmat(compartilhado.shmid, NULL, 0)) == (int *) -1){
-			perror("shmat");
-			exit(1);
-		}
-		if((compartilhado.maior = shmat(compartilhado.shmid, NULL, 0)) == (int *) -1){
-			perror("shmat");
-			exit(1);
-		}
-		if((compartilhado.menor_i = shmat(compartilhado.shmid, NULL, 0)) == (int *) -1){
-			perror("shmat");
-			exit(1);
-		}
-		if((compartilhado.maior_i = shmat(compartilhado.shmid, NULL, 0)) == (int *) -1){
-			perror("shmat");
-			exit(1);
-		}
-		if((compartilhado.menor_j = shmat(compartilhado.shmid, NULL, 0)) == (int *) -1){
-			perror("shmat");
-			exit(1);
-		}
-		if((compartilhado.maior_j = shmat(compartilhado.shmid, NULL, 0)) == (int *) -1){
-			perror("shmat");
-			exit(1);
-		}
+		cria_shared(compartilhado.produtoInterno, compartilhado.shmid);
+		cria_shared(compartilhado.produtoInterno_compartilhado, compartilhado.shmid);
+		cria_shared(compartilhado.menor, compartilhado.shmid);
+		cria_shared(compartilhado.maior, compartilhado.shmid);
+		cria_shared(compartilhado.menor_i, compartilhado.shmid);
+		cria_shared(compartilhado.maior_i, compartilhado.shmid);
+		cria_shared(compartilhado.menor_j, compartilhado.shmid);
+		cria_shared(compartilhado.maior_j, compartilhado.shmid);
 		
 		if((compartilhado.variancia = shmat(compartilhado.shmid, NULL, 0)) == (double *) -1){
 			perror("shmat");

@@ -118,14 +118,12 @@ int main(void){
 		
 		
 		//Gera sobre a matriz
-		printf("Inserindo valores na Matriz... \n");
+		printf("Inserindo valores na Matriz... ");
 		for(i=0; i<m; i++){
 			for(j=0; j<k; j++){
 				//gera o número aleatório e armazena na matriz
 				matriz[i][j] = (rand()%201)-100;
-				printf("%i\t", matriz[i][j]);
 			}
-			printf("\n");
 		}
 		printf("Concluído!\n\n");
 		

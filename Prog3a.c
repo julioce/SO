@@ -82,7 +82,7 @@ int *aloca_vetor(int m){
 
 
 int main(void){
-	int **matriz, *produtoInterno, i, j, menor_i, menor_j, maior_i, maior_j, k, m, menor, maior, somatorio;
+	int **matriz, *produtoInterno, i, j, menor_i, maior_i, k, m, menor, maior, somatorio;
 	double soma, soma_desvio, desvio_padrao, tempo_execucao;
 	srand((unsigned)time(NULL));
 	struct timeb inicio_execucao, fim_execucao;
@@ -108,20 +108,24 @@ int main(void){
 		
 		
 		//Inicializa outros valores da iteração
-		menor = 0;
-		maior = 0;
+		menor = 100;
+		maior = -100;
+		menor_i = 0;
+		maior_i = 0;
 		soma = 0;
 		soma_desvio = 0;
 		desvio_padrao = 0;
 		
 		
 		//Gera sobre a matriz
-		printf("Inserindo valores na Matriz... ");
+		printf("Inserindo valores na Matriz... \n");
 		for(i=0; i<m; i++){
 			for(j=0; j<k; j++){
 				//gera o número aleatório e armazena na matriz
 				matriz[i][j] = (rand()%201)-100;
+				printf("%i\t", matriz[i][j]);
 			}
+			printf("\n");
 		}
 		printf("Concluído!\n\n");
 		
@@ -134,19 +138,7 @@ int main(void){
 			
 			for(j=0; j<k; j++){
 				//Realiza o produto interno
-				somatorio += matriz[i][j] * matriz[j][i];
-				
-				//detecta o maior e menor
-				if(matriz[i][j] <= menor){
-					menor = matriz[i][j];
-					menor_i = i+1;
-					menor_j = j+1;
-				}
-				if(matriz[i][j] >= maior){
-					maior = matriz[i][j];
-					maior_i = i+1;
-					maior_j = j+1;
-				}
+				somatorio += matriz[i][j] * matriz[i][j];
 			}
 			
 			//Armazena o PI(i) e soma para cálculo de média
@@ -159,6 +151,16 @@ int main(void){
 		//Calcula o desvio padrão
 		for(i=0; i<m; i++){
 			soma_desvio += pow(produtoInterno[i]-(soma/m), 2);
+			
+			//detecta o maior e menor
+			if(produtoInterno[i] <= menor){
+				menor = produtoInterno[i];
+				menor_i = i+1;
+			}
+			if(produtoInterno[i] >= maior){
+				maior = produtoInterno[i];
+				maior_i = i+1;
+			}
 		}
 		desvio_padrao = sqrt(soma_desvio/m);
 		
@@ -175,7 +177,7 @@ int main(void){
 		
 		//Exibe os valores resultantes
 		printf("--------------------------Valores Aferidos--------------------------\n");
-		printf("Menor valor = %i (i=%i, j=%i) e Maior valor = %i (i=%i, j=%i)\n", menor, menor_i, menor_j, maior, maior_i, maior_j);
+		printf("Menor valor = %i (m=%i) e Maior valor = %i (m=%i)\n", menor, menor_i, maior, maior_i);
 		printf("Desvio Padrão = %f\n", desvio_padrao);
 		printf("Tempo de execução = %.3f segundos\n", tempo_execucao);
 		printf("---------------------------------------------------------------------\n");

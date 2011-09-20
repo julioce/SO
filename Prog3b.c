@@ -10,9 +10,11 @@
 #include <sys/ipc.h> 
 #include <sys/shm.h>
 
+#define INF 0x33333333
+
 struct shared{
 	double *variancia;
-	int shmid, *produtoInterno, *produtoInterno_compartilhado, *menor_i, *menor_j, *maior_i, *maior_j, *menor, *maior;
+	int shmid, *produtoInterno, *produtoInterno_compartilhado, *menor_i, *maior_i, *menor, *maior;
 	key_t key;
 };
 
@@ -96,7 +98,7 @@ int *aloca_vetor(int m){
 int main(void){
 	int i, j, m, k, somatorio, **matriz, *produtoInterno, *pids, id, status;
 	double soma_desvio, desvio_padrao, tempo_execucao;
-	int shmid[8];
+	int shmid[10];
 	struct timeb inicio_execucao, fim_execucao;
 	
 	//Aloca recursos de compartilhamento de memória
@@ -125,67 +127,58 @@ int main(void){
 		
 		
 		//Cria o compartilhamento de memória
-		for(i=0; i<8; i++){
+		for(i=0; i<6; i++){
 			if(i == 0){
-				if((shmid[i] = shmget(1234+i, m*sizeof(int), IPC_CREAT | SHM_W | SHM_R)) < 0){
-				perror("shmget");
-				exit(1);
+				if((shmid[i] = shmget(153223, (m+1)*sizeof(int), IPC_CREAT | SHM_W | SHM_R)) < 0){
+					perror("shmget 1");
+					exit(1);
 				}
 			}
-			else if(i > 0 && i < 7){
-				if((shmid[i] = shmget(1234+i, sizeof(int), IPC_CREAT | SHM_W | SHM_R)) < 0){
-					perror("shmget");
+			else if(i > 0 && i < 5){
+				if((shmid[i] = shmget(1232+i, sizeof(int), IPC_CREAT | SHM_W | SHM_R)) < 0){
+					perror("shmget 2");
 					exit(1);
 				}
 			}
 			else{
-				if((shmid[i] = shmget(1234+i, sizeof(double), IPC_CREAT | SHM_W | SHM_R)) < 0){
-					perror("shmget");
+				if((shmid[i] = shmget(12323, sizeof(double), IPC_CREAT | SHM_W | SHM_R)) < 0){
+					perror("shmget 3");
 					exit(1);
 				}
 			}
 		}
 		if((compartilhado.produtoInterno_compartilhado = shmat(shmid[0], NULL, 0)) == (int *) -1){
-			perror("shmat");
+			perror("shmat produtointerno");
 			exit(1);
 		}
 		if((compartilhado.menor = shmat(shmid[1] , NULL, 0)) == (int *) -1){
-			perror("shmat");
+			perror("shmat menor");
 			exit(1);
 		}
 		if((compartilhado.maior = shmat(shmid[2], NULL, 0)) == (int *) -1){
-			perror("shmat");
+			perror("shmat maior");
 			exit(1);
 		}
 		if((compartilhado.menor_i = shmat(shmid[3], NULL, 0)) == (int *) -1){
-			perror("shmat");
+			perror("shmat menor_i");
 			exit(1);
 		}
 		if((compartilhado.maior_i = shmat(shmid[4], NULL, 0)) == (int *) -1){
-			perror("shmat");
+			perror("shmat maior i");
 			exit(1);
 		}
-		if((compartilhado.menor_j = shmat(shmid[5], NULL, 0)) == (int *) -1){
-			perror("shmat");
-			exit(1);
-		}
-		if((compartilhado.maior_j = shmat(shmid[6], NULL, 0)) == (int *) -1){
-			perror("shmat");
-			exit(1);
-		}
-		if((compartilhado.variancia = shmat(shmid[7], NULL, 0)) == (double *) -1){
-			perror("shmat");
+		if((compartilhado.variancia = shmat(shmid[5], NULL, 0)) == (double *) -1){
+			perror("shmat variancia");
 			exit(1);
 		}
 		
 		
 		
 		//Inicializa outros valores da iteração
-		*compartilhado.menor = 0;
-		*compartilhado.maior = 0;
+		*compartilhado.menor = INF;
+		*compartilhado.maior = -INF;
 		soma_desvio = 0;
 		desvio_padrao = 0;
-		compartilhado.produtoInterno_compartilhado = compartilhado.produtoInterno;
 		*compartilhado.variancia = 0;
 		
 		
@@ -210,33 +203,33 @@ int main(void){
 			if(pids[i] == 0){
 				for(j=0; j<k; j++){
 					//Realiza o produto interno
-					somatorio += matriz[i][j] * matriz[j][i];
-					
-					//detecta o maior e menor
-					if(matriz[i][j] <= *compartilhado.menor){
-						*compartilhado.menor = matriz[i][j];
-						*compartilhado.menor_i = i+1;
-						*compartilhado.menor_j = j+1;
-					}
-					if(matriz[i][j] >= *compartilhado.maior){
-						*compartilhado.maior = matriz[i][j];
-						*compartilhado.maior_i = i+1;
-						*compartilhado.maior_j = j+1;
-					}
+					somatorio += matriz[i][j] * matriz[i][j];
 				}
 				
 				//Armazena o PI(i) e soma para cálculo de média para o desvio padrão
 				compartilhado.produtoInterno_compartilhado[i] = somatorio;
 				*compartilhado.variancia += compartilhado.produtoInterno_compartilhado[i];
+				printf("%d", compartilhado.produtoInterno_compartilhado[i]);
 				exit(0);
+			}else{
+				wait(&status);
 			}
 		}
 		printf("Concluído!\n\n");
 		
-		
+		//printf("%d", compartilhado.produtoInterno_compartilhado[i]);
 		//Calcula o desvio padrão
 		for(i=0; i<m; i++){
 			soma_desvio += pow(compartilhado.produtoInterno_compartilhado[i]-(*compartilhado.variancia/m), 2);
+			//detecta o maior e menor
+			if(compartilhado.produtoInterno_compartilhado[i] <= *compartilhado.menor){
+				*compartilhado.menor = compartilhado.produtoInterno_compartilhado[i];
+				*compartilhado.menor_i = i+1;
+			}
+			if(compartilhado.produtoInterno_compartilhado[i] >= *compartilhado.maior){
+				*compartilhado.maior = compartilhado.produtoInterno_compartilhado[i];
+				*compartilhado.maior_i = i+1;
+			}
 		}
 		desvio_padrao = sqrt(soma_desvio/m);
 		
@@ -248,12 +241,11 @@ int main(void){
 		
 		//Libera a matriz e o Produto Interno
 		free_matriz(m, k, matriz);
-		free(compartilhado.produtoInterno_compartilhado);
 		
 		
 		//Exibe os valores resultantes
 		printf("--------------------------Valores Aferidos--------------------------\n");
-		printf("Menor valor = %i (i=%i, j=%i) e Maior valor = %i (i=%i, j=%i)\n", *compartilhado.menor, *compartilhado.menor_i, *compartilhado.menor_j, *compartilhado.maior, *compartilhado.maior_i, *compartilhado.maior_j);
+		printf("Menor valor = %i (i=%i) e Maior valor = %i (i=%i)\n", *compartilhado.menor, *compartilhado.menor_i, *compartilhado.maior, *compartilhado.maior_i);
 		printf("Desvio Padrão = %f\n", desvio_padrao);
 		printf("Tempo de execução = %.3f segundos\n", tempo_execucao);
 		printf("---------------------------------------------------------------------\n");

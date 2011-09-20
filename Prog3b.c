@@ -21,7 +21,7 @@ int **aloca_matriz(int m, int k) {
 	int **v, i;
 	
 	//Veririfica os parâmetros
-	if(m < 1 || k < 1 || m != k){
+	if(m < 1 || k < 1 ){
 		printf ("\n\nErro: Valores de m e k inválidos!\n\n");
 		exit(1);
 	}
@@ -112,10 +112,16 @@ int main(void){
 	
 	
 	while( m!= 0 && k!=0 ){
+		//Inicia a contagem do tempo de execução
+		ftime(&inicio_execucao);
+		
+		
 		//Aloca a matriz Principal, vetor de Produto Interno e de PIDs
+		printf("\nMontando a matriz... ");
 		matriz = aloca_matriz(m, k);
 		compartilhado.produtoInterno = aloca_vetor(m);
 		pids = aloca_vetor(m);
+		printf("Concluído!\n\n");
 		
 		
 		//Cria o compartilhamento de memória
@@ -183,25 +189,19 @@ int main(void){
 		*compartilhado.variancia = 0;
 		
 		
-		//Inicia a contagem do tempo de execução
-		ftime(&inicio_execucao);
-		
-		
 		//Insere na matriz
-		printf("\nInserindo valores na Matriz...\n");
+		printf("Inserindo valores na Matriz... ");
 		for(i=0; i<m; i++){
 			for(j=0; j<k; j++){
 				//gera o número aleatório e armazena na matriz
 				matriz[i][j] = (rand()%201)-100;
-				printf("%i\t", matriz[i][j]);
 			}
-			printf("\n");
 		}
-		printf(" Concluído!\n");
+		printf("Concluído!\n\n");
 		
 				
 		//Calcula o somatório
-		printf("\nCalculando o Produto Interno...");
+		printf("Calculando o Produto Interno... ");
 		fflush(stdout);
 		for(i=0; i<m; i++){
 			somatorio = 0;
@@ -229,12 +229,9 @@ int main(void){
 				compartilhado.produtoInterno_compartilhado[i] = somatorio;
 				*compartilhado.variancia += compartilhado.produtoInterno_compartilhado[i];
 				exit(0);
-				
-			}else{
-				wait(&status);
 			}
 		}
-		printf(" Concluído!\n\n");
+		printf("Concluído!\n\n");
 		
 		
 		//Calcula o desvio padrão
@@ -263,7 +260,7 @@ int main(void){
 		
 		
 		//Recebe os valores de m e k para nova iteração
-		printf("\nMontando a matriz da nova iteração\n\n");
+		printf("Montando a matriz da nova iteração\n\n");
 		printf("Defina o número de linhas  -> m = ");
 		scanf("%i", &m);
 		printf("Defina o número de colunas -> k = ");

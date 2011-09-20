@@ -9,7 +9,7 @@ int **aloca_matriz(int m, int k) {
 	int **v, i;
 	
 	//Veririfica os parâmetros
-	if(m < 1 || k < 1 || m != k){
+	if(m < 1 || k < 1 ){
 		printf ("\n\nErro: Valores de m e k inválidos!\n\n");
 		exit(1);
 	}
@@ -29,7 +29,6 @@ int **aloca_matriz(int m, int k) {
 			exit(1);
 		}
 	}
-	printf(" Concluído!\n");
 	
 	//Retorna a matriz
 	return (v);
@@ -89,7 +88,6 @@ int main(void){
 	struct timeb inicio_execucao, fim_execucao;
 	
 	
-	printf("\nMontando a matriz... \n\n");
 	//Recebe os valores iniciais de m e k
 	printf("Defina o número de linhas  -> m = ");
 	scanf("%i", &m);
@@ -98,9 +96,15 @@ int main(void){
 	
 	
 	while( m!= 0 && k!=0 ){
+		//Inicia a contagem do tempo de execução
+		ftime(&inicio_execucao);
+		
+		
 		//Aloca a matriz e vetor de Produto Interno
+		printf("\nMontando a matriz... ");
 		matriz = aloca_matriz(m, k);
 		produtoInterno = aloca_vetor(m);
+		printf("Concluído!\n\n");
 		
 		
 		//Inicializa outros valores da iteração
@@ -111,22 +115,18 @@ int main(void){
 		desvio_padrao = 0;
 		
 		
-		//Inicia a contagem do tempo de execução
-		ftime(&inicio_execucao);
-		
-		
 		//Gera sobre a matriz
-		printf("\nInserindo valores na Matriz...");
+		printf("Inserindo valores na Matriz... ");
 		for(i=0; i<m; i++){
 			for(j=0; j<k; j++){
 				//gera o número aleatório e armazena na matriz
 				matriz[i][j] = (rand()%201)-100;
 			}
 		}
-		printf(" Concluído!\n\n");
+		printf("Concluído!\n\n");
 		
 		
-		printf("\nCalculando a Produto Interno...");
+		printf("Calculando a Produto Interno...");
 		fflush(stdout);
 		//Calcula o somatório
 		for(i=0; i<m; i++){
@@ -181,13 +181,11 @@ int main(void){
 		printf("---------------------------------------------------------------------\n");
 		
 		//Recebe os valores de m e k para nova iteração
-		printf("\nMontando a matriz da nova iteração\n\n");
+		printf("Montando a matriz da nova iteração\n\n");
 		printf("Defina o número de linhas  -> m = ");
 		scanf("%i", &m);
 		printf("Defina o número de colunas -> k = ");
 		scanf("%i", &k);
-
-
 	}
 	
 	exit(0);

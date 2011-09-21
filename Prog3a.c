@@ -4,6 +4,8 @@
 #include <math.h>
 #include <sys/timeb.h>
 
+#define INF 0x33333333
+
 int **aloca_matriz(int m, int k) {
 	//ponteiro para a matriz e variável de iteração
 	int **v, i;
@@ -108,8 +110,8 @@ int main(void){
 		
 		
 		//Inicializa outros valores da iteração
-		menor = 100;
-		maior = -100;
+		menor = INF;
+		maior = -INF;
 		menor_i = 0;
 		maior_i = 0;
 		soma = 0;
@@ -150,7 +152,7 @@ int main(void){
 		for(i=0; i<m; i++){
 			soma_desvio += pow(produtoInterno[i]-(soma/m), 2);
 			
-			//detecta o maior e menor
+			//Detecta o maior e menor
 			if(produtoInterno[i] <= menor){
 				menor = produtoInterno[i];
 				menor_i = i+1;
@@ -168,13 +170,13 @@ int main(void){
 		tempo_execucao = (((fim_execucao.time-inicio_execucao.time)*1000.0+fim_execucao.millitm)-inicio_execucao.millitm)/1000.0;
 		
 		
-		//Libera a matriz e o Produto Interno
+		//Libera a matriz
 		free_matriz(m, k, matriz);
 		free(produtoInterno);
 		
 		
 		//Exibe os valores resultantes
-		printf("--------------------------Valores Aferidos--------------------------\n");
+		printf("--------------------------Valores Aferidos---------------------------\n");
 		printf("Menor valor = %i (m=%i) e Maior valor = %i (m=%i)\n", menor, menor_i, maior, maior_i);
 		printf("Desvio Padrão = %f\n", desvio_padrao);
 		printf("Tempo de execução = %.3f segundos\n", tempo_execucao);

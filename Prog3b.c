@@ -135,7 +135,7 @@ int main(void){
 		for(i=0; i<6; i++){
 			if(i == 0){
 				if( (shmid[i] = shmget(getpid(), max(m, k)*sizeof(int), IPC_CREAT | SHM_W | SHM_R)) < 0 ){
-					if((shmid[i] = shmget(getpid()+(unsigned)time(NULL), max(m, k)*sizeof(int), IPC_CREAT | SHM_W | SHM_R)) < 0){
+					if((shmid[i] = shmget((unsigned)time(NULL), max(m, k)*sizeof(int), IPC_CREAT | SHM_W | SHM_R)) < 0){
 						perror("shmget 1");
 						exit(1);
 					}

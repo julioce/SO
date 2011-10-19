@@ -3,15 +3,17 @@
 #include <unistd.h>
 #include <math.h>
 #include <sys/timeb.h>
+
 #include <pthread.h>
 
 #define INF 0x33333333
-#define THREADS 4
+#define THREADS 10
 
 int **matriz, *produtoInterno, i, j, menor_i, maior_i, k, m, menor, maior, parte[THREADS], returnThread[THREADS];
 double soma, soma_desvio, desvio_padrao, tempo_execucao;
 struct timeb inicio_execucao, fim_execucao;
 pthread_t thread[THREADS];
+pthread_attr_t atributosThread;
 
 int **aloca_matriz(int m, int k) {
 	//ponteiro para a matriz e variável de iteração
@@ -101,8 +103,6 @@ void *calculaProdutoInterno(void *arg){
 		fim = m;
 	}
 	
-	//printf("Iniciando Thread %i que calcula as linhas entre %i e %i\n", *pos, inicio+1, fim);
-	
 	//Calcula o somatório
 	for(i=inicio; i<fim; i++){
 		somatorio = 0;
@@ -116,6 +116,8 @@ void *calculaProdutoInterno(void *arg){
 		produtoInterno[i] = somatorio;
 		soma += produtoInterno[i];
 	}
+	
+	printf("Thread %i terminou de calcular as linhas entre %i e %i\n", *pos, inicio+1, fim);
 }
 
 
@@ -127,7 +129,12 @@ int main(void){
 	printf("Defina o número de colunas -> k = ");
 	scanf("%i", &k);
 	
+	//Inicia o parâmetro da contagem de tempo
 	srand((unsigned)time(NULL));
+	
+	//Configura os atributos da Thread, no caso do tipo Kernel
+	pthread_attr_init(&atributosThread);
+	pthread_attr_setscope(&atributosThread, PTHREAD_SCOPE_SYSTEM);
 	
 	while( m!= 0 && k!=0 ){
 		//Inicializa outros valores da iteração
@@ -168,15 +175,18 @@ int main(void){
 			parte[i] = i+1;
 			
 			//Inicializa as threads passando o parâmetro da sua posição
-			returnThread[i] = pthread_create(&(thread[i]), NULL, calculaProdutoInterno, (void*) &(parte[i]));
+			returnThread[i] = pthread_create(&(thread[i]), &atributosThread, calculaProdutoInterno, (void*) &(parte[i]));
 			
-			//Verifica se houve um erro a criar a Thread
+			//Verifica se houve um erro ao criar a Thread
 			if(returnThread[i] > 0){
 				printf("Não foi possível criar a Thread para o segmento i=%i", i);
 				exit(1);
 			}
 			
-			//Aguarda o término da thread
+		}
+		
+		//Aguarda o término das threads
+		for(i=0; i<THREADS; i++){
 			pthread_join(thread[i], NULL);
 		}
 		printf("Concluído!\n");

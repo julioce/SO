@@ -4,8 +4,6 @@
 #include <math.h>
 #include <sys/timeb.h>
 
-#include <sys/wait.h>
-
 #include <sys/types.h>
 #include <sys/ipc.h> 
 #include <sys/shm.h>
@@ -13,16 +11,19 @@
 #include <pthread.h>
 
 #define INF 0x33333333
-#define THREADS 4
+#define THREADS 10
 
-pthread_t thread[THREADS];
 int parte[THREADS];
 int returnThread[THREADS];
 int i, j, m, k, somatorio, **matriz, *produtoInterno, *pids, id, status;
 double soma_desvio, desvio_padrao, tempo_execucao;
-int shmid[10];
+struct timeb inicio_execucao, fim_execucao;
+pthread_t thread[THREADS];
+pthread_attr_t atributosThread;
+
 //Cria estrutura de compartilhamento de memória
 struct shared compartilhado;
+int shmid[10];
 
 struct shared{
 	double *variancia;
@@ -123,8 +124,6 @@ void *calculaProdutoInterno(void *arg){
 		fim = m;
 	}
 	
-	//printf("Iniciando Thread %i que calcula as linhas entre %i e %i\n", *pos, inicio+1, fim);
-	
 	//Calcula o somatório
 	for(i=inicio; i<fim; i++){
 		somatorio = 0;
@@ -138,12 +137,11 @@ void *calculaProdutoInterno(void *arg){
 		compartilhado.produtoInterno_compartilhado[i] = somatorio;
 		*compartilhado.variancia += compartilhado.produtoInterno_compartilhado[i];
 	}
+	
+	printf("Thread %i terminou de calcular as linhas entre %i e %i\n", *pos, inicio+1, fim);
 }
 
 int main(void){
-	struct timeb inicio_execucao, fim_execucao;
-	srand((unsigned)time(NULL));
-	
 	
 	//Recebe os valores iniciais de m e k
 	printf("Defina o número de linhas  -> m = ");
@@ -151,6 +149,12 @@ int main(void){
 	printf("Defina o número de colunas -> k = ");
 	scanf("%i", &k);
 	
+	//Inicia o parâmetro da contagem de tempo
+	srand((unsigned)time(NULL));
+	
+	//Configura os atributos da Thread, no caso do tipo Kernel
+	pthread_attr_init(&atributosThread);
+	pthread_attr_setscope(&atributosThread, PTHREAD_SCOPE_SYSTEM);
 	
 	while( m!= 0 && k!=0 ){
 		//Cria o compartilhamento de memória
@@ -239,15 +243,18 @@ int main(void){
 			parte[i] = i+1;
 			
 			//Inicializa as threads passando o parâmetro da sua posição
-			returnThread[i] = pthread_create(&(thread[i]), NULL, calculaProdutoInterno, (void*) &(parte[i]));
+			returnThread[i] = pthread_create(&(thread[i]), &atributosThread, calculaProdutoInterno, (void*) &(parte[i]));
 			
-			//Verifica se houve um erro a criar a Thread
+			//Verifica se houve um erro ao criar a Thread
 			if(returnThread[i] > 0){
 				printf("Não foi possível criar a Thread para o segmento i=%i", i);
 				exit(1);
 			}
 			
-			//Aguarda o término da thread
+		}
+		
+		//Aguarda o término das threads
+		for(i=0; i<THREADS; i++){
 			pthread_join(thread[i], NULL);
 		}
 		printf("Concluído!\n");

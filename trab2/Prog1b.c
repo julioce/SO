@@ -114,10 +114,11 @@ int max(int a, int b){
 }
 
 void *calculaProdutoInterno(void *arg){
-	int i,j, somatorio, *pos;
+	int i, j, inicio, fim, somatorio, *pos;
+	
 	pos = (int *) arg;
-	int inicio = (*pos - 1)*floor(m/THREADS);
-	int fim = inicio + floor(m/THREADS) ;
+	inicio = (*pos - 1)*floor(m/THREADS);
+	fim = inicio + floor(m/THREADS) ;
 	
 	//Detecta se a thread é a última. Nesse caso precisa calcular também o resto da divisão
 	if( m-fim < THREADS ){
@@ -139,6 +140,9 @@ void *calculaProdutoInterno(void *arg){
 	}
 	
 	printf("Thread %i terminou de calcular as linhas entre %i e %i\n", *pos, inicio+1, fim);
+	
+	//Termina a thread
+	pthread_exit(NULL);
 }
 
 int main(void){
@@ -295,7 +299,7 @@ int main(void){
 		
 		
 		//Recebe os valores de m e k para nova iteração
-		printf("Montando a matriz da nova iteração\n\n");
+		printf("Nova iteração\n\n");
 		printf("Defina o número de linhas  -> m = ");
 		scanf("%i", &m);
 		printf("Defina o número de colunas -> k = ");

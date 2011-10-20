@@ -93,10 +93,11 @@ int *aloca_vetor(int m){
 
 
 void *calculaProdutoInterno(void *arg){
-	int i,j, somatorio, *pos;
+	int i, j, *pos, inicio, fim, somatorio;
+	
 	pos = (int *) arg;
-	int inicio = (*pos - 1)*floor(m/THREADS);
-	int fim = inicio + floor(m/THREADS) ;
+	inicio = (*pos - 1)*floor(m/THREADS);
+	fim = inicio + floor(m/THREADS) ;
 	
 	//Detecta se a thread é a última. Nesse caso precisa calcular também o resto da divisão
 	if( m-fim < THREADS ){
@@ -118,6 +119,9 @@ void *calculaProdutoInterno(void *arg){
 	}
 	
 	printf("Thread %i terminou de calcular as linhas entre %i e %i\n", *pos, inicio+1, fim);
+	
+	//Termina a thread
+	pthread_exit(NULL);
 }
 
 
@@ -132,8 +136,9 @@ int main(void){
 	//Inicia o parâmetro da contagem de tempo
 	srand((unsigned)time(NULL));
 	
-	//Configura os atributos da Thread, no caso do tipo Kernel
+	//Configura os atributos da Thread
 	pthread_attr_init(&atributosThread);
+	//No caso, tipo Kernel
 	pthread_attr_setscope(&atributosThread, PTHREAD_SCOPE_SYSTEM);
 	
 	while( m!= 0 && k!=0 ){
@@ -214,7 +219,7 @@ int main(void){
 		tempo_execucao = (((fim_execucao.time-inicio_execucao.time)*1000.0+fim_execucao.millitm)-inicio_execucao.millitm)/1000.0;
 		
 		
-		//Libera a matriz
+		//Libera as matrizes
 		free_matriz(m, k, matriz);
 		free(produtoInterno);
 		
@@ -227,7 +232,7 @@ int main(void){
 		printf("---------------------------------------------------------------------\n");
 		
 		//Recebe os valores de m e k para nova iteração
-		printf("Montando a matriz da nova iteração\n\n");
+		printf("Nova iteração\n\n");
 		printf("Defina o número de linhas  -> m = ");
 		scanf("%i", &m);
 		printf("Defina o número de colunas -> k = ");

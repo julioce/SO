@@ -139,7 +139,7 @@ void *calculaProdutoInterno(void *arg){
 		*compartilhado.variancia += compartilhado.produtoInterno_compartilhado[i];
 	}
 	
-	//printf("\nThread %i terminou de calcular as linhas entre %i e %i", *pos, inicio+1, fim);
+	printf("\nThread %i terminou de calcular as linhas entre %i e %i", *pos, inicio+1, fim);
 	
 	//Termina a thread
 	pthread_exit(NULL);

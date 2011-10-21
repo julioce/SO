@@ -120,7 +120,7 @@ void *calculaProdutoInterno(void *arg){
 		soma += produtoInterno[i];
 	}
 	
-	//printf("\nThread %i terminou de calcular as linhas entre %i e %i", *pos, inicio+1, fim);
+	printf("\nThread %i terminou de calcular as linhas entre %i e %i", *pos, inicio+1, fim);
 	
 	//Termina a thread
 	pthread_exit(NULL);

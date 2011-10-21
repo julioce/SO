@@ -11,11 +11,11 @@
 #include <pthread.h>
 
 #define INF 0x33333333
-#define THREADS 10
+#define THREADS 2
 
-int parte[THREADS];
-int returnThread[THREADS];
-int i, j, m, k, somatorio, **matriz, *produtoInterno, *pids, id, status;
+int i, j, m, k, somatorio, **matriz, *produtoInterno, id, status;
+int menor_matriz, maior_matriz, menor_matriz_i, maior_matriz_i, menor_matriz_j, maior_matriz_j;
+int parte[THREADS], returnThread[THREADS];
 double soma_desvio, desvio_padrao, tempo_execucao;
 struct timeb inicio_execucao, fim_execucao;
 pthread_t thread[THREADS];
@@ -139,7 +139,7 @@ void *calculaProdutoInterno(void *arg){
 		*compartilhado.variancia += compartilhado.produtoInterno_compartilhado[i];
 	}
 	
-	printf("Thread %i terminou de calcular as linhas entre %i e %i\n", *pos, inicio+1, fim);
+	//printf("\nThread %i terminou de calcular as linhas entre %i e %i", *pos, inicio+1, fim);
 	
 	//Termina a thread
 	pthread_exit(NULL);
@@ -156,8 +156,9 @@ int main(void){
 	//Inicia o parâmetro da contagem de tempo
 	srand((unsigned)time(NULL));
 	
-	//Configura os atributos da Thread, no caso do tipo Kernel
+	//Configura os atributos da Thread
 	pthread_attr_init(&atributosThread);
+	//No caso, tipo Kernel
 	pthread_attr_setscope(&atributosThread, PTHREAD_SCOPE_SYSTEM);
 	
 	while( m!= 0 && k!=0 ){
@@ -214,17 +215,22 @@ int main(void){
 		*compartilhado.menor = INF;
 		*compartilhado.maior = -INF;
 		*compartilhado.variancia = 0;
+		menor_matriz = INF;
+		maior_matriz = -INF;
+		menor_matriz_i = 0;
+		maior_matriz_i = 0;
+		menor_matriz_j = 0;
+		maior_matriz_j = 0;
 		soma_desvio = 0;
 		desvio_padrao = 0;
 		
 		//Inicia a contagem do tempo de execução
 		ftime(&inicio_execucao);
 		
-		//Aloca a matriz Principal, vetor de Produto Interno e de PIDs
+		//Aloca a matriz Principal
 		printf("\nMontando a matriz... ");
 		matriz = aloca_matriz(m, k);
 		compartilhado.produtoInterno = aloca_vetor(m);
-		pids = aloca_vetor(m);
 		printf("Concluído!\n\n");
 		
 		
@@ -234,12 +240,24 @@ int main(void){
 			for(j=0; j<k; j++){
 				//gera o número aleatório e armazena na matriz
 				matriz[i][j] = (rand()%201)-100;
+				
+				//Detecta o maior e menor na matriz
+				if(matriz[i][j] <= menor_matriz){
+					menor_matriz = matriz[i][j];
+					menor_matriz_i = i+1;
+					menor_matriz_j = j+1;
+				}
+				if(matriz[i][j] >= maior_matriz){
+					maior_matriz = matriz[i][j];
+					maior_matriz_i = i+1;
+					maior_matriz_j = j+1;
+				}
 			}
 		}
 		printf("Concluído!\n\n");
 		
 		
-		printf("Calculando a Produto Interno...\n");
+		printf("Calculando a Produto Interno...");
 		//Loop que cria as threads
 		for(i=0; i<THREADS; i++){
 			
@@ -261,7 +279,7 @@ int main(void){
 		for(i=0; i<THREADS; i++){
 			pthread_join(thread[i], NULL);
 		}
-		printf("Concluído!\n");
+		printf("Concluído!\n\n");
 		
 		
 		//Calcula o desvio padrão
@@ -286,20 +304,24 @@ int main(void){
 		tempo_execucao = (((fim_execucao.time-inicio_execucao.time)*1000.0+fim_execucao.millitm)-inicio_execucao.millitm)/1000.0;
 		
 		
-		//Libera a matriz
+		//Libera a matriz e a memória compartilhada
 		free_matriz(m, k, matriz);
+		for(i=0; i<11; i++){
+			shmctl(shmid[i], IPC_RMID, NULL);
+		}
 		
 		
 		//Exibe os valores resultantes
 		printf("--------------------------Valores Aferidos---------------------------\n");
-		printf("Menor valor = %i (i=%i) e Maior valor = %i (i=%i)\n", *compartilhado.menor, *compartilhado.menor_i, *compartilhado.maior, *compartilhado.maior_i);
+		printf("Menor valor na matriz = %i (i=%i, j=%i) e Maior valor na matriz = %i (i=%i, j=%i)\n", menor_matriz, menor_matriz_i, menor_matriz_j, maior_matriz, maior_matriz_i, maior_matriz_j);
+		printf("Menor valor Produto Interno = %i (i=%i) e Maior valor Produto Interno = %i (i=%i)\n", *compartilhado.menor, *compartilhado.menor_i, *compartilhado.maior, *compartilhado.maior_i);
 		printf("Desvio Padrão = %f\n", desvio_padrao);
 		printf("Tempo de execução = %.3f segundos\n", tempo_execucao);
-		printf("---------------------------------------------------------------------\n");
+		printf("---------------------------------------------------------------------\n\n");
 		
 		
 		//Recebe os valores de m e k para nova iteração
-		printf("Nova iteração\n\n");
+		printf("Nova iteração\n");
 		printf("Defina o número de linhas  -> m = ");
 		scanf("%i", &m);
 		printf("Defina o número de colunas -> k = ");

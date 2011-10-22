@@ -158,6 +158,7 @@ int main(void){
 	
 	//Configura os atributos da Thread
 	pthread_attr_init(&atributosThread);
+	pthread_attr_setdetachstate(&atributosThread, PTHREAD_CREATE_JOINABLE);
 	//No caso, tipo Kernel
 	pthread_attr_setscope(&atributosThread, PTHREAD_SCOPE_SYSTEM);
 	
@@ -232,7 +233,6 @@ int main(void){
 		matriz = aloca_matriz(m, k);
 		compartilhado.produtoInterno = aloca_vetor(m);
 		printf("Concluído!\n\n");
-		
 		
 		//Insere na matriz
 		printf("Inserindo valores na Matriz... ");
@@ -312,12 +312,12 @@ int main(void){
 		
 		
 		//Exibe os valores resultantes
-		printf("--------------------------Valores Aferidos---------------------------\n");
+		printf("---------------------------------------Valores Aferidos----------------------------------------\n");
 		printf("Menor valor na matriz = %i (i=%i, j=%i) e Maior valor na matriz = %i (i=%i, j=%i)\n", menor_matriz, menor_matriz_i, menor_matriz_j, maior_matriz, maior_matriz_i, maior_matriz_j);
 		printf("Menor valor Produto Interno = %i (i=%i) e Maior valor Produto Interno = %i (i=%i)\n", *compartilhado.menor, *compartilhado.menor_i, *compartilhado.maior, *compartilhado.maior_i);
 		printf("Desvio Padrão = %f\n", desvio_padrao);
 		printf("Tempo de execução = %.3f segundos\n", tempo_execucao);
-		printf("---------------------------------------------------------------------\n\n");
+		printf("-----------------------------------------------------------------------------------------------\n\n");
 		
 		
 		//Recebe os valores de m e k para nova iteração

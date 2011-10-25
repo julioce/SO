@@ -45,14 +45,14 @@ public class Produtor extends Thread {
 
 		while (Main.getRecursosProduzidos() < Configuracoes.TOTAL_RECURSOS_A_SER_PRODUZIDO) {
 
-			this.produzir();
+			if(estoque.getConteudo().size() < Configuracoes.MAX_RESOURCE_VALUE){
+				this.produzir();
+			}
 
 			try {
-				Thread.sleep((int)(Math.random() * Configuracoes.MAX_TIME_TO_SLEEP));
+				Thread.sleep((int)(Math.random() * Configuracoes.MAX_TIME_TO_PRODUCE));
 			}
-			catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			catch (InterruptedException e) { e.printStackTrace(); }
 		}
 	}
 	

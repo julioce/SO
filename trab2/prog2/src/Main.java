@@ -61,20 +61,29 @@ public class Main implements ActionListener {
 		consumidor4.start();
 		consumidor5.start();
 	}
+	
+	public void actionPerformed(ActionEvent e) {
+		if ("iniciar".equals(e.getActionCommand())) {
+			/* Cria as entidades e as inicia */
+			inicializaEntidades();
+		}
+	}
 
-	private void criaGUI(){
+	public static void main(String[] args) {
+		Main main = new Main();
+		
 		/* Pega o Look and Feel do OS nativo e instala */
 		String nativeLF = UIManager.getSystemLookAndFeelClassName();
 
 		try {
 			UIManager.setLookAndFeel(nativeLF);
 		}
-		catch (InstantiationException e) {}
-		catch (ClassNotFoundException e) {}
-		catch (UnsupportedLookAndFeelException e) {}
-		catch (IllegalAccessException e) {}
+		catch (InstantiationException e) { e.printStackTrace(); }
+		catch (ClassNotFoundException e) { e.printStackTrace(); }
+		catch (UnsupportedLookAndFeelException e) { e.printStackTrace(); }
+		catch (IllegalAccessException e) { e.printStackTrace(); }
 		
-		/* Cria tudo: Janela, label, botão... */
+		/* Cria tudo: Janela, canvas, label, botão... */
 		JFrame window = new JFrame("Programa 2 - Trabalho 2 - SO");
 		Desenho canvas = new Desenho();
 		JLabel label = new JLabel(Configuracoes.NOME_PROJETO);
@@ -89,11 +98,11 @@ public class Main implements ActionListener {
 		
 		/* Botão de Iniciar */
 		{
-			iniciar.addActionListener(this);
+			iniciar.addActionListener(main);
 			iniciar.setLayout(null);
 			iniciar.setActionCommand("iniciar");
 			iniciar.setToolTipText("Clique aqui para iniciar a simulação");
-			iniciar.setBounds(Configuracoes.WIDTH_SIZE/2-50, Configuracoes.HEIGHT-40, 100, 30);
+			iniciar.setBounds(Configuracoes.WIDTH_SIZE/2-50, Configuracoes.HEIGHT-45, 100, 30);
 		}
 		
 		/* Adiciona na janela principal */
@@ -109,20 +118,6 @@ public class Main implements ActionListener {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.pack();
 		window.setVisible(true);
-	}
-	
-	public void actionPerformed(ActionEvent e) {
-		if ("iniciar".equals(e.getActionCommand())) {
-			/* Cria as entidades e as inicia */
-			inicializaEntidades();
-		}
-	}
-
-	public static void main(String[] args) {
-		Main main = new Main();
-		
-		/* Cria a interface gráfica */
-		main.criaGUI();
 	}
 
 }

@@ -2,7 +2,6 @@
 public class Consumidor extends Thread {
 	String Nome;
 	private Estoque estoque;
-	private Desenho canvas;
 	
 	public Consumidor() { }
 
@@ -50,9 +49,7 @@ public class Consumidor extends Thread {
 					}
 					
 				}
-				catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+				catch (InterruptedException e) { e.printStackTrace(); }
 			}
 		}
 	}
@@ -64,11 +61,9 @@ public class Consumidor extends Thread {
 			this.consumir();
 			
 			try {
-				Thread.sleep((int)(Math.random() * Configuracoes.MAX_TIME_TO_SLEEP));
+				Thread.sleep((int)(Math.random() * Configuracoes.MAX_TIME_TO_CONSUME));
 			}
-			catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			catch (InterruptedException e) { e.printStackTrace(); }
 		}
 	}
    

@@ -18,7 +18,7 @@ public class Consumidor extends Thread {
 	}
 	
 	public Estoque getEstoque() {  
-		return estoque;  
+		return this.estoque;  
 	}
 	
 	public void setEstoque(Estoque estoque) {  
@@ -29,7 +29,7 @@ public class Consumidor extends Thread {
 	public void consumir() {
 		synchronized (estoque) {
 
-			/* Verifica se existem itens no estoque */
+			/* Verifica se existem recursos no estoque */
 			if (estoque.getConteudo().size() > 0) {
 				Recurso recurso = (Recurso)estoque.getConteudo().remove(0);
 				System.out.println("- " + this.getNome() + "\t -> Recurso consumido: " + recurso);

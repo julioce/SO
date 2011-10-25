@@ -9,5 +9,9 @@ public interface Configuracoes {
 	/* Valor limite do recurso */
 	int MAX_RESOURCE_VALUE = 10000;
 	
+	/* Tamanho da Janel*/
+	int WIDTH_SIZE = 800;
+	int HEIGHT = 600;
+	
 	String NOME_PROJETO = "Simulação do Sistema Produtor/Consumidor - SO";
 }

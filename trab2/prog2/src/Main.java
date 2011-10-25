@@ -1,7 +1,6 @@
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -9,7 +8,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 
-public class Main {
+public class Main implements ActionListener {
 	/* Inicia a contagem de produtos */
 	private static Integer recursosProduzidos = 0;
 	
@@ -62,36 +61,60 @@ public class Main {
 		consumidor5.start();
 	}
 
-	public static void criaGUI(){
-		/* Cria tudo */
+	private void criaGUI(){
+		/* Cria tudo: Janela, label, botão... */
 		JFrame window = new JFrame("Programa 2 - Trabalho 2 - SO");
-		JPanel panel = new JPanel(new BorderLayout());
+		JPanel panel = new JPanel(null);
 		JLabel label = new JLabel(Configuracoes.NOME_PROJETO);
 		JButton iniciar = new JButton("Iniciar");
 		
-		/* Configura os itens */
-		window.setPreferredSize(new Dimension(800, 600));
-		panel.setPreferredSize(new Dimension(800, 600));
-		iniciar.setSize(new Dimension(50, 20));
+		/* Configura janela */
+		{
+			window.setContentPane(panel);
+			window.setPreferredSize(new Dimension(Configuracoes.WIDTH_SIZE, Configuracoes.HEIGHT));
+			window.setResizable(false);
+		}
 		
-		/* Adiciona no painel */
-		panel.add(label, BorderLayout.NORTH);
-        panel.add(label, BorderLayout.CENTER);
-		panel.add(iniciar, BorderLayout.SOUTH);
+		/* Label do trabalho */
+		{
+			label.setText(Configuracoes.NOME_PROJETO);
+			label.setLayout(null);
+			label.setBounds(Configuracoes.WIDTH_SIZE/2-160, 0, 320, 30);
+		}
+		
+		/* Botão de Iniciar */
+		{
+			iniciar.addActionListener(this);
+			iniciar.setLayout(null);
+			iniciar.setActionCommand("iniciar");
+			iniciar.setToolTipText("Clique aqui para iniciar a simulação");
+			iniciar.setBounds(Configuracoes.WIDTH_SIZE/2-50, Configuracoes.HEIGHT-80, 100, 30);
+		}
+		
+		/* Adiciona no painel principal */
+		{
+			panel.add(label);
+	        panel.add(iniciar);
+		}
 
 		/* Amarra tudo e exibe */
-        window.add(panel);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.pack();
 		window.setVisible(true);
 	}
+	
+	public void actionPerformed(ActionEvent e) {
+		if ("iniciar".equals(e.getActionCommand())) {
+			/* Cria as entidades e as inicia */
+			inicializaEntidades();
+		}
+	}
 
 	public static void main(String[] args) {
-		/* Cria as entidades e as inicia */
-		inicializaEntidades();
+		Main main = new Main();
 		
 		/* Cria a interface gráfica */
-		criaGUI();
+		main.criaGUI();
 	}
 
 }

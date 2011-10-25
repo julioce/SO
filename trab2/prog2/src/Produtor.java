@@ -18,7 +18,7 @@ public class Produtor extends Thread {
 	}
 	
 	public Estoque getEstoque() {
-		return estoque;
+		return this.estoque;
 	}
 
 	public void setEstoque(Estoque estoque) {
@@ -33,7 +33,7 @@ public class Produtor extends Thread {
 			Recurso recurso = new Recurso((int)(Main.getRecursosProduzidos()+1));
 			this.estoque.getConteudo().add(recurso);
 			
-			System.out.println("+ " + this.getNome() + "\t -> Recurso produzido: " + recurso + "\tTotal já produzido: " + (Main.getRecursosProduzidos()+1) + "\tRecursos disponíveis: " + estoque.getConteudo().size());
+			System.out.println("+ " + this.getNome() + "\t -> Recurso produzido: " + recurso + "\tTotal já produzido: " + (Main.getRecursosProduzidos()+1) + "\tRecursos disponíveis no momento: " + estoque.getConteudo().size());
 			
 			/* Notifica os consumidores que o estoque já foi reposto */
 			estoque.notifyAll();

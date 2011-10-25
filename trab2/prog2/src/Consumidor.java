@@ -25,6 +25,7 @@ public class Consumidor extends Thread {
 		this.estoque = estoque;  
 	}
 
+	@SuppressWarnings("deprecation")
 	public void consumir() {
 		synchronized (estoque) {
 
@@ -36,9 +37,17 @@ public class Consumidor extends Thread {
 			else {
 				/* Não existe recursos no estoque */
 				try {
-					System.out.println("! " + this.getNome() +  "\t -> Consumidor esperando estoque ser reposto...");
-					/* Espera o produtor notificar que houve uma reposição no estoque */
-					estoque.wait();
+					if(Main.getRecursosProduzidos() != Configuracoes.TOTAL_RECURSOS_A_SER_PRODUZIDO){
+						/* Espera o produtor notificar que houve uma reposição no estoque */
+						System.out.println("! " + this.getNome() +  "\t -> Esperando estoque ser reposto...");
+						estoque.wait();
+					}
+					else{
+						/* Não serão mais produzidos recursos, então a thread morre */
+						System.out.println("! " + this.getNome() +  "\t -> Sai do sistema porque não serão mais produzidos recursos...");
+						this.stop();
+					}
+					
 				}
 				catch (InterruptedException e) {
 					e.printStackTrace();
@@ -49,7 +58,7 @@ public class Consumidor extends Thread {
 	
 	public void run() {
 		
-		while (Main.getRecursosProduzidos() < Configuracoes.TOTAL_PRODUTOS_A_SER_PRODUZIDO) {
+		while (true) {
 
 			this.consumir();
 			

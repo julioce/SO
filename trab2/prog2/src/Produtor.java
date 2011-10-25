@@ -33,9 +33,9 @@ public class Produtor extends Thread {
 			Recurso recurso = new Recurso((int)(Main.getRecursosProduzidos()+1));
 			this.estoque.getConteudo().add(recurso);
 			
-			System.out.println("+ " + this.getNome() + "\t -> Recurso produzido: " + recurso);
+			System.out.println("+ " + this.getNome() + "\t -> Recurso produzido: " + recurso + "\tTotal já produzido: " + (Main.getRecursosProduzidos()+1) + "\tRecursos disponíveis: " + estoque.getConteudo().size());
 			
-			/* Notifica os consumidores que o estoque já foi atualizado */
+			/* Notifica os consumidores que o estoque já foi reposto */
 			estoque.notifyAll();
 			Main.setRecursosProduzidos(Main.getRecursosProduzidos()+1);
 		}
@@ -43,7 +43,7 @@ public class Produtor extends Thread {
 
 	public void run() {
 
-		while (Main.getRecursosProduzidos() < Configuracoes.TOTAL_PRODUTOS_A_SER_PRODUZIDO) {
+		while (Main.getRecursosProduzidos() < Configuracoes.TOTAL_RECURSOS_A_SER_PRODUZIDO) {
 
 			this.produzir();
 

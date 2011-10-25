@@ -5,7 +5,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 
 public class Main implements ActionListener {
@@ -62,24 +63,28 @@ public class Main implements ActionListener {
 	}
 
 	private void criaGUI(){
+		/* Pega o Look and Feel do OS nativo e instala */
+		String nativeLF = UIManager.getSystemLookAndFeelClassName();
+
+		try {
+			UIManager.setLookAndFeel(nativeLF);
+		}
+		catch (InstantiationException e) {}
+		catch (ClassNotFoundException e) {}
+		catch (UnsupportedLookAndFeelException e) {}
+		catch (IllegalAccessException e) {}
+		
 		/* Cria tudo: Janela, label, botão... */
 		JFrame window = new JFrame("Programa 2 - Trabalho 2 - SO");
-		JPanel panel = new JPanel(null);
+		Desenho canvas = new Desenho();
 		JLabel label = new JLabel(Configuracoes.NOME_PROJETO);
 		JButton iniciar = new JButton("Iniciar");
-		
-		/* Configura janela */
-		{
-			window.setContentPane(panel);
-			window.setPreferredSize(new Dimension(Configuracoes.WIDTH_SIZE, Configuracoes.HEIGHT));
-			window.setResizable(false);
-		}
 		
 		/* Label do trabalho */
 		{
 			label.setText(Configuracoes.NOME_PROJETO);
 			label.setLayout(null);
-			label.setBounds(Configuracoes.WIDTH_SIZE/2-160, 0, 320, 30);
+			label.setBounds(Configuracoes.WIDTH_SIZE/2-150, 0, 300, 30);
 		}
 		
 		/* Botão de Iniciar */
@@ -88,16 +93,19 @@ public class Main implements ActionListener {
 			iniciar.setLayout(null);
 			iniciar.setActionCommand("iniciar");
 			iniciar.setToolTipText("Clique aqui para iniciar a simulação");
-			iniciar.setBounds(Configuracoes.WIDTH_SIZE/2-50, Configuracoes.HEIGHT-80, 100, 30);
+			iniciar.setBounds(Configuracoes.WIDTH_SIZE/2-50, Configuracoes.HEIGHT-40, 100, 30);
 		}
 		
-		/* Adiciona no painel principal */
+		/* Adiciona na janela principal */
 		{
-			panel.add(label);
-	        panel.add(iniciar);
+			window.add(label);
+			window.add(iniciar);
+			window.add(canvas);
 		}
 
-		/* Amarra tudo e exibe */
+		/* Amarra tudo e exibe a janela */
+		window.setPreferredSize(new Dimension(Configuracoes.WIDTH_SIZE, Configuracoes.HEIGHT));
+		window.setResizable(false);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		window.pack();
 		window.setVisible(true);

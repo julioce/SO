@@ -1,3 +1,4 @@
+import java.awt.Color;
 
 public interface Configuracoes {
 	/* Tempo máximo que leva para produzir/consumir um recurso */
@@ -9,9 +10,14 @@ public interface Configuracoes {
 	/* Valor limite do recurso */
 	int MAX_RESOURCE_VALUE = 10000;
 	
-	/* Tamanho da Janel*/
+	/* Propriedades da Janela */
 	int WIDTH_SIZE = 800;
 	int HEIGHT = 600;
+	String NOME_PROJETO = "Simulação do Sistema Produtor/Consumidor";
 	
-	String NOME_PROJETO = "Simulação do Sistema Produtor/Consumidor - SO";
+	/* Cores da simulação */
+	Color FUNDO_PRODUTOR_ATIVO = Color.GREEN;
+	Color FUNDO_PRODUTOR_INATIVO = Color.YELLOW;
+	Color FUNDO_CONSUMIDOR_ATIVO = Color.BLUE;
+	Color FUNDO_CONSUMIDOR_INATIVO = Color.DARK_GRAY;
 }

@@ -2,6 +2,7 @@
 public class Consumidor extends Thread {
 	String Nome;
 	private Estoque estoque;
+	private Desenho canvas;
 	
 	public Consumidor() { }
 
@@ -39,7 +40,7 @@ public class Consumidor extends Thread {
 				try {
 					if(Main.getRecursosProduzidos() != Configuracoes.TOTAL_RECURSOS_A_SER_PRODUZIDO){
 						/* Espera o produtor notificar que houve uma reposição no estoque */
-						System.out.println("! " + this.getNome() +  "\t -> Esperando estoque ser reposto...");
+						System.out.println("! " + this.getNome() +  "\t -> Esperando recurso ser reposto...");
 						estoque.wait();
 					}
 					else{

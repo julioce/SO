@@ -1,6 +1,6 @@
-import java.awt.Canvas;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -11,14 +11,14 @@ import javax.swing.JPanel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-public class View extends Canvas implements ActionListener {
+public class View extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	
-	/* Cria tudo: Janela, label, label, botão... */
-	JFrame window = new JFrame("Programa 2 - Trabalho 2 - SO");
-	JPanel panel = new JPanel();
-	JLabel label = new JLabel();
-	JButton iniciar = new JButton();
+	/* Cria tudo: Janela, panel, label, botão... */
+	public static JFrame window = new JFrame("Programa 2 - Trabalho 2 - SO");
+	public static JPanel panel = new JPanel();
+	public static JLabel label = new JLabel();
+	public static JButton iniciar = new JButton();
 
 	public View(){
 		/* Pega o Look and Feel do OS nativo e instala */
@@ -31,7 +31,7 @@ public class View extends Canvas implements ActionListener {
 		catch (ClassNotFoundException e) { e.printStackTrace(); }
 		catch (UnsupportedLookAndFeelException e) { e.printStackTrace(); }
 		catch (IllegalAccessException e) { e.printStackTrace(); }
-			
+		
 		/* Label do trabalho */
 		label.setText(Configuracoes.NOME_PROJETO);
 		label.setBounds(Configuracoes.WIDTH_SIZE/2-150, 0, 300, 30);
@@ -42,14 +42,11 @@ public class View extends Canvas implements ActionListener {
 		iniciar.setActionCommand("iniciar");
 		iniciar.setToolTipText("Clique aqui para iniciar a simulação");
 		iniciar.setBounds(Configuracoes.WIDTH_SIZE/2-60, Configuracoes.HEIGHT-45, 120, 30);
-		
 
 		/* Adiciona na janela principal */
-		panel.setLayout(null);
-		panel.add(label);
-		panel.add(iniciar);
-		panel.add(this);
-		window.setContentPane(panel);
+		window.add(label);
+		window.add(iniciar);
+		window.add(this);
 
 		/* Amarra tudo e exibe a janela */
 		window.setPreferredSize(new Dimension(Configuracoes.WIDTH_SIZE, Configuracoes.HEIGHT));
@@ -69,8 +66,9 @@ public class View extends Canvas implements ActionListener {
 		
 	}
 	
-	public void paint(Graphics g) {
-		Graphics canvas = (Graphics)g;
+	protected void paintComponent(Graphics g){
+		super.paintComponent(g);
+		Graphics2D canvas = (Graphics2D)g;
 		
 		/* Produtor 1 */
 		{
@@ -151,5 +149,10 @@ public class View extends Canvas implements ActionListener {
 			canvas.setColor(Configuracoes.COR_FONTE);
 			canvas.drawString("Consumidor 5", 685, 530);
 		}
-    }
+	}
+
+	public static void setIniciarText(String string) {
+		iniciar.setText(string);
+	}
+	
 }

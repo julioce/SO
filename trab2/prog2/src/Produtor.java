@@ -1,20 +1,21 @@
 
 public class Produtor extends Thread {
 	String Nome;
+	int id;
 	private Estoque estoque;
 	
-	public Produtor() { }
-	
-	public Produtor(Estoque estoque) {
+	public Produtor(Estoque estoque, String nome, int id) {
 		this.estoque = estoque;
-	}
-	
-	public void setNome(String name) {
-		this.Nome = name;
+		this.Nome = nome;
+		this.id = id;
 	}
 	
 	public String getNome() {
 		return this.Nome;
+	}
+	
+	public long getId() {
+		return this.id;
 	}
 	
 	public Estoque getEstoque() {
@@ -28,7 +29,6 @@ public class Produtor extends Thread {
 	@SuppressWarnings("unchecked")
 	public void produzir() {
 		synchronized (estoque) {
-			
 			/* Insere um recurso no estoque */
 			Recurso recurso = new Recurso((int)(Main.getRecursosProduzidos()+1));
 			this.estoque.getConteudo().add(recurso);

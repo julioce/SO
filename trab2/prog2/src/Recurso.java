@@ -2,8 +2,6 @@
 public class Recurso {
 	private int id;
 
-	public Recurso() { }
-
 	public Recurso(int id) {
 		this.id = id;
 	}

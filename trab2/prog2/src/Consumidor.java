@@ -1,20 +1,21 @@
 
 public class Consumidor extends Thread {
 	String Nome;
+	int id;
 	private Estoque estoque;
 	
-	public Consumidor() { }
-
-	public Consumidor(Estoque estoque) {
+	public Consumidor(Estoque estoque, String nome, int id) {
 		this.estoque = estoque;
+		this.Nome = nome;
+		this.id = id;
 	}
 
-	public void setNome(String name) {
-		this.Nome = name;
-	}
-	
 	public String getNome() {
 		return this.Nome;
+	}
+	
+	public long getId() {
+		return this.id;
 	}
 	
 	public Estoque getEstoque() {  
@@ -31,8 +32,11 @@ public class Consumidor extends Thread {
 
 			/* Verifica se existem recursos no estoque */
 			if (estoque.getConteudo().size() > 0) {
+				
+				/* Remove o primeiro da fila */
 				Recurso recurso = (Recurso)estoque.getConteudo().remove(0);
 				System.out.println("- " + this.getNome() + "\t -> Recurso consumido: " + recurso);
+				
 			}
 			else {
 				/* Não existe recursos no estoque */
@@ -44,8 +48,9 @@ public class Consumidor extends Thread {
 					}
 					else{
 						/* Não serão mais produzidos recursos, então a thread morre */
-						System.out.println("! " + this.getNome() +  "\t -> Sai do sistema porque não serão mais produzidos recursos...");
+						System.out.println("X " + this.getNome() +  "\t -> Sai do sistema porque não serão mais produzidos recursos");
 						this.stop();
+						View.setIniciarText("Iniciar");
 					}
 					
 				}

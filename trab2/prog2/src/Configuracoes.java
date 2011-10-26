@@ -6,7 +6,7 @@ public interface Configuracoes {
 	int MAX_TIME_TO_CONSUME = 2000;
 	
 	/* Número de recursos a ser produzido */
-	int TOTAL_RECURSOS_A_SER_PRODUZIDO = 1000;
+	int TOTAL_RECURSOS_A_SER_PRODUZIDO = 10;
 
 	/* Número de recursos a ser produzido */
 	int MAX_RESOURCE_VALUE = 50;

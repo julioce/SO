@@ -43,6 +43,7 @@ public class Main {
 		consumidor3.start();
 		consumidor4.start();
 		consumidor5.start();
+		
 	}
 
 	@SuppressWarnings("unused")

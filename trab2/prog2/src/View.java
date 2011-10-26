@@ -1,6 +1,4 @@
 import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -18,6 +16,14 @@ public class View extends JPanel implements ActionListener {
 	public static JFrame window = new JFrame("Programa 2 - Trabalho 2 - SO");
 	public static JPanel panel = new JPanel();
 	public static JLabel label = new JLabel();
+	public static JLabel labelProdutor1 = new JLabel();
+	public static JLabel labelProdutor2 = new JLabel();
+	public static JLabel labelProdutor3 = new JLabel();
+	public static JLabel labelConsumidor1 = new JLabel();
+	public static JLabel labelConsumidor2 = new JLabel();
+	public static JLabel labelConsumidor3 = new JLabel();
+	public static JLabel labelConsumidor4 = new JLabel();
+	public static JLabel labelConsumidor5 = new JLabel();
 	public static JButton iniciar = new JButton();
 
 	public View(){
@@ -36,6 +42,26 @@ public class View extends JPanel implements ActionListener {
 		label.setText(Configuracoes.NOME_PROJETO);
 		label.setBounds(Configuracoes.WIDTH_SIZE/2-150, 0, 300, 30);
 		
+		/* Label dos Produtores */
+		labelProdutor1.setText("Produtor 1");
+		labelProdutor1.setBounds(30, 70, 300, 30);
+		labelProdutor2.setText("Produtor 2");
+		labelProdutor2.setBounds(370, 70, 300, 30);
+		labelProdutor3.setText("Produtor 3");
+		labelProdutor3.setBounds(710, 70, 300, 30);
+		
+		/* Label dos Consumidores */
+		labelConsumidor1.setText("Consumidor 1");
+		labelConsumidor1.setBounds(20, 330, 300, 30);
+		labelConsumidor2.setText("Consumidor 2");
+		labelConsumidor2.setBounds(192, 330, 300, 30);
+		labelConsumidor3.setText("Consumidor 3");
+		labelConsumidor3.setBounds(358, 330, 300, 30);
+		labelConsumidor4.setText("Consumidor 4");
+		labelConsumidor4.setBounds(522, 330, 300, 30);
+		labelConsumidor5.setText("Consumidor 5");
+		labelConsumidor5.setBounds(685, 330, 300, 30);
+		
 		/* Botão de Iniciar */
 		iniciar.addActionListener(this);
 		iniciar.setText("Iniciar");
@@ -45,6 +71,14 @@ public class View extends JPanel implements ActionListener {
 
 		/* Adiciona na janela principal */
 		window.add(label);
+		window.add(labelProdutor1);
+		window.add(labelProdutor2);
+		window.add(labelProdutor3);
+		window.add(labelConsumidor1);
+		window.add(labelConsumidor2);
+		window.add(labelConsumidor3);
+		window.add(labelConsumidor4);
+		window.add(labelConsumidor5);
 		window.add(iniciar);
 		window.add(this);
 
@@ -66,93 +100,47 @@ public class View extends JPanel implements ActionListener {
 		
 	}
 	
-	protected void paintComponent(Graphics g){
-		super.paintComponent(g);
-		Graphics2D canvas = (Graphics2D)g;
+	public static void changeTextProdutor(long l, String text){
+		int id = (int) l;
 		
-		/* Produtor 1 */
-		{
-			canvas.setColor(Configuracoes.FUNDO_PRODUTOR_INATIVO);
-			canvas.fillRect(10, 50, 100, 100);
-			canvas.setColor(Configuracoes.BORDA_ENTIDADES);
-			canvas.drawRect(10, 50, 100, 100);
-			canvas.setColor(Configuracoes.COR_FONTE);
-			canvas.drawString("Produtor 1", 30, 40);
-		}
-		
-		/* Produtor 2 */
-		{
-			canvas.setColor(Configuracoes.FUNDO_PRODUTOR_INATIVO);
-			canvas.fillRect(350, 50, 100, 100);
-			canvas.setColor(Configuracoes.BORDA_ENTIDADES);
-			canvas.drawRect(350, 50, 100, 100);
-			canvas.setColor(Configuracoes.COR_FONTE);
-			canvas.drawString("Produtor 2", 370, 40);
+		switch(id){
+			case 1:
+				labelProdutor1.setText(text);
+			case 2:
+				labelProdutor2.setText(text);
+			case 3:
+				labelProdutor3.setText(text);
+			default:
+				break;
 		}
 		
-		/* Produtor 3 */
-		{
-			canvas.setColor(Configuracoes.FUNDO_PRODUTOR_INATIVO);
-			canvas.fillRect(690, 50, 100, 100);
-			canvas.setColor(Configuracoes.BORDA_ENTIDADES);
-			canvas.drawRect(690, 50, 100, 100);
-			canvas.setColor(Configuracoes.COR_FONTE);
-			canvas.drawString("Produtor 3", 710, 40);
-		}
-		
-		/* Consumidor 1 */
-		{
-			canvas.setColor(Configuracoes.FUNDO_CONSUMIDOR_INATIVO);
-			canvas.fillRect(10, 410, 100, 100);
-			canvas.setColor(Configuracoes.BORDA_ENTIDADES);
-			canvas.drawRect(10, 410, 100, 100);
-			canvas.setColor(Configuracoes.COR_FONTE);
-			canvas.drawString("Consumidor 1", 20, 530);
-		}
-
-		/* Consumidor 2 */
-		{
-			canvas.setColor(Configuracoes.FUNDO_CONSUMIDOR_INATIVO);
-			canvas.fillRect(185, 410, 100, 100);
-			canvas.setColor(Configuracoes.BORDA_ENTIDADES);
-			canvas.drawRect(185, 410, 100, 100);
-			canvas.setColor(Configuracoes.COR_FONTE);
-			canvas.drawString("Consumidor 2", 192, 530);
-		}
-
-		/* Consumidor 3 */
-		{
-			canvas.setColor(Configuracoes.FUNDO_CONSUMIDOR_INATIVO);
-			canvas.fillRect(350, 410, 100, 100);
-			canvas.setColor(Configuracoes.BORDA_ENTIDADES);
-			canvas.drawRect(350, 410, 100, 100);
-			canvas.setColor(Configuracoes.COR_FONTE);
-			canvas.drawString("Consumidor 3", 358, 530);
-		}
-
-		/* Consumidor 4 */
-		{
-			canvas.setColor(Configuracoes.FUNDO_CONSUMIDOR_INATIVO);
-			canvas.fillRect(515, 410, 100, 100);
-			canvas.setColor(Configuracoes.BORDA_ENTIDADES);
-			canvas.drawRect(515, 410, 100, 100);
-			canvas.setColor(Configuracoes.COR_FONTE);
-			canvas.drawString("Consumidor 4", 522, 530);
-		}
-
-		/* Consumidor 5 */
-		{
-			canvas.setColor(Configuracoes.FUNDO_CONSUMIDOR_INATIVO);
-			canvas.fillRect(680, 410, 100, 100);
-			canvas.setColor(Configuracoes.BORDA_ENTIDADES);
-			canvas.drawRect(680, 410, 100, 100);
-			canvas.setColor(Configuracoes.COR_FONTE);
-			canvas.drawString("Consumidor 5", 685, 530);
-		}
+		window.repaint();
 	}
-
-	public static void setIniciarText(String string) {
-		iniciar.setText(string);
+	
+	public static void changeTextConsumidor(long l, String text){
+		int id = (int) l;
+		
+		switch(id){
+			case 1:
+				labelConsumidor1.setText(text);
+			case 2:
+				labelConsumidor2.setText(text);
+			case 3:
+				labelConsumidor3.setText(text);
+			case 4:
+				labelConsumidor4.setText(text);
+			case 5:
+				labelConsumidor5.setText(text);
+			default:
+				break;
+		}
+		
+		window.repaint();
+	}
+	
+	public static void changeButtonIniciar(String text){
+		iniciar.setText(text);
+		window.repaint();
 	}
 	
 }

@@ -32,7 +32,7 @@ public class Consumidor extends Thread {
 
 			/* Verifica se existem recursos no estoque */
 			if (estoque.getConteudo().size() > 0) {
-				
+				View.changeTextConsumidor(getId(), "Consumindo...");
 				/* Remove o primeiro da fila */
 				Recurso recurso = (Recurso)estoque.getConteudo().remove(0);
 				System.out.println("- " + this.getNome() + "\t -> Recurso consumido: " + recurso);
@@ -43,14 +43,16 @@ public class Consumidor extends Thread {
 				try {
 					if(Main.getRecursosProduzidos() != Configuracoes.TOTAL_RECURSOS_A_SER_PRODUZIDO){
 						/* Espera o produtor notificar que houve uma reposição no estoque */
+						View.changeTextConsumidor(getId(), "Aguardando...");
 						System.out.println("! " + this.getNome() +  "\t -> Esperando recurso ser reposto...");
 						estoque.wait();
 					}
 					else{
 						/* Não serão mais produzidos recursos, então a thread morre */
+						View.changeTextConsumidor(getId(), "Saindo...");
 						System.out.println("X " + this.getNome() +  "\t -> Sai do sistema porque não serão mais produzidos recursos");
 						this.stop();
-						View.setIniciarText("Iniciar");
+						View.iniciar.setText("Concluído");
 					}
 					
 				}
@@ -62,13 +64,18 @@ public class Consumidor extends Thread {
 	public void run() {
 		
 		while (true) {
-
+			
 			this.consumir();
 			
 			try {
 				Thread.sleep((int)(Math.random() * Configuracoes.MAX_TIME_TO_CONSUME));
 			}
 			catch (InterruptedException e) { e.printStackTrace(); }
+			
+			/* Verifica se o Consumidor já terminou */
+			if(estoque.getConteudo().size() == 0 && Main.getRecursosProduzidos() == Configuracoes.TOTAL_RECURSOS_A_SER_PRODUZIDO){
+				View.changeButtonIniciar("Concluído");
+			}
 		}
 	}
    

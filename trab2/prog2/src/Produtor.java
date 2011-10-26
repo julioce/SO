@@ -29,6 +29,7 @@ public class Produtor extends Thread {
 	@SuppressWarnings("unchecked")
 	public void produzir() {
 		synchronized (estoque) {
+			View.changeTextProdutor(this.getId(), "Produzindo...");
 			/* Insere um recurso no estoque */
 			Recurso recurso = new Recurso((int)(Main.getRecursosProduzidos()+1));
 			this.estoque.getConteudo().add(recurso);
@@ -50,10 +51,12 @@ public class Produtor extends Thread {
 			}
 
 			try {
+				View.changeTextProdutor(this.getId(), "Produzindo...");
 				Thread.sleep((int)(Math.random() * Configuracoes.MAX_TIME_TO_PRODUCE));
 			}
 			catch (InterruptedException e) { e.printStackTrace(); }
 		}
+		
 	}
 	
 }

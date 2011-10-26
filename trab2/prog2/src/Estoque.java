@@ -3,12 +3,12 @@ import java.util.List;
 
 public class Estoque {
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	private List conteudo = new LinkedList();
 
 	public Estoque() {}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public List getConteudo() {
 		return conteudo;
 	} 

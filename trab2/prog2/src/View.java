@@ -14,7 +14,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 public class View extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1L;
 	
-	/* Cria tudo: Janela, panel, label, botão... */
+	/* Cria tudo: Janela, entidades, label, botão... */
 	public static JFrame window = new JFrame("Programa 2 - Trabalho 2 - SO");
 	public static JLabel labelTitulo = new JLabel();
 	public static JLabel labelProdutor1 = new JLabel();
@@ -138,6 +138,7 @@ public class View extends JPanel implements ActionListener {
 			/* Cria as entidades e as inicia */
 			Main.inicializaEntidades();
 			iniciar.setText("Executando...");
+			iniciar.setEnabled(false);
 		}
 		
 	}

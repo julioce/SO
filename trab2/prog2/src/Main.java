@@ -1,10 +1,13 @@
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Semaphore;
 
 
 public class Main {
 	/* Inicia a contagem de produtos */
 	public static Integer recursosProduzidos = 0;
+	
+	public static Semaphore semaforo = new Semaphore (1, true);
 	
 	/* Fila de consumidores */  
 	@SuppressWarnings("rawtypes")

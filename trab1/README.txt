@@ -5,7 +5,7 @@
 		Trabalho 1 para a disciplina de Sistemas Operacionais I
 
 Grupo: 
-Júlio Machado Bueno
+Júlio César Machado Bueno
 Luiza Diniz e Castro
 Roberta Santos Lopes
 ------------------------------------------------------------------------------------------------*/
@@ -15,7 +15,6 @@ Executar os seguintes comandos para compilar os trabalhos:
 1) Prog 1
 gcc -o Prog1 Prog1.c -lrt
 ./Prog1
-
 
 
 2) Prog 2

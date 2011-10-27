@@ -161,7 +161,7 @@ int main(void){
 		desvio_padrao = 0;
 		
 		//Inicia a contagem do tempo de execução
-		ftime(&inicio_execucao);
+		//ftime(&inicio_execucao);
 		
 		//Aloca a matriz e vetor de Produto Interno
 		printf("\nMontando a matriz... ");
@@ -193,6 +193,10 @@ int main(void){
 		
 		
 		printf("Calculando a Produto Interno...");
+		//Neste programa estamos calculando o tempo necessário para realizar o produto interno utilizando threads.
+		//pega o tempo inicial da execução
+		ftime(&inicio_execucao);
+
 		//Loop que cria as threads
 		for(i=0; i<THREADS; i++){
 			
@@ -214,6 +218,8 @@ int main(void){
 		for(i=0; i<THREADS; i++){
 			pthread_join(thread[i], NULL);
 		}
+		//pega o tempo final da execução
+		ftime(&fim_execucao);
 		printf("Concluído!\n\n");
 		
 		
@@ -235,7 +241,7 @@ int main(void){
 		
 		
 		//Calcula o tempo de execução
-		ftime(&fim_execucao);
+		//ftime(&fim_execucao);
 		tempo_execucao = (((fim_execucao.time-inicio_execucao.time)*1000.0+fim_execucao.millitm)-inicio_execucao.millitm)/1000.0;
 		
 		

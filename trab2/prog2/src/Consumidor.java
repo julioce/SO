@@ -39,12 +39,14 @@ public class Consumidor extends Thread {
 				Main.fila.add(this);
 				Main.fila.remove(0);
 				
-				View.changeTextConsumidor(getId(), "Consumindo");
+				/* Faz o consumo não ser tão rápido */
+				View.changeTextConsumidor(getId(), "Ativa");
 				try {
 					Thread.sleep((int)(Configuracoes.MAX_TIME_TO_CONSUME));
 				}
 				catch (InterruptedException e) { e.printStackTrace(); }
-				View.changeTextConsumidor(getId(), "Aguardando");
+				
+				View.changeTextConsumidor(getId(), "Sleeping");
 				View.addTextOcorrencias("- " + this.getNome() + "-> Recurso consumido: " + recurso);
 				System.out.println("- " + this.getNome() + "-> Recurso consumido: " + recurso);
 				
@@ -54,7 +56,7 @@ public class Consumidor extends Thread {
 				try {
 					if(Main.getRecursosProduzidos() != Configuracoes.TOTAL_RECURSOS_A_SER_PRODUZIDO){
 						/* Espera o produtor notificar que houve uma reposição no estoque */
-						View.changeTextConsumidor(getId(), "Aguardando");
+						View.changeTextConsumidor(getId(), "Pronto");
 						View.addTextOcorrencias("! " + this.getNome() +  " -> Esperando recurso ser produzido...");
 						System.out.println("! " + this.getNome() +  " -> Esperando recurso ser produzido...");
 						estoque.wait();
@@ -76,7 +78,7 @@ public class Consumidor extends Thread {
 	public void run() {
 		
 		while (true) {
-			View.changeTextConsumidor(getId(), "Aguardando");
+			View.changeTextConsumidor(getId(), "Sleeping");
 			
 			/* Verfica de a thread atual é a primeira da fila */
 			if(Main.fila.get(0).equals(this)){

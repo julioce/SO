@@ -145,7 +145,7 @@ public class View extends JPanel implements ActionListener {
 		if ("iniciar".equals(arg0.getActionCommand())) {
 			/* Cria as entidades e as inicia */
 			ocorrencias.setText("Inicio da Simulação!");
-			checkBoxVersaoB.setDisabledIcon(null);
+			checkBoxVersaoB.setEnabled(false);
 			iniciar.setText("Executando...");
 			iniciar.setEnabled(false);
 			Main.inicializaEntidades();

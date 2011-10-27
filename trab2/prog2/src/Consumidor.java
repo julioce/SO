@@ -39,9 +39,12 @@ public class Consumidor extends Thread {
 				/* Remove o primeiro recurso do buffer */
 				Recurso recurso = (Recurso)estoque.getConteudo().remove(0);
 				
-				/* Passa o Consumidor atual para o último e anda com os demais*/
-				Main.fila.add(this);
-				Main.fila.remove(0);
+				/* Verifica qual versão foi selecionada */
+				if(!View.checkBoxVersaoB.isEnabled()){
+					/* Passa o Consumidor atual para o último e anda com os demais*/
+					Main.fila.add(this);
+					Main.fila.remove(0);
+				}
 				
 				/* Faz o consumo não ser tão rápido */
 				View.changeTextConsumidor(getId(), "Ativa");
@@ -84,13 +87,19 @@ public class Consumidor extends Thread {
 		while (true) {
 			View.changeTextConsumidor(getId(), "Sleeping");
 			
-			/* Verfica de a thread atual é a primeira da fila */
-		
+			/* Tenta entrar na região crítica */
 			try {
 				/* Decrementa o semáforo bloqueando as outras threads */
 				/* Inicio da região crítica */
 				this.semaforo.acquire();
-				if(Main.fila.get(0).equals(this)){
+				
+				/* Verifica qual versão foi selecionada */
+				if(!View.checkBoxVersaoB.isEnabled()){
+					/* Verfica de a thread atual é a primeira da fila */
+					if(Main.fila.get(0).equals(this)){
+						this.consumir();
+					}
+				}else{
 					this.consumir();
 				}
 			} catch (InterruptedException e) { 

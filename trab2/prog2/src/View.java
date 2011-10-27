@@ -6,6 +6,8 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
@@ -14,16 +16,25 @@ public class View extends JPanel implements ActionListener {
 	
 	/* Cria tudo: Janela, panel, label, botão... */
 	public static JFrame window = new JFrame("Programa 2 - Trabalho 2 - SO");
-	public static JPanel panel = new JPanel();
-	public static JLabel label = new JLabel();
+	public static JLabel labelTitulo = new JLabel();
 	public static JLabel labelProdutor1 = new JLabel();
 	public static JLabel labelProdutor2 = new JLabel();
 	public static JLabel labelProdutor3 = new JLabel();
+	public static JLabel statusProdutor1 = new JLabel();
+	public static JLabel statusProdutor2 = new JLabel();
+	public static JLabel statusProdutor3 = new JLabel();
+	public static JTextArea ocorrencias = new JTextArea();
+	public static JScrollPane panelOcorrencias = new JScrollPane(ocorrencias);
 	public static JLabel labelConsumidor1 = new JLabel();
 	public static JLabel labelConsumidor2 = new JLabel();
 	public static JLabel labelConsumidor3 = new JLabel();
 	public static JLabel labelConsumidor4 = new JLabel();
 	public static JLabel labelConsumidor5 = new JLabel();
+	public static JLabel statusConsumidor1 = new JLabel();
+	public static JLabel statusConsumidor2 = new JLabel();
+	public static JLabel statusConsumidor3 = new JLabel();
+	public static JLabel statusConsumidor4 = new JLabel();
+	public static JLabel statusConsumidor5 = new JLabel();
 	public static JButton iniciar = new JButton();
 
 	public View(){
@@ -39,28 +50,50 @@ public class View extends JPanel implements ActionListener {
 		catch (IllegalAccessException e) { e.printStackTrace(); }
 		
 		/* Label do trabalho */
-		label.setText(Configuracoes.NOME_PROJETO);
-		label.setBounds(Configuracoes.WIDTH_SIZE/2-150, 0, 300, 30);
+		labelTitulo.setText(Configuracoes.NOME_PROJETO);
+		labelTitulo.setBounds(Configuracoes.WIDTH_SIZE/2-150, 0, 300, 30);
 		
-		/* Label dos Produtores */
+		/* Produtores */
 		labelProdutor1.setText("Produtor 1");
-		labelProdutor1.setBounds(30, 70, 300, 30);
+		labelProdutor1.setBounds(50, 70, 300, 30);
 		labelProdutor2.setText("Produtor 2");
-		labelProdutor2.setBounds(370, 70, 300, 30);
+		labelProdutor2.setBounds(360, 70, 300, 30);
 		labelProdutor3.setText("Produtor 3");
-		labelProdutor3.setBounds(710, 70, 300, 30);
+		labelProdutor3.setBounds(640, 70, 300, 30);
+		statusProdutor1.setText("Status: ");
+		statusProdutor1.setBounds(50, 100, 300, 30);
+		statusProdutor2.setText("Status: ");
+		statusProdutor2.setBounds(360, 100, 300, 30);
+		statusProdutor3.setText("Status: ");
+		statusProdutor3.setBounds(640, 100, 300, 30);
 		
-		/* Label dos Consumidores */
+		/* Ocorrencias */
+		ocorrencias.setEditable(false);
+		ocorrencias.setLineWrap(true);
+		ocorrencias.setWrapStyleWord(true);
+		panelOcorrencias.setBounds(10, 160, 780, 180);
+		
+		/* Consumidores */
 		labelConsumidor1.setText("Consumidor 1");
-		labelConsumidor1.setBounds(20, 330, 300, 30);
+		labelConsumidor1.setBounds(10, 350, 300, 30);
 		labelConsumidor2.setText("Consumidor 2");
-		labelConsumidor2.setBounds(192, 330, 300, 30);
+		labelConsumidor2.setBounds(182, 350, 300, 30);
 		labelConsumidor3.setText("Consumidor 3");
-		labelConsumidor3.setBounds(358, 330, 300, 30);
+		labelConsumidor3.setBounds(350, 350, 300, 30);
 		labelConsumidor4.setText("Consumidor 4");
-		labelConsumidor4.setBounds(522, 330, 300, 30);
+		labelConsumidor4.setBounds(507, 350, 300, 30);
 		labelConsumidor5.setText("Consumidor 5");
-		labelConsumidor5.setBounds(685, 330, 300, 30);
+		labelConsumidor5.setBounds(670, 350, 300, 30);
+		statusConsumidor1.setText("Status: ");
+		statusConsumidor1.setBounds(10, 380, 300, 30);
+		statusConsumidor2.setText("Status: ");
+		statusConsumidor2.setBounds(182, 380, 300, 30);
+		statusConsumidor3.setText("Status: ");
+		statusConsumidor3.setBounds(350, 380, 300, 30);
+		statusConsumidor4.setText("Status: ");
+		statusConsumidor4.setBounds(507, 380, 300, 30);
+		statusConsumidor5.setText("Status: ");
+		statusConsumidor5.setBounds(670, 380, 300, 30);
 		
 		/* Botão de Iniciar */
 		iniciar.addActionListener(this);
@@ -70,15 +103,24 @@ public class View extends JPanel implements ActionListener {
 		iniciar.setBounds(Configuracoes.WIDTH_SIZE/2-60, Configuracoes.HEIGHT-45, 120, 30);
 
 		/* Adiciona na janela principal */
-		window.add(label);
+		window.add(labelTitulo);
 		window.add(labelProdutor1);
 		window.add(labelProdutor2);
 		window.add(labelProdutor3);
+		window.add(statusProdutor1);
+		window.add(statusProdutor2);
+		window.add(statusProdutor3);
+		window.add(panelOcorrencias);
 		window.add(labelConsumidor1);
 		window.add(labelConsumidor2);
 		window.add(labelConsumidor3);
 		window.add(labelConsumidor4);
 		window.add(labelConsumidor5);
+		window.add(statusConsumidor1);
+		window.add(statusConsumidor2);
+		window.add(statusConsumidor3);
+		window.add(statusConsumidor4);
+		window.add(statusConsumidor5);
 		window.add(iniciar);
 		window.add(this);
 
@@ -105,11 +147,11 @@ public class View extends JPanel implements ActionListener {
 		
 		switch(id){
 			case 1:
-				labelProdutor1.setText(text);
+				statusProdutor1.setText("Status: " + text);
 			case 2:
-				labelProdutor2.setText(text);
+				statusProdutor2.setText("Status: " + text);
 			case 3:
-				labelProdutor3.setText(text);
+				statusProdutor3.setText("Status: " + text);
 			default:
 				break;
 		}
@@ -122,15 +164,15 @@ public class View extends JPanel implements ActionListener {
 		
 		switch(id){
 			case 1:
-				labelConsumidor1.setText(text);
+				statusConsumidor1.setText("Status: " + text);
 			case 2:
-				labelConsumidor2.setText(text);
+				statusConsumidor2.setText("Status: " + text);
 			case 3:
-				labelConsumidor3.setText(text);
+				statusConsumidor3.setText("Status: " + text);
 			case 4:
-				labelConsumidor4.setText(text);
+				statusConsumidor4.setText("Status: " + text);
 			case 5:
-				labelConsumidor5.setText(text);
+				statusConsumidor5.setText("Status: " + text);
 			default:
 				break;
 		}
@@ -141,6 +183,11 @@ public class View extends JPanel implements ActionListener {
 	public static void changeButtonIniciar(String text){
 		iniciar.setText(text);
 		window.repaint();
+	}
+	
+	public static void addTextOcorrencias(String text){
+		ocorrencias.setText(ocorrencias.getText() + "\n" + text);
+		ocorrencias.setCaretPosition(ocorrencias.getDocument().getLength());
 	}
 	
 }

@@ -3,6 +3,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -35,6 +36,7 @@ public class View extends JPanel implements ActionListener {
 	public static JLabel statusConsumidor3 = new JLabel();
 	public static JLabel statusConsumidor4 = new JLabel();
 	public static JLabel statusConsumidor5 = new JLabel();
+	public static JCheckBox checkBoxVersaoB = new JCheckBox();
 	public static JButton iniciar = new JButton();
 
 	public View(){
@@ -67,7 +69,7 @@ public class View extends JPanel implements ActionListener {
 		statusProdutor3.setText("Status: ");
 		statusProdutor3.setBounds(640, 100, 300, 30);
 		
-		/* Ocorrencias */
+		/* Text Area de Ocorrencias */
 		ocorrencias.setEditable(false);
 		ocorrencias.setLineWrap(true);
 		ocorrencias.setWrapStyleWord(true);
@@ -95,12 +97,17 @@ public class View extends JPanel implements ActionListener {
 		statusConsumidor5.setText("Status: ");
 		statusConsumidor5.setBounds(670, 380, 300, 30);
 		
+		/* Checkbox de versão b do trabalho */
+		checkBoxVersaoB.setText("Versão B");
+		checkBoxVersaoB.setToolTipText("Versão com aplicação da modificações sugeridas no trabalho");
+		checkBoxVersaoB.setBounds(Configuracoes.WIDTH_SIZE/2-120, Configuracoes.HEIGHT-45, 120, 30);
+
 		/* Botão de Iniciar */
 		iniciar.addActionListener(this);
 		iniciar.setText("Iniciar");
 		iniciar.setActionCommand("iniciar");
 		iniciar.setToolTipText("Clique aqui para iniciar a simulação");
-		iniciar.setBounds(Configuracoes.WIDTH_SIZE/2-60, Configuracoes.HEIGHT-45, 120, 30);
+		iniciar.setBounds(Configuracoes.WIDTH_SIZE/2, Configuracoes.HEIGHT-45, 120, 30);
 
 		/* Adiciona na janela principal */
 		window.add(labelTitulo);
@@ -121,6 +128,7 @@ public class View extends JPanel implements ActionListener {
 		window.add(statusConsumidor3);
 		window.add(statusConsumidor4);
 		window.add(statusConsumidor5);
+		window.add(checkBoxVersaoB);
 		window.add(iniciar);
 		window.add(this);
 
@@ -136,9 +144,11 @@ public class View extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		if ("iniciar".equals(arg0.getActionCommand())) {
 			/* Cria as entidades e as inicia */
-			Main.inicializaEntidades();
+			ocorrencias.setText("Inicio da Simulação!");
+			checkBoxVersaoB.setDisabledIcon(null);
 			iniciar.setText("Executando...");
 			iniciar.setEnabled(false);
+			Main.inicializaEntidades();
 		}
 		
 	}

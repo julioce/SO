@@ -1,13 +1,17 @@
+import java.util.concurrent.Semaphore;
+
 
 public class Consumidor extends Thread {
 	String Nome;
 	int id;
 	private Estoque estoque;
+	private Semaphore semaforo;
 	
-	public Consumidor(Estoque estoque, String nome, int id) {
+	public Consumidor(Estoque estoque, String nome, int id, Semaphore semaforo) {
 		this.estoque = estoque;
 		this.Nome = nome;
 		this.id = id;
+		this.semaforo = semaforo;
 	}
 
 	public String getNome() {
@@ -47,8 +51,8 @@ public class Consumidor extends Thread {
 				catch (InterruptedException e) { e.printStackTrace(); }
 				
 				View.changeTextConsumidor(getId(), "Sleeping");
-				View.addTextOcorrencias("- " + this.getNome() + "-> Recurso consumido: " + recurso);
-				System.out.println("- " + this.getNome() + "-> Recurso consumido: " + recurso);
+				View.addTextOcorrencias("- " + this.getNome() + "-> Recurso consumido: " + recurso + "\t\t\tRecursos disponíveis no momento: " + estoque.getConteudo().size());
+				System.out.println("- " + this.getNome() + "-> Recurso consumido: " + recurso + "\t\t\tRecursos disponíveis no momento: " + estoque.getConteudo().size());
 				
 			}
 			else {
@@ -81,14 +85,29 @@ public class Consumidor extends Thread {
 			View.changeTextConsumidor(getId(), "Sleeping");
 			
 			/* Verfica de a thread atual é a primeira da fila */
-			if(Main.fila.get(0).equals(this)){
-				this.consumir();
+		
+			try {
+				/* Decrementa o semáforo bloqueando as outras threads */
+				/* Inicio da região crítica */
+				this.semaforo.acquire();
+				if(Main.fila.get(0).equals(this)){
+					this.consumir();
+				}
+			} catch (InterruptedException e) { 
+				e.printStackTrace();
+			}
+			finally {
+				/* Incrementa o semáforo bloqueando as outras threads */
+				/* Fim da região crítica */
+				this.semaforo.release();
 			}
 
 			try {
 				Thread.sleep((int)(Math.random() * Configuracoes.MAX_TIME_TO_CONSUME));
 			}
-			catch (InterruptedException e) { e.printStackTrace(); }
+			catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 			
 			/* Verifica se o Consumidor já terminou */
 			if(estoque.getConteudo().size() == 0 && Main.getRecursosProduzidos() == Configuracoes.TOTAL_RECURSOS_A_SER_PRODUZIDO){

@@ -2,14 +2,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-
 public class Main {
 	/* Inicia a contagem de produtos */
 	public static Integer recursosProduzidos = 0;
-	
-	/* Cria os semáforos de sincronização */
-	public static Semaphore semaforoProdutor = new Semaphore (1);
-	public static Semaphore semaforoConsumidor = new Semaphore (1);
 	
 	/* Fila de consumidores */  
 	@SuppressWarnings("rawtypes")
@@ -27,6 +22,17 @@ public class Main {
 	public static void inicializaEntidades(){
 		/* Repositório de recursos */  
 		Estoque estoque = new Estoque();
+		int totalAcessoConsumidores = 1;
+		
+		/* Verifica qual versão de operação foi selecionada */
+		if(View.checkBoxVersaoB.isSelected()){
+			/* Define o acesso ao estoque para até 5 Consumidores */
+			totalAcessoConsumidores = 5;
+		}
+		
+		/* Cria os semáforos de sincronização */
+		Semaphore semaforoProdutor = new Semaphore(1);
+		Semaphore semaforoConsumidor = new Semaphore(totalAcessoConsumidores);
 		
 		/* Inicializa os Produtores */
 		Produtor produtor1 = new Produtor(estoque, "Produtor 1", 1, semaforoProdutor);
@@ -45,7 +51,8 @@ public class Main {
 		fila.add(consumidor4);
 		fila.add(consumidor5);
 		
-		if(View.checkBoxVersaoB.isEnabled()){
+		/* Verifica qual versão de operação foi selecionada */
+		if(View.checkBoxVersaoB.isSelected()){
 			/* Consumidor tem menor prioridade que o Produtor */
 			produtor1.setPriority(Thread.NORM_PRIORITY);
 			produtor2.setPriority(Thread.NORM_PRIORITY);
@@ -71,7 +78,7 @@ public class Main {
 
 	@SuppressWarnings("unused")
 	public static void main(String[] args) {
-		/* Inicializa as entidades */
+		/* Inicializa o programa */
 		Main main = new Main();
 		
 		/* Inicializa a GUI */

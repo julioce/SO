@@ -1,6 +1,5 @@
 import java.util.concurrent.Semaphore;
 
-
 public class Produtor extends Thread {
 	String Nome;
 	int id;
@@ -14,14 +13,6 @@ public class Produtor extends Thread {
 		this.semaforo = semaforo;
 	}
 	
-	public String getNome() {
-		return this.Nome;
-	}
-	
-	public long getId() {
-		return this.id;
-	}
-	
 	public Estoque getEstoque() {
 		return this.estoque;
 	}
@@ -30,18 +21,32 @@ public class Produtor extends Thread {
 		this.estoque = estoque;
 	}
 	
+	public String getNome() {
+		return this.Nome;
+	}
+	
+	public long getId() {
+		return this.id;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public void produzir() {
 		synchronized (estoque) {
-			/* Adiciona um recurso */
+			/* Adiciona um recurso e o contabiliza */
 			int recursos = Main.getRecursosProduzidos();
 			Recurso recurso = new Recurso((int)(recursos+1));
 			this.estoque.getConteudo().add(recurso);
 			Main.setRecursosProduzidos(recursos+1);
 
-			View.changeTextProdutor(this.getId(), "Ativa");
-			View.addTextOcorrencias("+ " + this.getNome() + "\t -> Recurso produzido: " + recurso + "\tTotal já produzido: " + (recursos+1) + "\tRecursos disponíveis no momento: " + estoque.getConteudo().size());
-			System.out.println("+ " + this.getNome() + "\t -> Recurso produzido: " + recurso + "\tTotal já produzido: " + (recursos+1) + "\tRecursos disponíveis no momento: " + estoque.getConteudo().size());
+			/* Faz a produção não ser tão rápida assim */
+			try {
+				Thread.sleep((int)(Configuracoes.MAX_TIME_TO_PRODUCE));
+			}
+			catch (InterruptedException e) { 
+				e.printStackTrace(); 
+			}
+			
+			View.addTextOcorrencias("+ " + this.getNome() + "\t\t-> Recurso produzido: " + recurso + "\tTotal já produzido: " + (recursos+1) + "\tRecursos disponíveis no momento: " + estoque.getConteudo().size());
 			
 			/* Notifica os consumidores que o estoque já foi reposto */
 			estoque.notifyAll();
@@ -60,9 +65,8 @@ public class Produtor extends Thread {
 				
 				/* Verifica se ainda deve ser produzido algum recurso */
 				if(estoque.getConteudo().size() < Configuracoes.MAX_RESOURCE_VALUE && Main.getRecursosProduzidos() < Configuracoes.TOTAL_RECURSOS_A_SER_PRODUZIDO){
+					View.changeStatusProdutor(this.getId(), "Ativa", Configuracoes.ACTIVE_COLOR);
 					this.produzir();
-				}else{
-					View.changeTextProdutor(this.getId(), "Terminou");
 				}
 			} catch (InterruptedException e) { 
 				e.printStackTrace();
@@ -72,9 +76,14 @@ public class Produtor extends Thread {
 				/* Fim da região crítica */
 				this.semaforo.release();
 			}
-		
-		
+			
 			try {
+				if(Main.getRecursosProduzidos() < Configuracoes.TOTAL_RECURSOS_A_SER_PRODUZIDO){
+					View.changeStatusProdutor(this.getId(), "Sleeping", Configuracoes.SLEEPING_COLOR);
+				}
+				else{
+					View.changeStatusProdutor(this.getId(), "Terminou", Configuracoes.TERMINATED_COLOR);
+				}
 				Thread.sleep((int)(Math.random() * Configuracoes.MAX_TIME_TO_PRODUCE));
 			}
 			catch (InterruptedException e) { 

@@ -17,8 +17,12 @@ public interface Configuracoes {
 	String NOME_PROJETO = "Simulação do Sistema Produtor/Consumidor";
 	
 	/* Strings de Exibição*/
-	Color WAITING_COLOR = new Color(230, 190, 90);
+	Color WAITING_COLOR = new Color(237, 169, 39);
 	Color ACTIVE_COLOR = new Color(51, 156, 0);
 	Color TERMINATED_COLOR = Color.RED;
 	Color SLEEPING_COLOR = Color.GRAY;
+	
+	/* Fundo das entidades */
+	Color PRODUTOR_COLOR = new Color(229, 239, 248);
+	Color CONSUMIDOR_COLOR = new Color(241, 226, 228);
 }

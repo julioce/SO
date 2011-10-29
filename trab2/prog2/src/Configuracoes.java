@@ -1,12 +1,12 @@
 import java.awt.Color;
 
 public interface Configuracoes {
-	/* Tempo máximo que leva para produzir/consumir um recurso */
-	int MAX_TIME_TO_PRODUCE = 300;
-	int MAX_TIME_TO_CONSUME = 200;
+	/* Tempo máximo em milisegundos que leva para produzir/consumir um recurso */
+	int MAX_TIME_TO_PRODUCE = 30;
+	int MAX_TIME_TO_CONSUME = 15;
 	
 	/* Número de recursos a ser produzido */
-	int TOTAL_RECURSOS_A_SER_PRODUZIDO = 100;
+	int TOTAL_RECURSOS_A_SER_PRODUZIDO = 1000;
 
 	/* Número de recursos a ser produzido */
 	int MAX_RESOURCE_VALUE = 50;

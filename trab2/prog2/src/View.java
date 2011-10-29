@@ -4,6 +4,7 @@ import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -161,13 +162,13 @@ public class View extends JPanel implements ActionListener {
 		legendaAtivo.setBounds(30, 480, 370, 30);
 		legendaAtivo.setForeground(Configuracoes.ACTIVE_COLOR);
 		legendaSleeping.setText("Sleeping - Entidade aguardando acesso a Região Crítica");
-		legendaSleeping.setBounds(30, 495, 370, 30);
+		legendaSleeping.setBounds(30, 496, 370, 30);
 		legendaSleeping.setForeground(Configuracoes.SLEEPING_COLOR);
 		legendaWaiting.setText("Waiting - Entidade em Região Crítica aguardando Recurso");
-		legendaWaiting.setBounds(30, 510, 370, 30);
+		legendaWaiting.setBounds(30, 512, 370, 30);
 		legendaWaiting.setForeground(Configuracoes.WAITING_COLOR);
 		legendaTerminated.setText("Terminou - Entidade terminou a sua função");
-		legendaTerminated.setBounds(30, 525, 370, 30);
+		legendaTerminated.setBounds(30, 530, 370, 30);
 		legendaTerminated.setForeground(Configuracoes.TERMINATED_COLOR);
 		
 		/* Semáforos */
@@ -178,7 +179,7 @@ public class View extends JPanel implements ActionListener {
 		legendaSemaforoProdutor.setText("Semáforo Produtor: ");
 		legendaSemaforoProdutor.setBounds(430, 480, 360, 30);
 		legendaSemaforoConsumidor.setText("Semáforo Consumidor: ");
-		legendaSemaforoConsumidor.setBounds(600, 480, 360, 30);
+		legendaSemaforoConsumidor.setBounds(610, 480, 360, 30);
 		
 		/* Checkbox de versão B do trabalho */
 		checkBoxVersaoB.setText("Versão B");
@@ -238,6 +239,7 @@ public class View extends JPanel implements ActionListener {
 		window.setFocusTraversalKeysEnabled(true);
 		window.setResizable(false);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setIconImage(Toolkit.getDefaultToolkit().getImage(getClass().getResource("img/icon.png")));
 		window.pack();
 		window.setVisible(true);
 	}
@@ -245,11 +247,10 @@ public class View extends JPanel implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
 		if(arg0.getActionCommand().equals("iniciar")) {
-			/* Muda a entrada */
-			ocorrencias.setText("\t\t\tInicio da Simulação!");
-			
-			/* Cria as entidades e as inicia */
+			/* Cria ou reinicia as entidades */
 			Main.setRecursosProduzidos(0);
+			Main.fila.clear();
+			ocorrencias.setText("\t\t\tInicio da Simulação!");
 			Main.inicializaEntidades();
 		}
 	}
@@ -366,6 +367,7 @@ public class View extends JPanel implements ActionListener {
 class Canvas extends JComponent {
 	private static final long serialVersionUID = 5703217428905757134L;
 
+	@Override
 	public void paint(Graphics g) {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);

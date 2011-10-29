@@ -26,6 +26,7 @@ public class Produtor extends Thread {
 		return this.Nome;
 	}
 	
+	@Override
 	public long getId() {
 		return this.id;
 	}
@@ -43,7 +44,7 @@ public class Produtor extends Thread {
 		synchronized (estoque) {
 			/* Adiciona um recurso e o contabiliza */
 			int recursos = Main.getRecursosProduzidos();
-			Recurso recurso = new Recurso((int)(recursos+1));
+			Recurso recurso = new Recurso((recursos+1));
 			this.estoque.getConteudo().add(recurso);
 			this.addRecursosProduzidos();
 			Main.setRecursosProduzidos(recursos+1);
@@ -52,20 +53,20 @@ public class Produtor extends Thread {
 			View.addTextOcorrencias("+ " + this.getNome() + "\t\t-> Recurso produzido: " + recurso + "\tTotal já produzido: " + (recursos+1) + "\tRecursos disponíveis no momento: " + estoque.getConteudo().size());
 
 			/* Faz a produção não ser tão rápida assim */
-			try {
-				Thread.sleep((int)(Configuracoes.MAX_TIME_TO_PRODUCE));
-			}
-			catch (InterruptedException e) { 
-				e.printStackTrace(); 
-			}
+			try { Thread.sleep((Configuracoes.MAX_TIME_TO_PRODUCE)); }
+			catch (InterruptedException e) { e.printStackTrace(); }
 			
 			/* Notifica os consumidores que o estoque já foi reposto */
 			estoque.notifyAll();
 		}
 	}
 
+	@Override
 	@SuppressWarnings("deprecation")
 	public void run() {
+		View.iniciar.setText("Executando...");
+		View.iniciar.setEnabled(false);
+		View.checkBoxVersaoB.setEnabled(false);
 
 		while (true) {
 			
@@ -89,9 +90,12 @@ public class Produtor extends Thread {
 				View.setSemaforoProdutor(semaforo.toString());
 			}
 			
+
+			View.changeStatusProdutor(this.getId(), "Sleeping", Configuracoes.SLEEPING_COLOR);
+			
 			try {
+				/* Se o Produtor já terminou */
 				if(Main.getRecursosProduzidos() < Configuracoes.TOTAL_RECURSOS_A_SER_PRODUZIDO){
-					View.changeStatusProdutor(this.getId(), "Sleeping", Configuracoes.SLEEPING_COLOR);
 					Thread.sleep((int)(Math.random() * Configuracoes.MAX_TIME_TO_PRODUCE));
 				}
 				else{

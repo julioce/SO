@@ -6,6 +6,7 @@ public class Recurso {
 		this.id = id;
 	}
 
+	@Override
 	public String toString() {
 		return "" + id;
 	}

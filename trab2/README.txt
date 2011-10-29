@@ -22,3 +22,9 @@ gcc -o Prog3c Prog3c.c -lm
 ./Prog3c
 
 
+ITEM 2
+eclipse-3.5 /opt/sun-jdk-1.6.0.26/bin/java
+   -Criar um Novo Projeto
+   -Adicionar os arquivos do diretório ./Prog2
+   
+java -jar ./Prog2.jar

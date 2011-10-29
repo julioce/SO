@@ -27,6 +27,7 @@ public class Consumidor extends Thread {
 		return this.Nome;
 	}
 	
+	@Override
 	public long getId() {
 		return this.id;
 	}
@@ -63,9 +64,7 @@ public class Consumidor extends Thread {
 				View.addTextOcorrencias("- " + this.getNome() + "\t-> Recurso consumido: " + recurso + "\t\tRecursos disponíveis no momento: " + estoque.getConteudo().size());
 				
 				/* Faz o consumo não ser tão rápido */
-				try {
-					Thread.sleep((int)(Configuracoes.MAX_TIME_TO_CONSUME));
-				}
+				try { Thread.sleep((Configuracoes.MAX_TIME_TO_CONSUME)); }
 				catch (InterruptedException e) { e.printStackTrace(); }
 				
 			}
@@ -93,6 +92,7 @@ public class Consumidor extends Thread {
 		}
 	}
 	
+	@Override
 	@SuppressWarnings("deprecation")
 	public void run() {
 		
@@ -123,17 +123,23 @@ public class Consumidor extends Thread {
 				View.setSemaforoConsumidor(semaforo.toString());
 			}
 			
-			try {
-				View.changeStatusConsumidor(getId(), "Sleeping", Configuracoes.SLEEPING_COLOR);
-				Thread.sleep((int)(Math.random() * Configuracoes.MAX_TIME_TO_CONSUME));
-			}
+			View.changeStatusConsumidor(getId(), "Sleeping", Configuracoes.SLEEPING_COLOR);
+			
+			try { 
+				/* Verifica se o Consumidor já terminou */
+				if(estoque.getConteudo().size() == 0 && Main.getRecursosProduzidos() == Configuracoes.TOTAL_RECURSOS_A_SER_PRODUZIDO){
+					View.changeStatusConsumidor(getId(), "Terminou", Configuracoes.TERMINATED_COLOR);
+					View.iniciar.setText("Iniciar");
+					View.iniciar.setEnabled(true);
+					View.checkBoxVersaoB.setEnabled(true);
+					this.stop();
+				}else{
+					Thread.sleep((int)(Math.random() * Configuracoes.MAX_TIME_TO_CONSUME));
+				}
+			} 
 			catch (InterruptedException e) { e.printStackTrace(); }
 			
-			/* Verifica se o Consumidor já terminou */
-			if(estoque.getConteudo().size() == 0 && Main.getRecursosProduzidos() == Configuracoes.TOTAL_RECURSOS_A_SER_PRODUZIDO){
-				this.stop();
-				View.changeButtonIniciar("Concluído");
-			}
+			
 		}
 	}
    

@@ -60,15 +60,13 @@ public class Consumidor extends Thread {
 				
 				View.changeStatusConsumidor(this.getId(), "Ativa", Configuracoes.ACTIVE_COLOR);
 				View.changeItensConsumidor(this.getId(), this.getRecursosConsumidos());
-				View.addTextOcorrencias("- " + this.getNome() + "\t-> Recurso consumido: " + recurso + "\t\t\tRecursos disponíveis no momento: " + estoque.getConteudo().size());
+				View.addTextOcorrencias("- " + this.getNome() + "\t-> Recurso consumido: " + recurso + "\t\tRecursos disponíveis no momento: " + estoque.getConteudo().size());
 				
 				/* Faz o consumo não ser tão rápido */
 				try {
 					Thread.sleep((int)(Configuracoes.MAX_TIME_TO_CONSUME));
 				}
-				catch (InterruptedException e) { 
-					e.printStackTrace(); 
-				}
+				catch (InterruptedException e) { e.printStackTrace(); }
 				
 			}
 			else {
@@ -89,14 +87,13 @@ public class Consumidor extends Thread {
 					}
 					
 				}
-				catch (InterruptedException e) { 
-					e.printStackTrace(); 
-				}
+				catch (InterruptedException e) { e.printStackTrace(); }
 				
 			}
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void run() {
 		
 		while (true) {
@@ -104,6 +101,7 @@ public class Consumidor extends Thread {
 			try {
 				/* Decrementa o semáforo bloqueando as outras threads */
 				/* Inicio da região crítica */
+				View.setSemaforoConsumidor(semaforo.toString());
 				this.semaforo.acquire();
 				
 				/* Verifica qual versão foi selecionada */
@@ -116,25 +114,24 @@ public class Consumidor extends Thread {
 					/* Consumo sem obedecer a fila */
 					this.consumir();
 				}
-			} catch (InterruptedException e) { 
-				e.printStackTrace();
-			}
+				
+			} catch (InterruptedException e) { e.printStackTrace(); }
 			finally {
 				/* Incrementa o semáforo bloqueando as outras threads */
 				/* Fim da região crítica */
 				this.semaforo.release();
+				View.setSemaforoConsumidor(semaforo.toString());
 			}
 			
 			try {
 				View.changeStatusConsumidor(getId(), "Sleeping", Configuracoes.SLEEPING_COLOR);
 				Thread.sleep((int)(Math.random() * Configuracoes.MAX_TIME_TO_CONSUME));
 			}
-			catch (InterruptedException e) {
-				e.printStackTrace();
-			}
+			catch (InterruptedException e) { e.printStackTrace(); }
 			
 			/* Verifica se o Consumidor já terminou */
 			if(estoque.getConteudo().size() == 0 && Main.getRecursosProduzidos() == Configuracoes.TOTAL_RECURSOS_A_SER_PRODUZIDO){
+				this.stop();
 				View.changeButtonIniciar("Concluído");
 			}
 		}

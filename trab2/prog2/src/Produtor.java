@@ -5,6 +5,7 @@ public class Produtor extends Thread {
 	int id;
 	private Estoque estoque;
 	private Semaphore semaforo;
+	private int recursosProduzidos;
 	
 	public Produtor(Estoque estoque, String nome, int id, Semaphore semaforo) {
 		this.estoque = estoque;
@@ -28,6 +29,14 @@ public class Produtor extends Thread {
 	public long getId() {
 		return this.id;
 	}
+
+	private void addRecursosProduzidos(){
+		this.recursosProduzidos = this.getRecursosProduzidos()+1;
+	}
+	
+	private int getRecursosProduzidos(){
+		return this.recursosProduzidos;
+	}
 	
 	@SuppressWarnings("unchecked")
 	public void produzir() {
@@ -36,7 +45,11 @@ public class Produtor extends Thread {
 			int recursos = Main.getRecursosProduzidos();
 			Recurso recurso = new Recurso((int)(recursos+1));
 			this.estoque.getConteudo().add(recurso);
+			this.addRecursosProduzidos();
 			Main.setRecursosProduzidos(recursos+1);
+			
+			View.changeItensProdutor(this.getId(), this.getRecursosProduzidos());
+			View.addTextOcorrencias("+ " + this.getNome() + "\t\t-> Recurso produzido: " + recurso + "\tTotal já produzido: " + (recursos+1) + "\tRecursos disponíveis no momento: " + estoque.getConteudo().size());
 
 			/* Faz a produção não ser tão rápida assim */
 			try {
@@ -46,13 +59,12 @@ public class Produtor extends Thread {
 				e.printStackTrace(); 
 			}
 			
-			View.addTextOcorrencias("+ " + this.getNome() + "\t\t-> Recurso produzido: " + recurso + "\tTotal já produzido: " + (recursos+1) + "\tRecursos disponíveis no momento: " + estoque.getConteudo().size());
-			
 			/* Notifica os consumidores que o estoque já foi reposto */
 			estoque.notifyAll();
 		}
 	}
 
+	@SuppressWarnings("deprecation")
 	public void run() {
 
 		while (true) {
@@ -61,6 +73,7 @@ public class Produtor extends Thread {
 			try {
 				/* Decrementa o semáforo bloqueando as outras threads */
 				/* Inicio da região crítica */
+				View.setSemaforoProdutor(semaforo.toString());
 				this.semaforo.acquire();
 				
 				/* Verifica se ainda deve ser produzido algum recurso */
@@ -68,29 +81,26 @@ public class Produtor extends Thread {
 					View.changeStatusProdutor(this.getId(), "Ativa", Configuracoes.ACTIVE_COLOR);
 					this.produzir();
 				}
-			} catch (InterruptedException e) { 
-				e.printStackTrace();
-			}
+			} catch (InterruptedException e) { e.printStackTrace(); }
 			finally {
 				/* Incrementa o semáforo liberando outras threads para produzirem */
 				/* Fim da região crítica */
 				this.semaforo.release();
+				View.setSemaforoProdutor(semaforo.toString());
 			}
 			
 			try {
 				if(Main.getRecursosProduzidos() < Configuracoes.TOTAL_RECURSOS_A_SER_PRODUZIDO){
 					View.changeStatusProdutor(this.getId(), "Sleeping", Configuracoes.SLEEPING_COLOR);
+					Thread.sleep((int)(Math.random() * Configuracoes.MAX_TIME_TO_PRODUCE));
 				}
 				else{
 					View.changeStatusProdutor(this.getId(), "Terminou", Configuracoes.TERMINATED_COLOR);
+					this.stop();
 				}
-				Thread.sleep((int)(Math.random() * Configuracoes.MAX_TIME_TO_PRODUCE));
 			}
-			catch (InterruptedException e) { 
-				e.printStackTrace(); 
-			}
+			catch (InterruptedException e) { e.printStackTrace(); }
 		}
-		
 		
 		
 	}

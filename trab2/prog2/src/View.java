@@ -32,6 +32,9 @@ public class View extends JPanel implements ActionListener {
 	public static JLabel statusProdutor1 = new JLabel();
 	public static JLabel statusProdutor2 = new JLabel();
 	public static JLabel statusProdutor3 = new JLabel();
+	public static JLabel itensProdutor1 = new JLabel();
+	public static JLabel itensProdutor2 = new JLabel();
+	public static JLabel itensProdutor3 = new JLabel();
 	
 	public static JTextArea ocorrencias = new JTextArea();
 	public static JScrollPane panelOcorrencias = new JScrollPane(ocorrencias);
@@ -52,6 +55,16 @@ public class View extends JPanel implements ActionListener {
 	public static JLabel itensConsumidor4 = new JLabel();
 	public static JLabel itensConsumidor5 = new JLabel();
 	
+	public static JLabel legenda = new JLabel();
+	public static JLabel legendaAtivo = new JLabel();
+	public static JLabel legendaSleeping = new JLabel();
+	public static JLabel legendaWaiting = new JLabel();
+	public static JLabel legendaTerminated = new JLabel();
+	
+	public static JLabel semaforos = new JLabel();
+	public static JLabel legendaSemaforoConsumidor = new JLabel();
+	public static JLabel legendaSemaforoProdutor = new JLabel();
+	
 	public static JCheckBox checkBoxVersaoB = new JCheckBox();
 	
 	public static JButton iniciar = new JButton();
@@ -59,8 +72,7 @@ public class View extends JPanel implements ActionListener {
 	public View(){
 		/* Pega o Look and Feel do OS nativo e instala */
 		try {
-			String nativeLF = UIManager.getSystemLookAndFeelClassName();
-			UIManager.setLookAndFeel(nativeLF);
+			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		}
 		catch (InstantiationException e) { e.printStackTrace(); }
 		catch (ClassNotFoundException e) { e.printStackTrace(); }
@@ -69,8 +81,8 @@ public class View extends JPanel implements ActionListener {
 		
 		/* Label do trabalho */
 		labelTitulo.setText(Configuracoes.NOME_PROJETO);
-		labelTitulo.setFont(new Font("Arial", Font.BOLD, 22));
-		labelTitulo.setBounds(Configuracoes.WIDTH_SIZE/2-220, 0, 470, 30);
+		labelTitulo.setFont(new Font("Arial", Font.BOLD, 24));
+		labelTitulo.setBounds(Configuracoes.WIDTH_SIZE/2-255, 10, 515, 30);
 		
 		/* Produtores */
 		labelProdutor1.setText("Produtor 1");
@@ -88,6 +100,13 @@ public class View extends JPanel implements ActionListener {
 		statusProdutor2.setBounds(330, 80, 300, 30);
 		statusProdutor3.setText("Status: ");
 		statusProdutor3.setBounds(637, 80, 300, 30);
+		
+		itensProdutor1.setText("Produzidos: ");
+		itensProdutor1.setBounds(30, 110, 300, 30);
+		itensProdutor2.setText("Produzidos: ");
+		itensProdutor2.setBounds(330, 110, 300, 30);
+		itensProdutor3.setText("Produzidos: ");
+		itensProdutor3.setBounds(637, 110, 300, 30);
 		
 		/* Texrarea de Ocorrencias */
 		ocorrencias.setEditable(false);
@@ -133,17 +152,45 @@ public class View extends JPanel implements ActionListener {
 		itensConsumidor5.setText("Consumidos: ");
 		itensConsumidor5.setBounds(662, 410, 300, 30);
 		
+		/* Legenda */
+		legenda.setText("Legenda");
+		legenda.setToolTipText("Legenda dos valores exibidos por Produtores e Consumidores");
+		legenda.setBounds(30, 465, 100, 20);
+		legenda.setFont(new Font("Arial", Font.BOLD, 14));
+		legendaAtivo.setText("Ativo - Entidade ativa na Região Crítica");
+		legendaAtivo.setBounds(30, 480, 370, 30);
+		legendaAtivo.setForeground(Configuracoes.ACTIVE_COLOR);
+		legendaSleeping.setText("Sleeping - Entidade aguardando acesso a Região Crítica");
+		legendaSleeping.setBounds(30, 495, 370, 30);
+		legendaSleeping.setForeground(Configuracoes.SLEEPING_COLOR);
+		legendaWaiting.setText("Waiting - Entidade em Região Crítica aguardando Recurso");
+		legendaWaiting.setBounds(30, 510, 370, 30);
+		legendaWaiting.setForeground(Configuracoes.WAITING_COLOR);
+		legendaTerminated.setText("Terminou - Entidade terminou a sua função");
+		legendaTerminated.setBounds(30, 525, 370, 30);
+		legendaTerminated.setForeground(Configuracoes.TERMINATED_COLOR);
+		
+		/* Semáforos */
+		semaforos.setText("Semáforos");
+		semaforos.setToolTipText("Valores dos Semáforos");
+		semaforos.setBounds(430, 465, 100, 20);
+		semaforos.setFont(new Font("Arial", Font.BOLD, 14));
+		legendaSemaforoProdutor.setText("Semáforo Produtor: ");
+		legendaSemaforoProdutor.setBounds(430, 480, 360, 30);
+		legendaSemaforoConsumidor.setText("Semáforo Consumidor: ");
+		legendaSemaforoConsumidor.setBounds(600, 480, 360, 30);
+		
 		/* Checkbox de versão B do trabalho */
 		checkBoxVersaoB.setText("Versão B");
 		checkBoxVersaoB.setToolTipText("Versão com aplicação da modificações sugeridas no trabalho");
-		checkBoxVersaoB.setBounds(Configuracoes.WIDTH_SIZE/2-120, Configuracoes.HEIGHT-65, 120, 30);
+		checkBoxVersaoB.setBounds(Configuracoes.WIDTH_SIZE-300, Configuracoes.HEIGHT-70, 90, 30);
 
 		/* Botão de Iniciar */
 		iniciar.addActionListener(this);
 		iniciar.setText("Iniciar");
 		iniciar.setActionCommand("iniciar");
 		iniciar.setToolTipText("Clique aqui para iniciar a simulação");
-		iniciar.setBounds(Configuracoes.WIDTH_SIZE/2, Configuracoes.HEIGHT-65, 120, 30);
+		iniciar.setBounds(Configuracoes.WIDTH_SIZE-200, Configuracoes.HEIGHT-70, 120, 30);
 
 		/* Adiciona na janela principal */
 		window.add(labelTitulo);
@@ -153,6 +200,9 @@ public class View extends JPanel implements ActionListener {
 		window.add(statusProdutor1);
 		window.add(statusProdutor2);
 		window.add(statusProdutor3);
+		window.add(itensProdutor1);
+		window.add(itensProdutor2);
+		window.add(itensProdutor3);
 		window.add(panelOcorrencias);
 		window.add(labelConsumidor1);
 		window.add(labelConsumidor2);
@@ -170,6 +220,14 @@ public class View extends JPanel implements ActionListener {
 		window.add(itensConsumidor3);
 		window.add(itensConsumidor4);
 		window.add(itensConsumidor5);
+		window.add(legenda);
+		window.add(legendaAtivo);
+		window.add(legendaWaiting);
+		window.add(legendaSleeping);
+		window.add(legendaTerminated);
+		window.add(semaforos);
+		window.add(legendaSemaforoProdutor);
+		window.add(legendaSemaforoConsumidor);
 		window.add(checkBoxVersaoB);
 		window.add(iniciar);
 		window.add(this);
@@ -188,12 +246,10 @@ public class View extends JPanel implements ActionListener {
 	public void actionPerformed(ActionEvent arg0) {
 		if(arg0.getActionCommand().equals("iniciar")) {
 			/* Muda a entrada */
-			ocorrencias.setText("\t\t\t\tInicio da Simulação!");
-			checkBoxVersaoB.setEnabled(false);
-			iniciar.setText("Executando...");
-			iniciar.setEnabled(false);
+			ocorrencias.setText("\t\t\tInicio da Simulação!");
 			
 			/* Cria as entidades e as inicia */
+			Main.setRecursosProduzidos(0);
 			Main.inicializaEntidades();
 		}
 	}
@@ -270,6 +326,23 @@ public class View extends JPanel implements ActionListener {
 		}
 	}
 	
+	public static void changeItensProdutor(long l, int text){
+		
+		switch((int) l){
+			case 1:
+				itensProdutor1.setText("Produzidos: " + text);
+				break;
+			case 2:
+				itensProdutor2.setText("Produzidos: " + text);
+				break;
+			case 3:
+				itensProdutor3.setText("Produzidos: " + text);
+				break;
+			default:
+				break;
+		}
+	}
+	
 	public static void changeButtonIniciar(String text){
 		iniciar.setText(text);
 		window.repaint();
@@ -278,6 +351,14 @@ public class View extends JPanel implements ActionListener {
 	public static void addTextOcorrencias(String text){
 		ocorrencias.setText(ocorrencias.getText() + "\n" + text);
 		ocorrencias.setCaretPosition(ocorrencias.getDocument().getLength());
+	}
+
+	public static void setSemaforoProdutor(String string) {
+		legendaSemaforoProdutor.setText("Semáforo Produtor: " + string.charAt(string.length()-2) );
+	}
+
+	public static void setSemaforoConsumidor(String string) {
+		legendaSemaforoConsumidor.setText("Semáforo Consumidor: " + string.charAt(string.length()-2) );
 	}
 	
 }
@@ -312,5 +393,17 @@ class Canvas extends JComponent {
 		g2.drawRect(335, 350, 130, 100);
 		g2.drawRect(492, 350, 130, 100);
 		g2.drawRect(650, 350, 130, 100);
+		
+		/* Desenha Legenda */
+		g2.setPaint(Configuracoes.LEGENDA_COLOR);
+		g2.fillRect(20, 460, 385, 100);
+		g2.setPaint(Color.GRAY);
+		g2.drawRect(20, 460, 385, 100);
+		
+		/* Desenha Semáforos */
+		g2.setPaint(Configuracoes.LEGENDA_COLOR);
+		g2.fillRect(420, 460, 360, 60);
+		g2.setPaint(Color.GRAY);
+		g2.drawRect(420, 460, 360, 60);
 	}
 }

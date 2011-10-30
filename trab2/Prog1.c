@@ -14,6 +14,7 @@ int i, j, k, m, menor, maior, menor_i, maior_i, menor_matriz, maior_matriz, meno
 int parte[THREADS], returnThread[THREADS];
 double soma, soma_desvio, desvio_padrao, tempo_execucao;
 struct timeb inicio_execucao, fim_execucao;
+time_t time(time_t *t);
 pthread_t thread[THREADS];
 pthread_attr_t atributosThread;
 
@@ -120,7 +121,7 @@ void *calculaProdutoInterno(void *arg){
 		soma += produtoInterno[i];
 	}
 	
-	printf("\nThread %i terminou de calcular as linhas entre %i e %i", *pos, inicio+1, fim);
+	printf("Thread %i terminou de calcular as linhas entre %i e %i\n", *pos, inicio+1, fim);
 	
 	//Termina a thread
 	pthread_exit(NULL);
@@ -161,13 +162,13 @@ int main(void){
 		desvio_padrao = 0;
 		
 		//Aloca a matriz e vetor de Produto Interno
-		printf("\nMontando a matriz... ");
+		printf("\nMontando a matriz...\n");
 		matriz = aloca_matriz(m, k);
 		produtoInterno = aloca_vetor(m);
 		printf("Concluído!\n\n");
 		
 		//Gera a matriz
-		printf("Inserindo valores na Matriz... ");
+		printf("Inserindo valores na Matriz...\n");
 		for(i=0; i<m; i++){
 			for(j=0; j<k; j++){
 				//Gera o número aleatório e armazena na matriz
@@ -188,11 +189,10 @@ int main(void){
 		}
 		printf("Concluído!\n\n");
 		
-		
-		printf("Calculando a Produto Interno...");
-		//Neste programa estamos calculando o tempo necessário para realizar o produto interno utilizando threads.
 		//Inicia a contagem do tempo de execução
 		ftime(&inicio_execucao);
+		
+		printf("Calculando a Produto Interno...\n");
 
 		//Loop que cria as threads
 		for(i=0; i<THREADS; i++){
@@ -215,7 +215,7 @@ int main(void){
 		for(i=0; i<THREADS; i++){
 			pthread_join(thread[i], NULL);
 		}
-		printf("Concluído!\n\n");
+		printf("\nConcluído!\n\n");
 		
 		
 		//Calcula o desvio padrão

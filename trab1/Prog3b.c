@@ -120,10 +120,12 @@ int main(void){
 	
 	
 	while( m!= 0 && k!=0 ){
+		//Inicia a contagem do tempo de execução
+		ftime(&inicio_execucao);
+		
 		//Aloca a matriz Principal, vetor de Produto Interno e de PIDs
-		printf("\nMontando a matriz... ");
+		printf("\nMontando a matriz...\n");
 		matriz = aloca_matriz(m, k);
-		compartilhado.produtoInterno = aloca_vetor(m);
 		pids = aloca_vetor(m);
 		printf("Concluído!\n\n");
 		
@@ -185,11 +187,8 @@ int main(void){
 		soma_desvio = 0;
 		desvio_padrao = 0;
 		
-		//Inicia a contagem do tempo de execução
-		ftime(&inicio_execucao);
-		
 		//Insere na matriz
-		printf("Inserindo valores na Matriz... ");
+		printf("Inserindo valores na Matriz...\n");
 		for(i=0; i<m; i++){
 			for(j=0; j<k; j++){
 				//gera o número aleatório e armazena na matriz
@@ -200,7 +199,7 @@ int main(void){
 		
 		
 		//Calcula o somatório
-		printf("Calculando o Produto Interno... ");
+		printf("Calculando o Produto Interno...\n");
 		fflush(stdout);
 		for(i=0; i<m; i++){
 			somatorio = 0;

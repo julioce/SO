@@ -100,7 +100,7 @@ int main(void){
 	
 	while( m!= 0 && k!=0 ){
 		//Aloca a matriz e vetor de Produto Interno
-		printf("\nMontando a matriz... ");
+		printf("\nMontando a matriz...\n");
 		matriz = aloca_matriz(m, k);
 		produtoInterno = aloca_vetor(m);
 		printf("Concluído!\n\n");
@@ -119,7 +119,7 @@ int main(void){
 		ftime(&inicio_execucao);
 		
 		//Gera sobre a matriz
-		printf("Inserindo valores na Matriz... ");
+		printf("Inserindo valores na Matriz...\n");
 		for(i=0; i<m; i++){
 			for(j=0; j<k; j++){
 				//gera o número aleatório e armazena na matriz
@@ -129,7 +129,7 @@ int main(void){
 		printf("Concluído!\n\n");
 		
 		
-		printf("Calculando a Produto Interno...");
+		printf("Calculando a Produto Interno...\n");
 		fflush(stdout);
 		//Calcula o somatório
 		for(i=0; i<m; i++){
@@ -144,7 +144,7 @@ int main(void){
 			produtoInterno[i] = somatorio;
 			soma += produtoInterno[i];
 		}
-		printf(" Concluído!\n");
+		printf("Concluído!\n");
 		
 		
 		//Calcula o desvio padrão

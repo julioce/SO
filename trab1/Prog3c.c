@@ -101,7 +101,7 @@ int max(int a, int b){
 }
 
 int main(void){
-	int i, j, m, k, somatorio, **matriz, *pids, id, status;
+	int i, j, m, k, somatorio, **matriz, id, status;
 	double soma_desvio, desvio_padrao, tempo_execucao;
 	int shmid[10];
 	struct timeb inicio_execucao, fim_execucao;
@@ -120,11 +120,12 @@ int main(void){
 	
 	
 	while( m!= 0 && k!=0 ){
-		//Aloca a matriz Principal, vetor de Produto Interno e de PIDs
-		printf("\nMontando a matriz... ");
+		//Inicia a contagem do tempo de execução
+		ftime(&inicio_execucao);
+		
+		//Aloca a matriz Principal, vetor de Produto Interno
+		printf("\nMontando a matriz...\n");
 		matriz = aloca_matriz(m, k);
-		compartilhado.produtoInterno = aloca_vetor(m);
-		pids = aloca_vetor(m);
 		printf("Concluído!\n\n");
 		
 		
@@ -184,12 +185,8 @@ int main(void){
 		soma_desvio = 0;
 		desvio_padrao = 0;
 		
-		
-		//Inicia a contagem do tempo de execução
-		ftime(&inicio_execucao);
-		
 		//Insere na matriz
-		printf("Inserindo valores na Matriz... ");
+		printf("Inserindo valores na Matriz...\n");
 		for(i=0; i<m; i++){
 			for(j=0; j<k; j++){
 				//gera o número aleatório e armazena na matriz
@@ -200,8 +197,7 @@ int main(void){
 		
 		
 		//Calcula o somatório
-		printf("Calculando o Produto Interno... ");
-		fflush(stdout);
+		printf("Calculando o Produto Interno...\n");
 		
 		//Realiza o fork
 		id = fork();
@@ -258,7 +254,6 @@ int main(void){
 		
 		//Calcula o tempo de execução
 		tempo_execucao = (((fim_execucao.time-inicio_execucao.time)*1000.0+fim_execucao.millitm)-inicio_execucao.millitm)/1000.0;
-		
 		
 		//Libera a matriz
 		free_matriz(m, k, matriz);

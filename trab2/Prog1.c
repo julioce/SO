@@ -215,7 +215,7 @@ int main(void){
 		for(i=0; i<THREADS; i++){
 			pthread_join(thread[i], NULL);
 		}
-		printf("\nConcluído!\n\n");
+		printf("Concluído!\n\n");
 		
 		
 		//Calcula o desvio padrão

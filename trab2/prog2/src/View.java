@@ -16,8 +16,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 public class View extends JPanel implements ActionListener {
 	private static final long serialVersionUID = -5509386488232238732L;
@@ -71,15 +69,6 @@ public class View extends JPanel implements ActionListener {
 	public static JButton iniciar = new JButton();
 
 	public View(){
-		/* Pega o Look and Feel do OS nativo e instala */
-		try {
-			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-		}
-		catch (InstantiationException e) { e.printStackTrace(); }
-		catch (ClassNotFoundException e) { e.printStackTrace(); }
-		catch (UnsupportedLookAndFeelException e) { e.printStackTrace(); }
-		catch (IllegalAccessException e) { e.printStackTrace(); }
-		
 		/* Label do trabalho */
 		labelTitulo.setText(Configuracoes.NOME_PROJETO);
 		labelTitulo.setFont(new Font("Arial", Font.BOLD, 24));

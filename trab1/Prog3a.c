@@ -86,6 +86,7 @@ int *aloca_vetor(int m){
 int main(void){
 	int **matriz, *produtoInterno, i, j, menor_i, maior_i, k, m, menor, maior, somatorio;
 	double soma, soma_desvio, desvio_padrao, tempo_execucao;
+	time_t time(time_t *t);
 	srand((unsigned)time(NULL));
 	struct timeb inicio_execucao, fim_execucao;
 	

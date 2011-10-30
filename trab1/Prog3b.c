@@ -101,10 +101,11 @@ int max(int a, int b){
 }
 
 int main(void){
-	int i, j, m, k, somatorio, **matriz, *produtoInterno, *pids, id, status;
+	int i, j, m, k, somatorio, **matriz, *pids, status;
 	double soma_desvio, desvio_padrao, tempo_execucao;
 	int shmid[10];
 	struct timeb inicio_execucao, fim_execucao;
+	time_t time(time_t *t);
 	
 	//Cria estrutura de compartilhamento de memória
 	struct shared compartilhado;

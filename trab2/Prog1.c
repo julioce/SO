@@ -18,7 +18,7 @@ pthread_t thread[THREADS];
 pthread_attr_t atributosThread;
 
 int **aloca_matriz(int m, int k) {
-	//ponteiro para a matriz e variável de iteração
+	//Ponteiro para a matriz e variável de iteração
 	int **v, i;
 	
 	//Veririfica os parâmetros
@@ -73,7 +73,7 @@ int **free_matriz(int m, int k, int **v){
 
 
 int *aloca_vetor(int m){
-	//ponteiro do vetor
+	//Ponteiro do vetor
 	int *v;
 	
 	//Veririfica o parâmetro
@@ -160,9 +160,6 @@ int main(void){
 		soma_desvio = 0;
 		desvio_padrao = 0;
 		
-		//Inicia a contagem do tempo de execução
-		//ftime(&inicio_execucao);
-		
 		//Aloca a matriz e vetor de Produto Interno
 		printf("\nMontando a matriz... ");
 		matriz = aloca_matriz(m, k);
@@ -173,7 +170,7 @@ int main(void){
 		printf("Inserindo valores na Matriz... ");
 		for(i=0; i<m; i++){
 			for(j=0; j<k; j++){
-				//gera o número aleatório e armazena na matriz
+				//Gera o número aleatório e armazena na matriz
 				matriz[i][j] = (rand()%201)-100;
 				
 				//Detecta o maior e menor na matriz
@@ -194,7 +191,7 @@ int main(void){
 		
 		printf("Calculando a Produto Interno...");
 		//Neste programa estamos calculando o tempo necessário para realizar o produto interno utilizando threads.
-		//pega o tempo inicial da execução
+		//Inicia a contagem do tempo de execução
 		ftime(&inicio_execucao);
 
 		//Loop que cria as threads
@@ -218,8 +215,6 @@ int main(void){
 		for(i=0; i<THREADS; i++){
 			pthread_join(thread[i], NULL);
 		}
-		//pega o tempo final da execução
-		ftime(&fim_execucao);
 		printf("Concluído!\n\n");
 		
 		
@@ -239,9 +234,10 @@ int main(void){
 		}
 		desvio_padrao = sqrt(soma_desvio/m);
 		
+		//Termina a contagem do tempo de execução
+		ftime(&fim_execucao);
 		
 		//Calcula o tempo de execução
-		//ftime(&fim_execucao);
 		tempo_execucao = (((fim_execucao.time-inicio_execucao.time)*1000.0+fim_execucao.millitm)-inicio_execucao.millitm)/1000.0;
 		
 		

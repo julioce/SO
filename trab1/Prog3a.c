@@ -98,10 +98,6 @@ int main(void){
 	
 	
 	while( m!= 0 && k!=0 ){
-		//Inicia a contagem do tempo de execução
-		ftime(&inicio_execucao);
-		
-		
 		//Aloca a matriz e vetor de Produto Interno
 		printf("\nMontando a matriz... ");
 		matriz = aloca_matriz(m, k);
@@ -118,6 +114,8 @@ int main(void){
 		soma_desvio = 0;
 		desvio_padrao = 0;
 		
+		//Inicia a contagem do tempo de execução
+		ftime(&inicio_execucao);
 		
 		//Gera sobre a matriz
 		printf("Inserindo valores na Matriz... ");

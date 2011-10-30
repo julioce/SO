@@ -119,10 +119,6 @@ int main(void){
 	
 	
 	while( m!= 0 && k!=0 ){
-		//Inicia a contagem do tempo de execução
-		ftime(&inicio_execucao);
-		
-		
 		//Aloca a matriz Principal, vetor de Produto Interno e de PIDs
 		printf("\nMontando a matriz... ");
 		matriz = aloca_matriz(m, k);
@@ -188,6 +184,8 @@ int main(void){
 		soma_desvio = 0;
 		desvio_padrao = 0;
 		
+		//Inicia a contagem do tempo de execução
+		ftime(&inicio_execucao);
 		
 		//Insere na matriz
 		printf("Inserindo valores na Matriz... ");
@@ -245,10 +243,13 @@ int main(void){
 		ftime(&fim_execucao);
 		tempo_execucao = (((fim_execucao.time-inicio_execucao.time)*1000.0+fim_execucao.millitm)-inicio_execucao.millitm)/1000.0;
 		
-		
 		//Libera a matriz
 		free_matriz(m, k, matriz);
 		
+		//Libera a memória compartilhada
+		for (i=0; i<6; i++) {
+			shmctl(shmid[i], IPC_RMID, NULL);
+		}
 		
 		//Exibe os valores resultantes
 		printf("--------------------------Valores Aferidos---------------------------\n");

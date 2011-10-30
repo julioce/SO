@@ -19,7 +19,7 @@ struct shared{
 };
 
 int **aloca_matriz(int m, int k) {
-	//ponteiro para a matriz e variável de iteração
+	//Ponteiro para a matriz e variável de iteração
 	int **v, i;
 	
 	//Veririfica os parâmetros
@@ -74,7 +74,7 @@ int **free_matriz(int m, int k, int **v){
 
 
 int *aloca_vetor(int m){
-	//ponteiro do vetor
+	//Ponteiro do vetor
 	int *v;
 	
 	//Veririfica o parâmetro
@@ -99,6 +99,7 @@ int max(int a, int b){
 	if(a >= b){return a;}
 	else{return b;}
 }
+
 int main(void){
 	int i, j, m, k, somatorio, **matriz, *produtoInterno, *pids, id, status;
 	double soma_desvio, desvio_padrao, tempo_execucao;
@@ -118,10 +119,6 @@ int main(void){
 	
 	
 	while( m!= 0 && k!=0 ){
-		//Inicia a contagem do tempo de execução
-		ftime(&inicio_execucao);
-		
-		
 		//Aloca a matriz Principal, vetor de Produto Interno e de PIDs
 		printf("\nMontando a matriz... ");
 		matriz = aloca_matriz(m, k);
@@ -179,7 +176,6 @@ int main(void){
 		}
 		
 		
-		
 		//Inicializa outros valores da iteração
 		*compartilhado.menor = INF;
 		*compartilhado.maior = -INF;
@@ -187,6 +183,9 @@ int main(void){
 		soma_desvio = 0;
 		desvio_padrao = 0;
 		
+		
+		//Inicia a contagem do tempo de execução
+		ftime(&inicio_execucao);
 		
 		//Insere na matriz
 		printf("Inserindo valores na Matriz... ");
@@ -203,37 +202,34 @@ int main(void){
 		printf("Calculando o Produto Interno... ");
 		fflush(stdout);
 		
+		//Realiza o fork
 		id = fork();
-		if( id == 0){
+		if(id == 0){
 			for(i=0; i<ceil(m/2); i++){
 				somatorio = 0;
 				
-				if(id == 0){
-					for(j=0; j<k; j++){
-						//Realiza o produto interno
-						somatorio += matriz[i][j] * matriz[i][j];
-					}
-					
-					//Armazena o PI(i) e soma para cálculo de média para o desvio padrão
-					compartilhado.produtoInterno_compartilhado[i] = somatorio;
-					*compartilhado.variancia += compartilhado.produtoInterno_compartilhado[i];
-					exit(0);
+				for(j=0; j<k; j++){
+					//Realiza o produto interno
+					somatorio += matriz[i][j] * matriz[i][j];
 				}
+				
+				//Armazena o PI(i) e soma para cálculo de média para o desvio padrão
+				compartilhado.produtoInterno_compartilhado[i] = somatorio;
+				*compartilhado.variancia += compartilhado.produtoInterno_compartilhado[i];
+				exit(0);
 			}
 		}else{
 			for(i=ceil(m/2); i<m; i++){
 				somatorio = 0;
 				
-				if(id == 0){
-					for(j=0; j<k; j++){
-						//Realiza o produto interno
-						somatorio += matriz[i][j] * matriz[i][j];
-					}
-					
-					//Armazena o PI(i) e soma para cálculo de média para o desvio padrão
-					compartilhado.produtoInterno_compartilhado[i] = somatorio;
-					*compartilhado.variancia += compartilhado.produtoInterno_compartilhado[i];
+				for(j=0; j<k; j++){
+					//Realiza o produto interno
+					somatorio += matriz[i][j] * matriz[i][j];
 				}
+				
+				//Armazena o PI(i) e soma para cálculo de média para o desvio padrão
+				compartilhado.produtoInterno_compartilhado[i] = somatorio;
+				*compartilhado.variancia += compartilhado.produtoInterno_compartilhado[i];
 			}
 			wait(&status);
 		}
@@ -256,14 +252,19 @@ int main(void){
 		}
 		desvio_padrao = sqrt(soma_desvio/m);
 		
+		//Termina a contagem do tempo de execução
+		ftime(&fim_execucao);
 		
 		//Calcula o tempo de execução
-		ftime(&fim_execucao);
 		tempo_execucao = (((fim_execucao.time-inicio_execucao.time)*1000.0+fim_execucao.millitm)-inicio_execucao.millitm)/1000.0;
-		
 		
 		//Libera a matriz
 		free_matriz(m, k, matriz);
+		
+		//Libera a memória compartilhada
+		for (i=0; i<6; i++) {
+			shmctl(shmid[i], IPC_RMID, NULL);
+		}
 		
 		
 		//Exibe os valores resultantes

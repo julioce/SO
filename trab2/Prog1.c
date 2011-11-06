@@ -191,9 +191,8 @@ int main(void){
 		
 		//Inicia a contagem do tempo de execução
 		ftime(&inicio_execucao);
-		
 		printf("Calculando a Produto Interno...\n");
-
+		
 		//Loop que cria as threads
 		for(i=0; i<THREADS; i++){
 			

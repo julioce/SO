@@ -99,6 +99,9 @@ int main(void){
 	
 	
 	while( m!= 0 && k!=0 ){
+		//Inicia a contagem do tempo de execução
+		ftime(&inicio_execucao);
+		
 		//Aloca a matriz e vetor de Produto Interno
 		printf("\nMontando a matriz...\n");
 		matriz = aloca_matriz(m, k);
@@ -115,8 +118,6 @@ int main(void){
 		soma_desvio = 0;
 		desvio_padrao = 0;
 		
-		//Inicia a contagem do tempo de execução
-		ftime(&inicio_execucao);
 		
 		//Gera sobre a matriz
 		printf("Inserindo valores na Matriz...\n");
@@ -169,17 +170,18 @@ int main(void){
 		tempo_execucao = (((fim_execucao.time-inicio_execucao.time)*1000.0+fim_execucao.millitm)-inicio_execucao.millitm)/1000.0;
 		
 		
-		//Libera a matriz
-		free_matriz(m, k, matriz);
-		free(produtoInterno);
-		
-		
 		//Exibe os valores resultantes
 		printf("--------------------------Valores Aferidos---------------------------\n");
 		printf("Menor valor = %i (m=%i) e Maior valor = %i (m=%i)\n", menor, menor_i, maior, maior_i);
 		printf("Desvio Padrão = %f\n", desvio_padrao);
 		printf("Tempo de execução = %.3f segundos\n", tempo_execucao);
 		printf("---------------------------------------------------------------------\n");
+		
+		
+		//Libera a matriz
+		free_matriz(m, k, matriz);
+		free(produtoInterno);
+		
 		
 		//Recebe os valores de m e k para nova iteração
 		printf("Montando a matriz da nova iteração\n\n");

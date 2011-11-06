@@ -249,19 +249,10 @@ int main(void){
 		}
 		desvio_padrao = sqrt(soma_desvio/m);
 		
-		//Termina a contagem do tempo de execução
-		ftime(&fim_execucao);
 		
 		//Calcula o tempo de execução
+		ftime(&fim_execucao);
 		tempo_execucao = (((fim_execucao.time-inicio_execucao.time)*1000.0+fim_execucao.millitm)-inicio_execucao.millitm)/1000.0;
-		
-		//Libera a matriz
-		free_matriz(m, k, matriz);
-		
-		//Libera a memória compartilhada
-		for (i=0; i<6; i++) {
-			shmctl(shmid[i], IPC_RMID, NULL);
-		}
 		
 		
 		//Exibe os valores resultantes
@@ -270,6 +261,15 @@ int main(void){
 		printf("Desvio Padrão = %f\n", desvio_padrao);
 		printf("Tempo de execução = %.3f segundos\n", tempo_execucao);
 		printf("---------------------------------------------------------------------\n");
+		
+		
+		//Libera a matriz
+		free_matriz(m, k, matriz);
+		
+		//Libera a memória compartilhada
+		for (i=0; i<6; i++) {
+			shmctl(shmid[i], IPC_RMID, NULL);
+		}
 		
 		
 		//Recebe os valores de m e k para nova iteração

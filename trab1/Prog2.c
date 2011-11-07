@@ -36,7 +36,7 @@ int main(void) {
 	
 	for (i = 0; i <= m; i++){
 		//mostre na tela da console, a cada passagem, os seguintes valores: PID do processo corrente; “i”, “d1”, “d2” e “m”
-		printf("PID do processo corrente = %i    |    d1 = %i    |    d2 = %i    |   m = %i\n\n", getpid(), d1, d2, m,i);
+		printf("PID do processo corrente = %i    |    i=%i    |    d1 = %i    |    d2 = %i    |   m = %i\n\n", getpid(), i, d1, d2, m);
 		
 		/*
 		=================================================================================================================
@@ -62,7 +62,7 @@ int main(void) {
 			
 			// mostre na tela da console, a cada passagem, os seguintes valores: 
 			// PID do processo corrente, "i", "d1", "d2", "m" e informe estar no ramo “then” do “if”
-			printf("PID do processo corrente = %i    |    d1 = %i    |    d2 = %i    |   m = %i  Ramo if\n\n", getpid(), d1, d2, m, i,j);
+			printf("PID do processo corrente = %i    |    i=%i    |    d1 = %i    |    d2 = %i    |   m = %i  Ramo if\n\n", getpid(), i, d1, d2, m);
 			
 			//Contabilizando o número de filhos
 			nFilhos++;
@@ -87,7 +87,7 @@ int main(void) {
 			j = i + 1;
 			
 			//mostre na tela da console, a cada passagem, os seguintes valores: PID do processo corrente; “i”, “d1”, “d2”, “m” e informe 				estar no ramo “else” do “if”
-			printf("PID do processo corrente = %i    |    d1 = %i    |    d2 = %i    |   m = %i  Ramo else\n\n", getpid(), d1, d2, m, i,j);
+			printf("PID do processo corrente = %i    |    i=%i    |    d1 = %i    |    d2 = %i    |   m = %i  Ramo else\n\n", getpid(), i, d1, d2, m);
 			
 			/*
 			=================================================================================================================

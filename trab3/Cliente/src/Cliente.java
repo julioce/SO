@@ -3,44 +3,49 @@ import java.net.*;
 
 public class Cliente implements Runnable{
 	
+	int portNumber;
+	String host;
 	static Socket clientSocket = null;
 	static PrintStream os = null;
 	static DataInputStream is = null;
 	static BufferedReader inputLine = null;
 	static boolean closed = false;
 	
-	public static void main(String[] args) {
-		// Porta padrão
-		int port_number = 2222;
-		String host="localhost";
-		
-		if (args.length > 1){
-			host = args[0];
-			port_number=Integer.valueOf(args[1]).intValue();
-		}
-		
+	public Cliente(){
+		// Construtor
+	}
+	
+	public void setHost(String host) {
+		this.host = host;
+	}
+
+	public void setPortNumber(int portNumber) {
+		this.portNumber = portNumber;
+	}
+	
+	public void startCliente(){
 		// Inicializa o servidor
 		// Tenta abrir o socket com o host e o socket
 		// Tenta abrir streams de input e output
 		try {
-			clientSocket = new Socket(host, port_number);
+			clientSocket = new Socket(host, portNumber);
 			inputLine = new BufferedReader(new InputStreamReader(System.in));
 			os = new PrintStream(clientSocket.getOutputStream());
 			is = new DataInputStream(clientSocket.getInputStream());
 		} catch (UnknownHostException e) {
-			System.err.println("Erro: Host não reconhecido:" + host);
+			System.err.println("Erro: Host n√£o reconhecido: " + host);
 		} catch (IOException e) {
-			System.err.println("Erro: Não foi possível abrir conexões:" + host);
+			System.err.println("Erro: N√£o foi poss√≠vel abrir conex√µes ao host: " + host);
 		}
 	
 
-		// Se não houve erros inicializa o cliente de fato
+		// Se n√£o houve erros inicializa o cliente de fato
 		if (clientSocket != null && os != null && is != null) {
 			try {
 				// Cria a thread do Cliente
 				new Thread(new Cliente()).start();
 				
-				// Enquanto não fecha a conexão mostra o input
+				// Enquanto n√£o fecha a conex√£o mostra o input
 				while (!closed) {
 					os.println(inputLine.readLine());	
 				}
@@ -60,7 +65,7 @@ public class Cliente implements Runnable{
 	public void run() {
 		String responseLine;
 	
-		//Recebe informações do socket até receber um término do servidor, depois entramos non break;
+		//Recebe informa√ß√µees do socket at√© receber um t√©rmino do servidor, depois entramos no break;
 		try {
 			while ((responseLine = is.readLine()) != null) {
 				System.out.println(responseLine);
@@ -69,10 +74,11 @@ public class Cliente implements Runnable{
 				}
 			}
             
-			//Fecha a conexão
+			//Fecha a conex√£o
 			closed = true;
 		} catch (IOException e) {
-			System.err.println("IOException:  " + e);
+			System.err.println("Erro: IOException " + e);
 		}
 	}
+
 }

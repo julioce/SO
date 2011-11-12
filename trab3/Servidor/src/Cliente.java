@@ -35,6 +35,7 @@ class Cliente extends Thread {
 				}
 			}
 
+			// Loop de execução
 			while (true) {
 				// Faz a leitura do console
 				line = is.readLine();

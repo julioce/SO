@@ -22,9 +22,9 @@ public class Cliente implements Runnable{
 	public void setPortNumber(int portNumber) {
 		this.portNumber = portNumber;
 	}
-	
+
+	// Inicializa o servidor
 	public void startCliente(){
-		// Inicializa o servidor
 		// Tenta abrir o socket com o host e o socket
 		// Tenta abrir streams de input e output
 		try {
@@ -55,6 +55,8 @@ public class Cliente implements Runnable{
 				is.close();
 				clientSocket.close();
 				
+				// Termina thread fechando o cliente
+				System.exit(0);
 			} catch (IOException e) {
 				System.err.println("IOException:  " + e);
 			}
@@ -65,16 +67,18 @@ public class Cliente implements Runnable{
 	public void run() {
 		String responseLine;
 	
-		//Recebe informaçõees do socket até receber um término do servidor, depois entramos no break;
+		// Recebe informaçõees do socket até receber um término do servidor
 		try {
 			while ((responseLine = is.readLine()) != null) {
 				System.out.println(responseLine);
+				
+				// Recebeu um término do servidor
 				if (responseLine.indexOf("*** Bye") != -1){
 					break;
 				}
 			}
             
-			//Fecha a conexão
+			// Fecha a conexão
 			closed = true;
 		} catch (IOException e) {
 			System.err.println("Erro: IOException " + e);

@@ -7,7 +7,7 @@ public class Main {
 		// Cria o servidor
 		Servidor servidor = new Servidor();
 
-		// Configura os parâmetros
+		// Configura os parametros
 		servidor.setHost("localhost");
 		servidor.setPortNumber(2222);
 

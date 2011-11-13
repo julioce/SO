@@ -23,7 +23,7 @@ public class Cliente implements Runnable{
 		this.portNumber = portNumber;
 	}
 
-	// Inicializa o servidor
+	// Inicializa o Cliente
 	public void startCliente(){
 		// Tenta abrir o socket com o host e o socket
 		// Tenta abrir streams de input e output
@@ -32,35 +32,36 @@ public class Cliente implements Runnable{
 			inputLine = new BufferedReader(new InputStreamReader(System.in));
 			os = new PrintStream(clientSocket.getOutputStream());
 			is = new DataInputStream(clientSocket.getInputStream());
-		} catch (UnknownHostException e) {
-			System.err.println("Erro: Host não reconhecido: " + host);
-		} catch (IOException e) {
-			System.err.println("Erro: Não foi possível abrir conexões ao host: " + host);
-		}
-	
-
-		// Se não houve erros inicializa o cliente de fato
-		if (clientSocket != null && os != null && is != null) {
-			try {
-				// Cria a thread do Cliente
-				new Thread(new Cliente()).start();
-				
-				// Enquanto não fecha a conexão mostra o input
-				while (!closed) {
-					os.println(inputLine.readLine());	
+			
+			// Se não houve erros inicializa o cliente de fato
+			if (!clientSocket.equals(null) && !os.equals(null) && !is.equals(null)) {
+				try {
+					// Cria a thread do Cliente
+					new Thread(new Cliente()).start();
+					
+					// Enquanto não encerra o servidor a conexão mostra o input
+					while (!closed) {
+						os.println(inputLine.readLine());	
+					}
+					
+					// Limpa o output, input e fecha o socket
+					os.close();
+					is.close();
+					clientSocket.close();
+					
+					// Termina thread fechando o cliente
+					System.exit(0);
+				} catch (Exception e) {
+					System.err.println("Erro: Nao foi possivel ler o comando passado " + e);
 				}
-				
-				// Limpa o output, input e fecha o socket
-				os.close();
-				is.close();
-				clientSocket.close();
-				
-				// Termina thread fechando o cliente
-				System.exit(0);
-			} catch (IOException e) {
-				System.err.println("IOException:  " + e);
 			}
+			
+		} catch (UnknownHostException e) {
+			System.err.println("Erro: Host nao reconhecido: " + host + e);
+		} catch (Exception e) {
+			System.err.println("Erro: Nao foi possível abrir conexoes ao host: " + host + "\n" + e);
 		}
+		
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -69,7 +70,7 @@ public class Cliente implements Runnable{
 	
 		// Recebe informaçõees do socket até receber um término do servidor
 		try {
-			while ((responseLine = is.readLine()) != null) {
+			while ( (responseLine = is.readLine()) != null ) {
 				System.out.println(responseLine);
 				
 				// Recebeu um término do servidor
@@ -77,11 +78,11 @@ public class Cliente implements Runnable{
 					break;
 				}
 			}
-            
+			
 			// Fecha a conexão
 			closed = true;
-		} catch (IOException e) {
-			System.err.println("Erro: IOException " + e);
+		} catch (Exception e) {
+			System.err.println("Erro: Nao foi possivel criar a thread de escuta do servidor " + e);
 		}
 	}
 

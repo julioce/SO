@@ -8,20 +8,15 @@ public class Main {
 	}
 
 	public static void createClient(String host) {
-		if(!View.hostField.getText().equals("")) {
-
-			View.connectButton.setText("Conectado");
-			View.connectButton.setEnabled(false);
-			View.hostField.setEnabled(false);
-			
-			//Cria o cliente
+		if(!View.hostField.getText().equals("")){
+			// Cria o cliente
 			Cliente cliente = new Cliente();
 			
-			//Configura os parâmetros
+			// Configura os parâmetros
 			cliente.setHost(host);
 			cliente.setPortNumber(2222);
 			
-			//Inicia de fato o cliente
+			// Inicia de fato o cliente
 			cliente.startCliente();
 		}
 	}

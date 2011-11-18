@@ -1,8 +1,5 @@
 public class Main {
 
-	/**
-	 * @param args
-	 */
 	public static void main(String[] args) {
 		// Cria o servidor
 		Servidor servidor = new Servidor();

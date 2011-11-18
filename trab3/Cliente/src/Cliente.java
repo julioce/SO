@@ -5,11 +5,11 @@ public class Cliente implements Runnable{
 	
 	static int portNumber;
 	static String host;
+	static String command;
 	static Socket clientSocket = null;
 	static PrintStream os = null;
 	static DataInputStream is = null;
 	static BufferedReader inputLine = null;
-	static boolean closed = false;
 	
 	public Cliente(){}
 
@@ -25,24 +25,23 @@ public class Cliente implements Runnable{
 		// Tenta abrir o socket com o host e o socket
 		// Tenta abrir streams de input e output
 		try {
+			
 			clientSocket = new Socket(host, portNumber);
 			os = new PrintStream(clientSocket.getOutputStream());
 			is = new DataInputStream(clientSocket.getInputStream());
 			
-			
-			
 		} catch (UnknownHostException e) {
 			System.err.println("Erro: Host nao reconhecido: " + host + e);
 		} catch (Exception e) {
-			System.err.println("Erro: Nao foi possível abrir conexoes ao host: " + host + "\n" + e);
+			System.err.println("Erro: Nao foi possivel abrir conexoes ao host: " + host + "\n" + e);
 		}
 	}
 	
 	@SuppressWarnings("deprecation")
 	public void run() {
-		// Recebe informaçõees do socket até receber um término do servidor
+		// Imprime o que é recebido
 		try {
-			os.println(View.commandField.getText());
+			os.println(Cliente.command);
 			System.out.println(is.readLine());
 			
 		} catch (Exception e) {
@@ -50,7 +49,8 @@ public class Cliente implements Runnable{
 		}
 	}
 
-	public static void execute() {
+	public static void execute(String command) {
+		Cliente.command = command;
 		new Thread(new Cliente()).run();
 	}
 

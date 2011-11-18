@@ -24,10 +24,10 @@ public class View extends JPanel implements ActionListener {
 	
 	public static JLabel labelHost = new JLabel();
 	public static JTextField hostField = new JTextField();
-	public static JTextField commandField = new JTextField();
-	
 	public static JButton connectButton = new JButton();
-	public static JButton executeButton = new JButton();
+	
+	public static JButton listButton = new JButton();
+	public static JButton disconnectButton = new JButton();
 	
 	public View(){
 		// Construtor
@@ -50,24 +50,27 @@ public class View extends JPanel implements ActionListener {
 		connectButton.setToolTipText("Clique aqui para conectar ao servidor");
 		connectButton.setBounds(190, 40, 120, 25);
 		
-		/* Campo de comando */
-		commandField.setText("");
-		commandField.setBounds(10, 80, 140, 25);
-		
-		/* Execute button */
-		executeButton.addActionListener(this);
-		executeButton.setText("Executar");
-		executeButton.setActionCommand("execute");
-		executeButton.setToolTipText("Clique aqui para executar o comando");
-		executeButton.setBounds(160, 80, 120, 25);
+		/* List button */
+		listButton.addActionListener(this);
+		listButton.setText("Listar");
+		listButton.setActionCommand("ls");
+		listButton.setToolTipText("Clique aqui para listar os arquivos no Servidor");
+		listButton.setBounds(10, 110, 120, 25);
+
+		/* Disconnect button */
+		disconnectButton.addActionListener(this);
+		disconnectButton.setText("Desconectar");
+		disconnectButton.setActionCommand("disconnect");
+		disconnectButton.setToolTipText("Clique aqui para desconectar do Servidor");
+		disconnectButton.setBounds(10, 130, 120, 25);
 		
 		/* Adiciona tudo a janela */
 		window.add(labelTitulo);
 		window.add(labelHost);
 		window.add(hostField);
 		window.add(connectButton);
-		window.add(commandField);
-		window.add(executeButton);
+		window.add(listButton);
+		window.add(disconnectButton);
 		window.add(this);
 		window.add(new Canvas());
 		
@@ -82,18 +85,37 @@ public class View extends JPanel implements ActionListener {
 	
 	
 	public void actionPerformed(ActionEvent arg0) {
+		
+		// Comando de conectar
 		if(arg0.getActionCommand().equals("connect")) {
-			
 			// Configura os parâmetros
 			Cliente.setHost(View.hostField.getText());
 			Cliente.setPortNumber(2222);
 			
 			// Inicia de fato o cliente
 			Cliente.startCliente();
+			
+			// Desabilita o input de host
+			labelHost.setEnabled(false);
+			hostField.setEnabled(false);
+			connectButton.setText("Conectado..");
+			connectButton.setEnabled(false);
 		}
 		
-		if(arg0.getActionCommand().equals("execute")){
-			Cliente.execute();
+		// Comando de listar
+		if(arg0.getActionCommand().equals("ls")){
+			Cliente.execute("ls");
+		}
+		
+		// Comando de desconectar
+		if(arg0.getActionCommand().equals("disconnect")){
+			Cliente.execute("disconnect");
+			
+			// Habilita o input de host
+			labelHost.setEnabled(true);
+			hostField.setEnabled(true);
+			connectButton.setText("Conectar");
+			connectButton.setEnabled(true);
 		}
 	}
 

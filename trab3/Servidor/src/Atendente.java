@@ -20,10 +20,10 @@ class Atendente extends Thread {
 	}
 	
 	// Imprime a mensagem para o Atendente
-	private void printMessageClient(String name, String line){
+	private void printMessageClient(String line){
 		for (int i = 0; i < numbersOfClients; i++) {
 			if (t[i] != null) {
-				t[i].os.println("<" + name + "> " + line);
+				t[i].os.println(line);
 			}
 		}
 	}
@@ -75,14 +75,10 @@ class Atendente extends Thread {
 	@SuppressWarnings("deprecation")
 	public void run() {
 		String line;
-		String name;
 
 		try {
 			is = new DataInputStream(clientSocket.getInputStream());
 			os = new PrintStream(clientSocket.getOutputStream());
-			os.println("Digite o seu nome:");
-			name = is.readLine();
-			os.println("Bem-vindo " + name + ".\nPara deixar o sistema digite /quit como mensagem");
 
 			// Loop de execução
 			while (true) {
@@ -90,14 +86,14 @@ class Atendente extends Thread {
 				line = is.readLine();
 				
 				// Sai do loop se digitado palavra chave
-				if (line.startsWith("/quit")) {
+				if (line == null) {
 					break;
 				}else{
 					line = runCommand(line);
 				}
 
 				// Imprime a mensagem para o Atendente
-				printMessageClient(name, line);
+				printMessageClient(line);
 			}
 
 			// Imprime mensagem para o Servidor

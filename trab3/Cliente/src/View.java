@@ -24,8 +24,10 @@ public class View extends JPanel implements ActionListener {
 	
 	public static JLabel labelHost = new JLabel();
 	public static JTextField hostField = new JTextField();
+	public static JTextField commandField = new JTextField();
 	
 	public static JButton connectButton = new JButton();
+	public static JButton executeButton = new JButton();
 	
 	public View(){
 		// Construtor
@@ -39,20 +41,33 @@ public class View extends JPanel implements ActionListener {
 		
 		/* Campo de host */
 		labelHost.setText("Host:");
-		labelHost.setBounds(10, 40, 40, 30);
+		labelHost.setBounds(10, 40, 40, 25);
 		hostField.setText("");
-		hostField.setBounds(50, 40, 140, 30);
+		hostField.setBounds(50, 40, 140, 25);
 		connectButton.addActionListener(this);
 		connectButton.setText("Conectar");
-		connectButton.setActionCommand("conectar");
+		connectButton.setActionCommand("connect");
 		connectButton.setToolTipText("Clique aqui para conectar ao servidor");
-		connectButton.setBounds(190, 40, 200, 30);
+		connectButton.setBounds(190, 40, 120, 25);
+		
+		/* Campo de comando */
+		commandField.setText("");
+		commandField.setBounds(10, 80, 140, 25);
+		
+		/* Execute button */
+		executeButton.addActionListener(this);
+		executeButton.setText("Executar");
+		executeButton.setActionCommand("execute");
+		executeButton.setToolTipText("Clique aqui para executar o comando");
+		executeButton.setBounds(160, 80, 120, 25);
 		
 		/* Adiciona tudo a janela */
+		window.add(labelTitulo);
 		window.add(labelHost);
 		window.add(hostField);
 		window.add(connectButton);
-		window.add(labelTitulo);
+		window.add(commandField);
+		window.add(executeButton);
 		window.add(this);
 		window.add(new Canvas());
 		
@@ -67,8 +82,18 @@ public class View extends JPanel implements ActionListener {
 	
 	
 	public void actionPerformed(ActionEvent arg0) {
-		if(arg0.getActionCommand().equals("conectar")) {
-			Main.createClient(hostField.getText());
+		if(arg0.getActionCommand().equals("connect")) {
+			
+			// Configura os parâmetros
+			Cliente.setHost(View.hostField.getText());
+			Cliente.setPortNumber(2222);
+			
+			// Inicia de fato o cliente
+			Cliente.startCliente();
+		}
+		
+		if(arg0.getActionCommand().equals("execute")){
+			Cliente.execute();
 		}
 	}
 

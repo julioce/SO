@@ -93,7 +93,7 @@ class Atendente extends Thread {
 				line = inputStream.readLine();
 				
 				// Sai do loop se digitado palavra chave
-				if (line.startsWith("disconnect")) {
+				if (line.contains("disconnect")) {
 					// Imprime mensagem de saída para o Servidor
 					printMessageOutServer();
 
@@ -106,6 +106,8 @@ class Atendente extends Thread {
 					cleanServer();
 					
 					break;
+				}else if(line.contains("pwd")){ 
+				
 				}else{
 					// Executa o comando normalmente
 					line = runCommand(line);	

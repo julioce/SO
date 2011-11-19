@@ -18,39 +18,39 @@ public class Servidor {
 		}
 	}
 
+	// Configura o host
 	public void setHost(String host) {
 		this.host = host;
 	}
 
+	// Configura a port
 	public void setPortNumber(int portNumber) {
 		this.portNumber = portNumber;
 	}
 
 	public void startServidor() {
 
-		// Inicializa do servidor na porta - deve ser > 1023 se nao for root
+		// Inicializa do servidor na porta. Deve ser > 1023 se nao for root
 		try {
 			serverSocket = new ServerSocket(this.portNumber);
-			System.out.println("Servidor criado em " + this.host + " na porta " + this.portNumber);
-			System.out.println("Foram criadas " + numberOfClients + " instancias de threads para atender " + numberOfClients + " clientes");
+			System.out.println("Servidor criado em " + this.host);
+			System.out.println("Foram criadas " + numberOfClients + " Threads Atendentes para " + numberOfClients + " Clientes");
 			
-			
-			// Input e output
 			// Input e output para este socket serao criados na thread do cliente
 			while(true){
 				try {
 					// Cria o objeto do tipo ServerSocket para ouvir e aceitar conexoes
 					clientSocket = serverSocket.accept();
 
-					// Cria as threads de acordo com o limite de clientes servidos
+					// Cria as threads de Atendentes com o limite de clientes servidos
 					for (int i = 0; i < numberOfClients; i++) {
 						if (t[i] == null) {
 							t[i] = new Atendente(clientSocket, t);
 							t[i].start();
+							System.out.println("Um novo Cliente se conectou a Thread Atendente " + (i+1));
 							break;
 						}
 					}
-					System.out.println("Um novo cliente se conectou em " + clientSocket.getLocalAddress());
 					
 				} catch (Exception e) {
 					System.err.println("Erro ao criar Clientes para o Servidor " + e);
@@ -59,7 +59,8 @@ public class Servidor {
 			
 			
 		} catch (Exception e) {
-			System.err.println("Erro ao criar o Servidor em " + this.host + " na porta " + this.portNumber + "\nErro" + e);
+			System.err.println("Erro ao criar o Servidor em " + this.host + " na porta " + this.portNumber);
+			System.err.println("Erro" + e);
 		}
 		
 	}

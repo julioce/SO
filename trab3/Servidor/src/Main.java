@@ -8,7 +8,7 @@ public class Main {
 		servidor.setHost("localhost");
 		servidor.setPortNumber(2222);
 
-		// Inicia de fato o cliente
+		// Inicia de fato o Servidor
 		servidor.startServidor();
 	}
 

@@ -39,10 +39,12 @@ public class Cliente implements Runnable{
 	
 	@SuppressWarnings("deprecation")
 	public void run() {
-		// Imprime o que é recebido
 		try {
+			// Envia o comando
 			os.println(Cliente.command);
-			System.out.println(is.readLine());
+			
+			// Imprime o que é recebido
+			View.outputTextArea.setText(is.readLine());
 			
 		} catch (Exception e) {
 			System.err.println("Erro: Nao foi possivel criar a thread de escuta do servidor " + e);

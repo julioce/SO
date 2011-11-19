@@ -11,6 +11,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 
 
@@ -29,6 +30,8 @@ public class View extends JPanel implements ActionListener {
 	public static JButton listButton = new JButton();
 	public static JButton disconnectButton = new JButton();
 	
+	public static JTextArea outputTextArea = new JTextArea();
+	
 	public View(){
 		// Construtor
 	}
@@ -41,14 +44,14 @@ public class View extends JPanel implements ActionListener {
 		
 		/* Campo de host */
 		labelHost.setText("Host:");
-		labelHost.setBounds(10, 40, 40, 25);
+		labelHost.setBounds(10, 50, 40, 25);
 		hostField.setText("");
-		hostField.setBounds(50, 40, 140, 25);
+		hostField.setBounds(50, 50, 140, 25);
 		connectButton.addActionListener(this);
 		connectButton.setText("Conectar");
 		connectButton.setActionCommand("connect");
 		connectButton.setToolTipText("Clique aqui para conectar ao servidor");
-		connectButton.setBounds(190, 40, 120, 25);
+		connectButton.setBounds(190, 50, 120, 25);
 		
 		/* List button */
 		listButton.addActionListener(this);
@@ -62,7 +65,13 @@ public class View extends JPanel implements ActionListener {
 		disconnectButton.setText("Desconectar");
 		disconnectButton.setActionCommand("disconnect");
 		disconnectButton.setToolTipText("Clique aqui para desconectar do Servidor");
-		disconnectButton.setBounds(10, 130, 120, 25);
+		disconnectButton.setBounds(10, 140, 120, 25);
+		
+		/* outputTextArea */
+		outputTextArea.setEditable(false);
+		outputTextArea.setAutoscrolls(true);
+		outputTextArea.setToolTipText("Resposta enviada pelo Servidor");
+		outputTextArea.setBounds(140, 100, 620, 440);
 		
 		/* Adiciona tudo a janela */
 		window.add(labelTitulo);
@@ -71,6 +80,8 @@ public class View extends JPanel implements ActionListener {
 		window.add(connectButton);
 		window.add(listButton);
 		window.add(disconnectButton);
+		window.add(outputTextArea);
+		switchButtons(false);
 		window.add(this);
 		window.add(new Canvas());
 		
@@ -88,18 +99,17 @@ public class View extends JPanel implements ActionListener {
 		
 		// Comando de conectar
 		if(arg0.getActionCommand().equals("connect")) {
-			// Configura os parâmetros
-			Cliente.setHost(View.hostField.getText());
-			Cliente.setPortNumber(2222);
-			
-			// Inicia de fato o cliente
-			Cliente.startCliente();
-			
-			// Desabilita o input de host
-			labelHost.setEnabled(false);
-			hostField.setEnabled(false);
-			connectButton.setText("Conectado..");
-			connectButton.setEnabled(false);
+			if(!View.hostField.getText().isEmpty()){
+				// Configura os parâmetros
+				Cliente.setHost(View.hostField.getText());
+				Cliente.setPortNumber(2222);
+				
+				// Inicia de fato o cliente
+				Cliente.startCliente();
+				
+				// Desabilita o input de host
+				switchButtons(true);
+			}
 		}
 		
 		// Comando de listar
@@ -112,10 +122,21 @@ public class View extends JPanel implements ActionListener {
 			Cliente.execute("disconnect");
 			
 			// Habilita o input de host
-			labelHost.setEnabled(true);
-			hostField.setEnabled(true);
+			switchButtons(false);
+		}
+	}
+	
+	private void switchButtons(boolean status){
+		listButton.setEnabled(status);
+		disconnectButton.setEnabled(status);
+		
+		labelHost.setEnabled(!status);
+		hostField.setEnabled(!status);
+		connectButton.setEnabled(!status);
+		if(status){
+			connectButton.setText("Conectado..");
+		}else{
 			connectButton.setText("Conectar");
-			connectButton.setEnabled(true);
 		}
 	}
 

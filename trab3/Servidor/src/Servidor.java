@@ -12,7 +12,7 @@ public class Servidor {
 	static Atendente t[] = new Atendente[numberOfClients];
 
 	public Servidor() {
-		// Cria as threads de acordo com o limite de clientes servidos
+		// Cria o vetor de acordo com o limite de clientes servidos
 		for (int i = 0; i < numberOfClients; i++) {
 			t[i] = null;
 		}
@@ -53,14 +53,13 @@ public class Servidor {
 					}
 					
 				} catch (Exception e) {
-					System.err.println("Erro ao criar Clientes para o Servidor " + e);
+					System.err.println("Erro ao criar Clientes para o Servidor");
 				}
 			}
 			
 			
 		} catch (Exception e) {
 			System.err.println("Erro ao criar o Servidor em " + this.host + " na porta " + this.portNumber);
-			System.err.println("Erro" + e);
 		}
 		
 	}

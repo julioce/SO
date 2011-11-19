@@ -3,13 +3,13 @@ import java.net.*;
 
 public class Cliente implements Runnable{
 	
-	static int portNumber;
 	static String host;
-	static String command;
+	static int portNumber;
 	static Socket clientSocket = null;
-	static PrintStream os = null;
-	static DataInputStream is = null;
+	static PrintStream outputStream = null;
+	static DataInputStream inputStream = null;
 	static BufferedReader inputLine = null;
+	static String command;
 	
 	public Cliente(){}
 
@@ -22,33 +22,42 @@ public class Cliente implements Runnable{
 	}
 	
 	public static void startCliente(){
-		// Tenta abrir o socket com o host e o socket
+		// Tenta abrir o socket com o host e port
 		// Tenta abrir streams de input e output
 		try {
 			
 			clientSocket = new Socket(host, portNumber);
-			os = new PrintStream(clientSocket.getOutputStream());
-			is = new DataInputStream(clientSocket.getInputStream());
+			outputStream = new PrintStream(clientSocket.getOutputStream());
+			inputStream = new DataInputStream(clientSocket.getInputStream());
 			
 		} catch (UnknownHostException e) {
-			System.err.println("Erro: Host nao reconhecido: " + host + e);
+			System.err.println("Erro: Host nao reconhecido: " + host);
 		} catch (Exception e) {
-			System.err.println("Erro: Nao foi possivel abrir conexoes ao host: " + host + "\n" + e);
+			System.err.println("Erro: Nao foi possivel abrir conexoes ao host " + host + " na porta " + portNumber);
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void run() {
+		String print = "";
+		
+		// Faz a leitura
 		try {
-			// Envia o comando
-			os.println(Cliente.command);
+			// Envia o comando que foi clicado
+			outputStream.println(Cliente.command);
+						
+			InputStreamReader isr = new InputStreamReader(inputStream);
+			BufferedReader br = new BufferedReader(isr);
 			
-			// Imprime o que é recebido
-			View.outputTextArea.setText(is.readLine());
+			print = br.readLine();
+			print = print.replace("@end#", "\n");
+
+			// Imprime no campo
+			View.outputTextArea.setText(print);
 			
-		} catch (Exception e) {
-			System.err.println("Erro: Nao foi possivel criar a thread de escuta do servidor " + e);
-		}
+		} catch (IOException e) {
+			System.err.println("Erro: Nao foi possivel ter conexao com o servidor");
+		} catch (NullPointerException e){}
+		
 	}
 
 	public static void execute(String command) {

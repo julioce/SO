@@ -46,10 +46,12 @@ class Atendente extends Thread {
 	}
 	
 
+	// Executa o comando solicitado e retorna a sua saída
 	private String runCommand(String command){
 		Runtime runtime = Runtime.getRuntime();
 		Process process = null;
-		String commandOutput = null;
+		String commandOutput = "";
+		String readLine = "";
 		
 		// Tenta executar o commando
 		try {
@@ -64,12 +66,17 @@ class Atendente extends Thread {
 			InputStream is = process.getInputStream();
 			InputStreamReader isr = new InputStreamReader(is);
 			BufferedReader br = new BufferedReader(isr);
-			commandOutput = br.readLine();
+			
+			while( (readLine = br.readLine()) != null) {  
+				commandOutput += readLine + "@end#";
+			}
+			
 		} catch (Exception e) {
-			System.err.println("Erro ao obter outputStream comandos.");
+			System.err.println("Erro ao obter saida de comandos.");
 		}
 		
 		return commandOutput;
+		
 	}
 
 	@SuppressWarnings("deprecation")

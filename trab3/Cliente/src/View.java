@@ -33,10 +33,6 @@ public class View extends JPanel implements ActionListener {
 	public static JTextArea outputTextArea = new JTextArea();
 	
 	public View(){
-		// Construtor
-	}
-	
-	public void startView(){
 		/* Label do trabalho */
 		labelTitulo.setText("Cliente de Arquivos");
 		labelTitulo.setFont(new Font("Arial", Font.BOLD, 22));
@@ -134,7 +130,7 @@ public class View extends JPanel implements ActionListener {
 		hostField.setEnabled(!status);
 		connectButton.setEnabled(!status);
 		if(status){
-			connectButton.setText("Conectado..");
+			connectButton.setText("Conectado");
 		}else{
 			connectButton.setText("Conectar");
 		}

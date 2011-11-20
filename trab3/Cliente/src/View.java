@@ -53,66 +53,66 @@ public class View extends JPanel implements ActionListener {
 		labelTitulo.setBounds((800/2)-105, 10, (600/2)+105, 30);
 		
 		/* Campo de host */
-		labelHost.setText("Host:");
-		labelHost.setBounds(10, 50, 40, 25);
+		labelHost.setText("Host");
+		labelHost.setBounds(15, 55, 40, 25);
 		hostField.setText("");
-		hostField.setBounds(50, 50, 140, 25);
+		hostField.setBounds(50, 55, 140, 25);
 		connectButton.addActionListener(this);
 		connectButton.setText("Conectar");
 		connectButton.setActionCommand("connect");
 		connectButton.setToolTipText("Clique aqui para conectar ao servidor");
-		connectButton.setBounds(190, 50, 120, 25);
+		connectButton.setBounds(190, 55, 120, 25);
 		
 		/* List Server Button */
 		listServerButton.addActionListener(this);
-		listServerButton.setText("Listar Servidor");
+		listServerButton.setText("Listar");
 		listServerButton.setActionCommand("ls");
 		listServerButton.setToolTipText("Clique aqui para listar os arquivos no Servidor");
-		listServerButton.setBounds(10, 130, 120, 25);
+		listServerButton.setBounds(10, 125, 120, 25);
 		
 		/* List Client Button */
 		listClientButton.addActionListener(this);
-		listClientButton.setText("Listar Cliente");
+		listClientButton.setText("Listar");
 		listClientButton.setActionCommand("client");
 		listClientButton.setToolTipText("Clique aqui para listar os arquivos Locais");
-		listClientButton.setBounds(10, 160, 120, 25);
+		listClientButton.setBounds(670, 125, 120, 25);
 		
 		/* Server Info Button */
 		fileInfoServerButton.addActionListener(this);
 		fileInfoServerButton.setText("Informações");
 		fileInfoServerButton.setActionCommand("infoServer");
 		fileInfoServerButton.setToolTipText("Clique aqui para mais informações do Servidor");
-		fileInfoServerButton.setBounds(10, 190, 120, 25);
+		fileInfoServerButton.setBounds(10, 165, 120, 25);
 
 		/* Client Info Button */
 		fileInfoClientButton.addActionListener(this);
 		fileInfoClientButton.setText("Informações");
 		fileInfoClientButton.setActionCommand("infoClient");
 		fileInfoClientButton.setToolTipText("Clique aqui para mais informações do Cliente");
-		fileInfoClientButton.setBounds(10, 220, 120, 25);
+		fileInfoClientButton.setBounds(670, 165, 120, 25);
 		
 		/* Server File List */
 		labelServer.setText("Servidor");
-		labelServer.setBounds(140, 100, 70, 25);
+		labelServer.setBounds(170, 105, 70, 25);
 		ServerList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		ServerList.setLayoutOrientation(JList.VERTICAL);
 		ServerList.setVisibleRowCount(-1);
-		ServerList.setBounds(140, 135, 300, 430);
+		ServerList.setBounds(140, 130, 245, 430);
 		
 		/* Client File List */
 		labelClient.setText("Local");
-		labelClient.setBounds(470, 100, 50, 25);
+		labelClient.setBounds(590, 105, 50, 25);
 		ClientList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		ClientList.setLayoutOrientation(JList.VERTICAL);
 		ClientList.setVisibleRowCount(-1);
-		ClientList.setBounds(470, 135, 300, 430);
+		ClientList.setBounds(410, 130, 245, 430);
 
 		/* Disconnect button */
 		disconnectButton.addActionListener(this);
 		disconnectButton.setText("Desconectar");
 		disconnectButton.setActionCommand("disconnect");
 		disconnectButton.setToolTipText("Clique aqui para desconectar do Servidor");
-		disconnectButton.setBounds(10, 540, 120, 25);
+		disconnectButton.setBounds(670, 55, 120, 25);
 		
 		switchButtons(false);
 		/* Adiciona tudo a janela */
@@ -226,7 +226,7 @@ public class View extends JPanel implements ActionListener {
 		ClientList.setEnabled(status);
 	}
 
-
+	// Abre uma janela com a mensagem passada
 	public static void showMessage(String information) {
 		JOptionPane.showMessageDialog(View.window, information);
 	}
@@ -240,9 +240,17 @@ class Canvas extends JComponent {
 		Graphics2D g2 = (Graphics2D) g;
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
-		/* Desenha pequenas Bordas */
-		g2.setPaint(new Color(120, 120, 120));
-		g2.drawRect(139, 134, 301, 431);
-		g2.drawRect(469, 134, 301, 431);
+		g2.setPaint(new Color(230, 230, 230));
+		g2.fillRect(10, 47, 780, 40);
+		g2.fillRect(10, 102, 385, 465);
+		g2.fillRect(400, 101, 391, 466);
+		
+		g2.setPaint(new Color(180, 180, 180));
+		g2.drawRect(9, 46, 781, 41);
+		g2.drawRect(9, 101, 386, 466);
+		g2.drawRect(409, 129, 246, 431);
+		g2.drawRect(400, 101, 391, 466);
+		g2.drawRect(139, 129, 246, 431);
+		
 	}
 }

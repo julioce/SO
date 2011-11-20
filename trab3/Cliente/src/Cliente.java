@@ -20,31 +20,38 @@ public class Cliente implements Runnable{
 	public static void setPortNumber(int portNumber) {
 		Cliente.portNumber = portNumber;
 	}
-	
-	public static void startCliente(){
-		// Tenta abrir o socket com o host e port
-		// Tenta abrir streams de input e output
+
+	public static void setCommand(String command) {
+		Cliente.command = command;
+	}
+
+	public static boolean startCliente(){
+		// Tenta abrir o socket com o host e port e abrir streams de input e output
 		try {
 			
 			clientSocket = new Socket(host, portNumber);
 			outputStream = new PrintStream(clientSocket.getOutputStream());
 			inputStream = new DataInputStream(clientSocket.getInputStream());
+			return(true);
 			
 		} catch (UnknownHostException e) {
-			System.err.println("Erro: Host nao reconhecido: " + host);
+			View.showMessage("Host não reconhecido: " + host);
+			return(false);
 		} catch (Exception e) {
-			System.err.println("Erro: Nao foi possivel abrir conexoes ao host " + host + " na porta " + portNumber);
+			View.showMessage("Não foi possível abrir conexões ao host " + host + " na porta " + portNumber);
+			return(false);
 		}
+		
 	}
 	
 	// Executa o comando solicitado Localmente
 	public static void runLocalCommand(String command){
-		Runtime runtime = Runtime.getRuntime();
 		Process process = null;
-		String readLine = "";
+		String print = "";
 		
 		// Tenta executar o commando
 		try {
+			Runtime runtime = Runtime.getRuntime();
 			process = runtime.exec(command);
 		} catch (Exception e) {}
 		
@@ -54,19 +61,28 @@ public class Cliente implements Runnable{
 			InputStreamReader isr = new InputStreamReader(is);
 			BufferedReader br = new BufferedReader(isr);
 			
-			View.ClientFileList.clear();
-			while( (readLine = br.readLine()) != null) {  
-				View.ClientFileList.addElement(readLine);
+			// Determina o que fazer na View baseado no que foi enviado ao Servidor	
+			if (Cliente.command.equalsIgnoreCase("ls")) {
+				View.ClientFileList.clear();
+				while((print = br.readLine()) != null){
+					View.ClientFileList.addElement(print);
+				}
+				
+			}else if(command.startsWith("ls -ltr ")){ 
+				// Abre uma janela modal
+				while((print = br.readLine()) != null){
+					View.showMessage(print);
+				}
 			}
 			
 		} catch (Exception e) {
-			System.err.println("Erro ao obter saida de comandos.");
+			View.showMessage("Erro ao obter saida de comandos.");
 		}
 	}
 	
 	public void run() {
-		String print = "";
-		String[] output = null;
+		String output = "";
+		String[] print = null;
 		
 		// Faz a leitura
 		try {
@@ -76,23 +92,34 @@ public class Cliente implements Runnable{
 			// Recebe o que foi processado
 			InputStreamReader isr = new InputStreamReader(inputStream);
 			BufferedReader br = new BufferedReader(isr);
-			print = br.readLine();
-			output = print.split("@end#");
+			output = br.readLine();
+			print = output.split("//");
 			
-			View.ServerFileList.clear();
-			for(int i=0; i<output.length; i++){
-				// Imprime no campo
-				View.ServerFileList.addElement(output[i]);
+			// Determina o que fazer na View baseado no que foi enviado ao Servidor
+			if (Cliente.command.equalsIgnoreCase("ls")) {
+				View.ServerFileList.clear();
+				for(int i=0; i<print.length; i++){
+					// Imprime no campo
+					View.ServerFileList.addElement(print[i]);
+				}
+				
+			}else if(Cliente.command.startsWith("ls -ltr ")){ 
+				// Abre uma janela modal
+				for(int i=0; i<print.length; i++){
+					View.showMessage(print[i]);
+				}
+				
 			}
 			
 		} catch (IOException e) {
-			System.err.println("Erro: Nao foi possivel ter conexao com o servidor");
+			View.showMessage("Não foi possível ter conexão com o servidor");
 		} catch (NullPointerException e){}
 		
 	}
 
 	public static void execute(String command) {
-		Cliente.command = command;
+		// Configura o comando e inicia uma nova Thread
+		setCommand(command);
 		new Thread(new Cliente()).run();
 	}
 

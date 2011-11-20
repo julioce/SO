@@ -13,6 +13,7 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
@@ -32,7 +33,8 @@ public class View extends JPanel implements ActionListener {
 	
 	public static JButton listServerButton = new JButton();
 	public static JButton listClientButton = new JButton();
-	public static JButton disconnectButton = new JButton();
+	public static JButton fileInfoServerButton = new JButton();
+	public static JButton fileInfoClientButton = new JButton();
 	
 	public static JLabel labelServer = new JLabel();
 	public static DefaultListModel ServerFileList = new DefaultListModel();
@@ -41,6 +43,8 @@ public class View extends JPanel implements ActionListener {
 	public static JLabel labelClient = new JLabel();
 	public static DefaultListModel ClientFileList = new DefaultListModel();
 	public static JList ClientList = new JList(ClientFileList);
+	
+	public static JButton disconnectButton = new JButton();
 	
 	public View(){
 		/* Label do trabalho */
@@ -72,13 +76,20 @@ public class View extends JPanel implements ActionListener {
 		listClientButton.setActionCommand("client");
 		listClientButton.setToolTipText("Clique aqui para listar os arquivos Locais");
 		listClientButton.setBounds(10, 160, 120, 25);
+		
+		/* Server Info Button */
+		fileInfoServerButton.addActionListener(this);
+		fileInfoServerButton.setText("Informações");
+		fileInfoServerButton.setActionCommand("infoServer");
+		fileInfoServerButton.setToolTipText("Clique aqui para mais informações do Servidor");
+		fileInfoServerButton.setBounds(10, 190, 120, 25);
 
-		/* Disconnect button */
-		disconnectButton.addActionListener(this);
-		disconnectButton.setText("Desconectar");
-		disconnectButton.setActionCommand("disconnect");
-		disconnectButton.setToolTipText("Clique aqui para desconectar do Servidor");
-		disconnectButton.setBounds(10, 540, 120, 25);
+		/* Client Info Button */
+		fileInfoClientButton.addActionListener(this);
+		fileInfoClientButton.setText("Informações");
+		fileInfoClientButton.setActionCommand("infoClient");
+		fileInfoClientButton.setToolTipText("Clique aqui para mais informações do Cliente");
+		fileInfoClientButton.setBounds(10, 220, 120, 25);
 		
 		/* Server File List */
 		labelServer.setText("Servidor");
@@ -95,7 +106,15 @@ public class View extends JPanel implements ActionListener {
 		ClientList.setLayoutOrientation(JList.VERTICAL);
 		ClientList.setVisibleRowCount(-1);
 		ClientList.setBounds(470, 135, 300, 430);
+
+		/* Disconnect button */
+		disconnectButton.addActionListener(this);
+		disconnectButton.setText("Desconectar");
+		disconnectButton.setActionCommand("disconnect");
+		disconnectButton.setToolTipText("Clique aqui para desconectar do Servidor");
+		disconnectButton.setBounds(10, 540, 120, 25);
 		
+		switchButtons(false);
 		/* Adiciona tudo a janela */
 		window.add(labelTitulo);
 		window.add(labelHost);
@@ -104,13 +123,14 @@ public class View extends JPanel implements ActionListener {
 		
 		window.add(listServerButton);
 		window.add(listClientButton);
+		window.add(fileInfoServerButton);
+		window.add(fileInfoClientButton);
 		window.add(disconnectButton);
 		
 		window.add(labelServer);
 		window.add(ServerList);
 		window.add(labelClient);
 		window.add(ClientList);
-		switchButtons(false);
 		window.add(this);
 		window.add(new Canvas());
 		
@@ -133,11 +153,12 @@ public class View extends JPanel implements ActionListener {
 				Cliente.setHost(View.hostField.getText());
 				Cliente.setPortNumber(2222);
 				
-				// Inicia de fato o cliente
-				Cliente.startCliente();
+				// Verifica se foi possível iniciar o cliente
+				if(Cliente.startCliente()){
+					// Desabilita o input de host
+					switchButtons(true);
+				}
 				
-				// Desabilita o input de host
-				switchButtons(true);
 			}
 		}
 		
@@ -149,6 +170,28 @@ public class View extends JPanel implements ActionListener {
 		// Comando de listar local
 		if(arg0.getActionCommand().equals("client")){
 			Cliente.runLocalCommand("ls");
+		}
+		
+		// Comando de informações de arquivos dos Servidor
+		if(arg0.getActionCommand().equals("infoServer")){
+			if(ServerList.getSelectedIndex() > 1){
+				Object[] selected = ServerList.getSelectedValues();
+				
+				for(int i=0; i<selected.length; i++){
+					Cliente.execute("ls -ltr " + selected[i]);
+				}	
+			}
+		}
+		
+		// Comando de informações de arquivos dos Cliente
+		if(arg0.getActionCommand().equals("infoClient")){
+			if(ClientList.getSelectedIndex() > 1){
+				Object[] selected = ClientList.getSelectedValues();
+				
+				for(int i=0; i<selected.length; i++){
+					Cliente.runLocalCommand("ls -ltr " + selected[i]);
+				}	
+			}
 		}
 		
 		// Comando de desconectar
@@ -173,12 +216,19 @@ public class View extends JPanel implements ActionListener {
 		
 		listServerButton.setEnabled(status);
 		listClientButton.setEnabled(status);
+		fileInfoServerButton.setEnabled(status);
+		fileInfoClientButton.setEnabled(status);
 		disconnectButton.setEnabled(status);
 		
 		labelServer.setEnabled(status);
 		ServerList.setEnabled(status);
 		labelClient.setEnabled(status);
 		ClientList.setEnabled(status);
+	}
+
+
+	public static void showMessage(String information) {
+		JOptionPane.showMessageDialog(View.window, information);
 	}
 
 }

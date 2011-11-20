@@ -68,7 +68,7 @@ class Atendente extends Thread {
 			BufferedReader br = new BufferedReader(isr);
 			
 			while( (readLine = br.readLine()) != null) {  
-				commandOutput += readLine + "@end#";
+				commandOutput += readLine + "//";
 			}
 			
 		} catch (Exception e) {
@@ -93,7 +93,7 @@ class Atendente extends Thread {
 				line = inputStream.readLine();
 				
 				// Sai do loop se digitado palavra chave
-				if (line.contains("disconnect")) {
+				if (line.equalsIgnoreCase("disconnect")) {
 					// Imprime mensagem de saída para o Servidor
 					printMessageOutServer();
 
@@ -106,11 +106,9 @@ class Atendente extends Thread {
 					cleanServer();
 					
 					break;
-				}else if(line.contains("pwd")){ 
-				
 				}else{
 					// Executa o comando normalmente
-					line = runCommand(line);	
+					line = runCommand(line);
 				}
 				
 				// Imprime a mensagem para o Cliente

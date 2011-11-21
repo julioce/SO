@@ -47,13 +47,15 @@ public class Cliente implements Runnable{
 	// Executa o comando solicitado Localmente
 	public static void runLocalCommand(String command){
 		Process process = null;
-		String print = "";
+		String print = null;
 		
-		// Tenta executar o commando
+		// Tenta executar o comando
 		try {
 			Runtime runtime = Runtime.getRuntime();
 			process = runtime.exec(command);
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			View.showMessage("Erro ao executar o comando.");
+		}
 		
 		// Tenta ler a saida do comando
 		try {
@@ -62,7 +64,7 @@ public class Cliente implements Runnable{
 			BufferedReader br = new BufferedReader(isr);
 			
 			// Determina o que fazer na View baseado no que foi enviado ao Servidor	
-			if (Cliente.command.equalsIgnoreCase("ls")) {
+			if (command.equalsIgnoreCase("ls")) {
 				View.ClientFileList.clear();
 				while((print = br.readLine()) != null){
 					View.ClientFileList.addElement(print);

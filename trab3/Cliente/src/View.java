@@ -66,14 +66,14 @@ public class View extends JPanel implements ActionListener {
 		/* List Server Button */
 		listServerButton.addActionListener(this);
 		listServerButton.setText("Listar");
-		listServerButton.setActionCommand("ls");
+		listServerButton.setActionCommand("serverList");
 		listServerButton.setToolTipText("Clique aqui para listar os arquivos no Servidor");
 		listServerButton.setBounds(10, 125, 120, 25);
 		
 		/* List Client Button */
 		listClientButton.addActionListener(this);
 		listClientButton.setText("Listar");
-		listClientButton.setActionCommand("client");
+		listClientButton.setActionCommand("clientList");
 		listClientButton.setToolTipText("Clique aqui para listar os arquivos Locais");
 		listClientButton.setBounds(670, 125, 120, 25);
 		
@@ -163,18 +163,18 @@ public class View extends JPanel implements ActionListener {
 		}
 		
 		// Comando de listar Servidor
-		if(arg0.getActionCommand().equals("ls")){
+		if(arg0.getActionCommand().equals("serverList")){
 			Cliente.execute("ls");
 		}
 		
 		// Comando de listar local
-		if(arg0.getActionCommand().equals("client")){
+		if(arg0.getActionCommand().equals("clientList")){
 			Cliente.runLocalCommand("ls");
 		}
 		
 		// Comando de informações de arquivos dos Servidor
 		if(arg0.getActionCommand().equals("infoServer")){
-			if(ServerList.getSelectedIndex() > 1){
+			if(ServerList.getSelectedIndex() != -1){
 				Object[] selected = ServerList.getSelectedValues();
 				
 				for(int i=0; i<selected.length; i++){
@@ -185,7 +185,7 @@ public class View extends JPanel implements ActionListener {
 		
 		// Comando de informações de arquivos dos Cliente
 		if(arg0.getActionCommand().equals("infoClient")){
-			if(ClientList.getSelectedIndex() > 1){
+			if(ClientList.getSelectedIndex() != -1){
 				Object[] selected = ClientList.getSelectedValues();
 				
 				for(int i=0; i<selected.length; i++){

@@ -68,7 +68,7 @@ class Atendente extends Thread {
 			BufferedReader br = new BufferedReader(isr);
 			
 			while( (readLine = br.readLine()) != null) {  
-				commandOutput += readLine + "//";
+				commandOutput += readLine + "@#";
 			}
 			
 		} catch (Exception e) {

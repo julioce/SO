@@ -68,28 +68,28 @@ public class View extends JPanel implements ActionListener {
 		listServerButton.setText("Listar");
 		listServerButton.setActionCommand("serverList");
 		listServerButton.setToolTipText("Clique aqui para listar os arquivos no Servidor");
-		listServerButton.setBounds(10, 125, 120, 25);
+		listServerButton.setBounds(10, 125, 125, 25);
 		
 		/* List Client Button */
 		listClientButton.addActionListener(this);
 		listClientButton.setText("Listar");
 		listClientButton.setActionCommand("clientList");
 		listClientButton.setToolTipText("Clique aqui para listar os arquivos Locais");
-		listClientButton.setBounds(670, 125, 120, 25);
+		listClientButton.setBounds(660, 125, 125, 25);
 		
 		/* Server Info Button */
 		fileInfoServerButton.addActionListener(this);
 		fileInfoServerButton.setText("Informações");
 		fileInfoServerButton.setActionCommand("infoServer");
 		fileInfoServerButton.setToolTipText("Clique aqui para mais informações do Servidor");
-		fileInfoServerButton.setBounds(10, 165, 120, 25);
+		fileInfoServerButton.setBounds(10, 165, 125, 25);
 
 		/* Client Info Button */
 		fileInfoClientButton.addActionListener(this);
 		fileInfoClientButton.setText("Informações");
 		fileInfoClientButton.setActionCommand("infoClient");
 		fileInfoClientButton.setToolTipText("Clique aqui para mais informações do Cliente");
-		fileInfoClientButton.setBounds(670, 165, 120, 25);
+		fileInfoClientButton.setBounds(660, 165, 125, 25);
 		
 		/* Server File List */
 		labelServer.setText("Servidor");
@@ -112,7 +112,7 @@ public class View extends JPanel implements ActionListener {
 		disconnectButton.setText("Desconectar");
 		disconnectButton.setActionCommand("disconnect");
 		disconnectButton.setToolTipText("Clique aqui para desconectar do Servidor");
-		disconnectButton.setBounds(670, 55, 120, 25);
+		disconnectButton.setBounds(660, 55, 125, 25);
 		
 		switchButtons(false);
 		/* Adiciona tudo a janela */
@@ -164,12 +164,12 @@ public class View extends JPanel implements ActionListener {
 		
 		// Comando de listar Servidor
 		if(arg0.getActionCommand().equals("serverList")){
-			Cliente.execute("ls");
+			Cliente.execute("ls -p");
 		}
 		
 		// Comando de listar local
 		if(arg0.getActionCommand().equals("clientList")){
-			Cliente.runLocalCommand("ls");
+			Cliente.runLocalCommand("ls -p");
 		}
 		
 		// Comando de informações de arquivos dos Servidor

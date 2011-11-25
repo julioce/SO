@@ -64,7 +64,7 @@ public class Cliente implements Runnable{
 			BufferedReader br = new BufferedReader(isr);
 			
 			// Determina o que fazer na View baseado no que foi enviado ao Servidor	
-			if (command.equalsIgnoreCase("ls")) {
+			if (command.equalsIgnoreCase("ls -p")) {
 				View.ClientFileList.clear();
 				while((print = br.readLine()) != null){
 					View.ClientFileList.addElement(print);
@@ -95,10 +95,10 @@ public class Cliente implements Runnable{
 			InputStreamReader isr = new InputStreamReader(inputStream);
 			BufferedReader br = new BufferedReader(isr);
 			output = br.readLine();
-			print = output.split("//");
+			print = output.split("@#");
 			
 			// Determina o que fazer na View baseado no que foi enviado ao Servidor
-			if (Cliente.command.equalsIgnoreCase("ls")) {
+			if (Cliente.command.equalsIgnoreCase("ls -p")) {
 				View.ServerFileList.clear();
 				for(int i=0; i<print.length; i++){
 					// Imprime no campo

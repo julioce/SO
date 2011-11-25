@@ -94,11 +94,12 @@ public class Cliente implements Runnable{
 			// Recebe o que foi processado
 			InputStreamReader isr = new InputStreamReader(inputStream);
 			BufferedReader br = new BufferedReader(isr);
-			output = br.readLine();
-			print = output.split("@#");
+			
 			
 			// Determina o que fazer na View baseado no que foi enviado ao Servidor
 			if (Cliente.command.equalsIgnoreCase("ls -p")) {
+				output = br.readLine();
+				print = output.split("@#");
 				View.ServerFileList.clear();
 				for(int i=0; i<print.length; i++){
 					// Imprime no campo
@@ -106,6 +107,8 @@ public class Cliente implements Runnable{
 				}
 				
 			}else if(Cliente.command.startsWith("ls -ltr ")){ 
+				output = br.readLine();
+				print = output.split("@#");
 				// Abre uma janela modal
 				for(int i=0; i<print.length; i++){
 					View.showMessage(print[i]);

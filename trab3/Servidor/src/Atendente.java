@@ -78,6 +78,11 @@ class Atendente extends Thread {
 		return commandOutput;
 		
 	}
+	
+	//Realiza uma transferência de arquivos
+	private String transferFile(String filename){
+		return filename;
+	}
 
 	@SuppressWarnings("deprecation")
 	public void run() {
@@ -106,6 +111,10 @@ class Atendente extends Thread {
 					cleanServer();
 					
 					break;
+				}else if(line.startsWith("receiveFileFromServer")){
+					// Inicia a transferencia do arquivo
+					String[] file = line.split("@#");
+					transferFile(file[1]);
 				}else{
 					// Executa o comando normalmente
 					line = runCommand(line);

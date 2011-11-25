@@ -35,6 +35,7 @@ public class View extends JPanel implements ActionListener {
 	public static JButton listClientButton = new JButton();
 	public static JButton fileInfoServerButton = new JButton();
 	public static JButton fileInfoClientButton = new JButton();
+	public static JButton receiveFileFromServerButton = new JButton();
 	
 	public static JLabel labelServer = new JLabel();
 	public static DefaultListModel ServerFileList = new DefaultListModel();
@@ -70,19 +71,34 @@ public class View extends JPanel implements ActionListener {
 		listServerButton.setToolTipText("Clique aqui para listar os arquivos no Servidor");
 		listServerButton.setBounds(10, 125, 125, 25);
 		
-		/* List Client Button */
-		listClientButton.addActionListener(this);
-		listClientButton.setText("Listar");
-		listClientButton.setActionCommand("clientList");
-		listClientButton.setToolTipText("Clique aqui para listar os arquivos Locais");
-		listClientButton.setBounds(660, 125, 125, 25);
-		
 		/* Server Info Button */
 		fileInfoServerButton.addActionListener(this);
 		fileInfoServerButton.setText("Informações");
 		fileInfoServerButton.setActionCommand("infoServer");
 		fileInfoServerButton.setToolTipText("Clique aqui para mais informações do Servidor");
 		fileInfoServerButton.setBounds(10, 165, 125, 25);
+		
+		/* Receive File from Server Button */
+		receiveFileFromServerButton.addActionListener(this);
+		receiveFileFromServerButton.setText("Receber");
+		receiveFileFromServerButton.setActionCommand("receiveFileFromServer");
+		receiveFileFromServerButton.setToolTipText("Clique aqui para receber o arquivo selecionado do Servidor");
+		receiveFileFromServerButton.setBounds(10, 205, 125, 25);
+		
+		/* Server File List */
+		labelServer.setText("Servidor");
+		labelServer.setBounds(170, 105, 70, 25);
+		ServerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		ServerList.setLayoutOrientation(JList.VERTICAL);
+		ServerList.setVisibleRowCount(-1);
+		ServerList.setBounds(140, 130, 245, 430);
+		
+		/* List Client Button */
+		listClientButton.addActionListener(this);
+		listClientButton.setText("Listar");
+		listClientButton.setActionCommand("clientList");
+		listClientButton.setToolTipText("Clique aqui para listar os arquivos Locais");
+		listClientButton.setBounds(660, 125, 125, 25);
 
 		/* Client Info Button */
 		fileInfoClientButton.addActionListener(this);
@@ -91,18 +107,10 @@ public class View extends JPanel implements ActionListener {
 		fileInfoClientButton.setToolTipText("Clique aqui para mais informações do Cliente");
 		fileInfoClientButton.setBounds(660, 165, 125, 25);
 		
-		/* Server File List */
-		labelServer.setText("Servidor");
-		labelServer.setBounds(170, 105, 70, 25);
-		ServerList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-		ServerList.setLayoutOrientation(JList.VERTICAL);
-		ServerList.setVisibleRowCount(-1);
-		ServerList.setBounds(140, 130, 245, 430);
-		
 		/* Client File List */
 		labelClient.setText("Local");
 		labelClient.setBounds(590, 105, 50, 25);
-		ClientList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		ClientList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		ClientList.setLayoutOrientation(JList.VERTICAL);
 		ClientList.setVisibleRowCount(-1);
 		ClientList.setBounds(410, 130, 245, 430);
@@ -122,9 +130,11 @@ public class View extends JPanel implements ActionListener {
 		window.add(connectButton);
 		
 		window.add(listServerButton);
-		window.add(listClientButton);
+		window.add(receiveFileFromServerButton);
 		window.add(fileInfoServerButton);
+		
 		window.add(fileInfoClientButton);
+		window.add(listClientButton);
 		window.add(disconnectButton);
 		
 		window.add(labelServer);
@@ -167,11 +177,6 @@ public class View extends JPanel implements ActionListener {
 			Cliente.execute("ls -p");
 		}
 		
-		// Comando de listar local
-		if(arg0.getActionCommand().equals("clientList")){
-			Cliente.runLocalCommand("ls -p");
-		}
-		
 		// Comando de informações de arquivos dos Servidor
 		if(arg0.getActionCommand().equals("infoServer")){
 			if(ServerList.getSelectedIndex() != -1){
@@ -183,7 +188,7 @@ public class View extends JPanel implements ActionListener {
 			}
 		}
 		
-		// Comando de informações de arquivos dos Cliente
+		// Commando para receber arquivos do Servidor
 		if(arg0.getActionCommand().equals("infoClient")){
 			if(ClientList.getSelectedIndex() != -1){
 				Object[] selected = ClientList.getSelectedValues();
@@ -192,6 +197,22 @@ public class View extends JPanel implements ActionListener {
 					Cliente.runLocalCommand("ls -ltr " + selected[i]);
 				}	
 			}
+		}
+		
+		// Comando de informações de arquivos dos Cliente
+		if(arg0.getActionCommand().equals("receiveFileFromServer")){
+			if(ServerList.getSelectedIndex() != -1){
+				Object[] selected = ServerList.getSelectedValues();
+				
+				for(int i=0; i<selected.length; i++){
+					Cliente.execute("receiveFileFromServer@#"+selected[i]);
+				}	
+			}
+		}
+		
+		// Comando de listar local
+		if(arg0.getActionCommand().equals("clientList")){
+			Cliente.runLocalCommand("ls -p");
 		}
 		
 		// Comando de desconectar
@@ -215,9 +236,11 @@ public class View extends JPanel implements ActionListener {
 		}
 		
 		listServerButton.setEnabled(status);
-		listClientButton.setEnabled(status);
 		fileInfoServerButton.setEnabled(status);
+		receiveFileFromServerButton.setEnabled(status);
+		listClientButton.setEnabled(status);
 		fileInfoClientButton.setEnabled(status);
+		
 		disconnectButton.setEnabled(status);
 		
 		labelServer.setEnabled(status);

@@ -1,9 +1,11 @@
 import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -76,7 +78,7 @@ class Atendente extends Thread {
 	}
 	
 	//Realiza uma transferência de arquivos
-	private byte[] transferFile(String filename, File file){
+	private byte[] sendFile(String filename, File file){
 		
 	    byte[] byteArray = null;
 	    
@@ -85,7 +87,7 @@ class Atendente extends Thread {
 			BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
 			bis.read(byteArray, 0, byteArray.length);
 
-			System.out.println("Foi executado o download do arquivo " + filename);
+			System.out.println("Foi executado o upload do arquivo " + filename);
 		} catch (FileNotFoundException e) {
 			System.err.println("Arquivo " + filename + " não encontrado");
 		} catch (IOException e) {
@@ -132,10 +134,28 @@ class Atendente extends Thread {
 					//Envia resposta ao Cliente específico
 					for (int i = 0; i < numbersOfClients; i++) {
 						if (t[i] != null) {
-							t[i].outputStream.write(transferFile(fileName[1], file), 0, (int) file.length());
+							t[i].outputStream.write(sendFile(fileName[1], file), 0, (int) file.length());
 							t[i].outputStream.flush();
 						}
 					}
+				}else if(line.startsWith("sendFileToServer")){
+					// Recebe o que foi processado
+					String[] fileName = line.split("@#");
+					
+					// Array buffer de bytes de escrita
+					byte[] mybytearray = new byte[1024];
+					
+					// Lê o arquivo
+					FileOutputStream fileOutputStream = new FileOutputStream(fileName[1]);
+				    BufferedOutputStream byteOutputStream = new BufferedOutputStream(fileOutputStream);
+				    int bytesRead = inputStream.read(mybytearray, 0, mybytearray.length);
+				    
+				    // Escreve o arquivo
+				    byteOutputStream.write(mybytearray, 0, bytesRead);
+				    byteOutputStream.close();
+				    
+				    // Mensagem ao usuário
+				    System.out.println("Download do arquivo " + fileName[1] + " concluído");
 				}else{
 					// Executa o comando normalmente
 					line = runCommand(line);

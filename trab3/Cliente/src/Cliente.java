@@ -8,11 +8,8 @@ public class Cliente implements Runnable{
 	static Socket clientSocket = null;
 	static PrintStream outputStream = null;
 	static DataInputStream inputStream = null;
-	static BufferedReader inputLine = null;
 	static String command;
 	
-	public Cliente(){}
-
 	public static void setHost(String host) {
 		Cliente.host = host;
 	}
@@ -54,7 +51,7 @@ public class Cliente implements Runnable{
 			Runtime runtime = Runtime.getRuntime();
 			process = runtime.exec(command);
 		} catch (Exception e) {
-			View.showMessage("Erro ao executar o comando.");
+			View.showMessage("Erro ao executar o comando local.");
 		}
 		
 		// Tenta ler a saida do comando
@@ -125,18 +122,45 @@ public class Cliente implements Runnable{
 				// Array buffer de bytes de escrita
 				byte[] mybytearray = new byte[1024];
 				
-				// Lê e escreve o arquivo
-				FileOutputStream fos = new FileOutputStream(fileName[1]);
-			    BufferedOutputStream bos = new BufferedOutputStream(fos);
+				// Lê o arquivo
+				FileOutputStream fileOutputStream = new FileOutputStream(fileName[1]);
+			    BufferedOutputStream byteOutputStream = new BufferedOutputStream(fileOutputStream);
 			    int bytesRead = inputStream.read(mybytearray, 0, mybytearray.length);
-			    bos.write(mybytearray, 0, bytesRead);
-			    bos.close();
+			    
+			    // Escreve o arquivo
+			    byteOutputStream.write(mybytearray, 0, bytesRead);
+			    byteOutputStream.close();
 			    
 			    // Mensagem ao usuário
 			    View.showMessage("Download do arquivo " + fileName[1] + " concluído");
 			    
 			    //Atualiza a listagem de arquivos
 			    Cliente.runLocalCommand("ls -p");
+				
+			}else if(Cliente.command.startsWith("sendFileToServer")){
+				// Recebe o que foi processado
+				String[] fileName = Cliente.command.split("@#");
+				
+				// Cria o nome do arquivo
+				File file = new File(fileName[1]);
+				
+				// Array buffer de bytes de escrita
+				byte[] byteArray = null;
+			    
+				try {
+					byteArray = new byte[(int) file.length()];
+					BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+					bis.read(byteArray, 0, byteArray.length);
+					
+				} catch (FileNotFoundException e) {
+					System.err.println("Arquivo " + fileName[1] + " não encontrado");
+				} catch (IOException e) {
+					System.err.println("Não foi possível ler o arquivo " + fileName[1]);
+				}
+				
+				// Envia o comando que foi clicado
+				outputStream.write(byteArray,  0, (int) file.length());
+				outputStream.flush();
 				
 			}
 			

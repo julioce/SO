@@ -35,7 +35,8 @@ public class View extends JPanel implements ActionListener {
 	public static JButton listClientButton = new JButton();
 	public static JButton fileInfoServerButton = new JButton();
 	public static JButton fileInfoClientButton = new JButton();
-	public static JButton receiveFileFromServerButton = new JButton();
+	public static JButton downloadFileFromServerButton = new JButton();
+	public static JButton uploadFileToServerButton = new JButton();
 	
 	public static JLabel labelServer = new JLabel();
 	public static DefaultListModel ServerFileList = new DefaultListModel();
@@ -78,12 +79,12 @@ public class View extends JPanel implements ActionListener {
 		fileInfoServerButton.setToolTipText("Clique aqui para mais informações do Servidor");
 		fileInfoServerButton.setBounds(10, 165, 125, 25);
 		
-		/* Receive File from Server Button */
-		receiveFileFromServerButton.addActionListener(this);
-		receiveFileFromServerButton.setText("Download");
-		receiveFileFromServerButton.setActionCommand("receiveFileFromServer");
-		receiveFileFromServerButton.setToolTipText("Clique aqui para receber o arquivo selecionado do Servidor");
-		receiveFileFromServerButton.setBounds(10, 205, 125, 25);
+		/* Download File from Server Button */
+		downloadFileFromServerButton.addActionListener(this);
+		downloadFileFromServerButton.setText("Download");
+		downloadFileFromServerButton.setActionCommand("receiveFileFromServer");
+		downloadFileFromServerButton.setToolTipText("Clique aqui para receber o arquivo selecionado do Servidor");
+		downloadFileFromServerButton.setBounds(10, 205, 125, 25);
 		
 		/* Server File List */
 		labelServer.setText("Servidor");
@@ -114,6 +115,13 @@ public class View extends JPanel implements ActionListener {
 		ClientList.setLayoutOrientation(JList.VERTICAL);
 		ClientList.setVisibleRowCount(-1);
 		ClientList.setBounds(410, 130, 245, 430);
+		
+		/* Upload File from Client Button */
+		uploadFileToServerButton.addActionListener(this);
+		uploadFileToServerButton.setText("Upload");
+		uploadFileToServerButton.setActionCommand("sendFileToServer");
+		uploadFileToServerButton.setToolTipText("Clique aqui para enviar o arquivo selecionado ao Servidor");
+		uploadFileToServerButton.setBounds(660, 205, 125, 25);
 
 		/* Disconnect button */
 		disconnectButton.addActionListener(this);
@@ -130,11 +138,12 @@ public class View extends JPanel implements ActionListener {
 		window.add(connectButton);
 		
 		window.add(listServerButton);
-		window.add(receiveFileFromServerButton);
+		window.add(downloadFileFromServerButton);
 		window.add(fileInfoServerButton);
 		
 		window.add(fileInfoClientButton);
 		window.add(listClientButton);
+		window.add(uploadFileToServerButton);
 		window.add(disconnectButton);
 		
 		window.add(labelServer);
@@ -187,6 +196,20 @@ public class View extends JPanel implements ActionListener {
 				}	
 			}
 		}
+
+		// Commando para receber arquivos do Servidor
+		if(arg0.getActionCommand().equals("receiveFileFromServer")){
+			if(ServerList.getSelectedIndex() != -1){
+				Object[] selected = ServerList.getSelectedValues();
+				
+				Cliente.execute("receiveFileFromServer@#"+selected[0]);
+			}
+		}
+
+		// Comando de listar local
+		if(arg0.getActionCommand().equals("clientList")){
+			Cliente.runLocalCommand("ls -p");
+		}
 		
 		// Commando para receber arquivos do Servidor
 		if(arg0.getActionCommand().equals("infoClient")){
@@ -199,19 +222,15 @@ public class View extends JPanel implements ActionListener {
 			}
 		}
 		
-		// Comando de listar local
-		if(arg0.getActionCommand().equals("clientList")){
-			Cliente.runLocalCommand("ls -p");
-		}
-		
-		// Comando de informações de arquivos dos Cliente
-		if(arg0.getActionCommand().equals("receiveFileFromServer")){
-			if(ServerList.getSelectedIndex() != -1){
-				Object[] selected = ServerList.getSelectedValues();
+		// Comando para enviar arquivos para o Servidor
+		if(arg0.getActionCommand().equals("sendFileToServer")){
+			if(ClientList.getSelectedIndex() != -1){
+				Object[] selected = ClientList.getSelectedValues();
 				
-				Cliente.execute("receiveFileFromServer@#"+selected[0]);
+				Cliente.execute("sendFileToServer@#"+selected[0]);	
 			}
 		}
+		
 		
 		// Comando de desconectar
 		if(arg0.getActionCommand().equals("disconnect")){
@@ -235,9 +254,10 @@ public class View extends JPanel implements ActionListener {
 		
 		listServerButton.setEnabled(status);
 		fileInfoServerButton.setEnabled(status);
-		receiveFileFromServerButton.setEnabled(status);
+		downloadFileFromServerButton.setEnabled(status);
 		listClientButton.setEnabled(status);
 		fileInfoClientButton.setEnabled(status);
+		uploadFileToServerButton.setEnabled(status);
 		
 		disconnectButton.setEnabled(status);
 		

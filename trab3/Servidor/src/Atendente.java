@@ -1,5 +1,10 @@
+import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
@@ -16,15 +21,6 @@ class Atendente extends Thread {
 	public Atendente(Socket clientSocket, Atendente[] t) {
 		this.clientSocket = clientSocket;
 		this.t = t;
-	}
-	
-	// Imprime a mensagem para o Atendente
-	private void printMessageClient(String line){
-		for (int i = 0; i < numbersOfClients; i++) {
-			if (t[i] != null) {
-				t[i].outputStream.println(line);
-			}
-		}
 	}
 	
 	// Imprime a mensagem para o Servidor
@@ -63,11 +59,11 @@ class Atendente extends Thread {
 		
 		// Tenta ler a saida do comando
 		try {
-			InputStream is = process.getInputStream();
-			InputStreamReader isr = new InputStreamReader(is);
-			BufferedReader br = new BufferedReader(isr);
+			InputStream saidaComando = process.getInputStream();
+			InputStreamReader leituraSaidaCommando = new InputStreamReader(saidaComando);
+			BufferedReader leituraBuffer = new BufferedReader(leituraSaidaCommando);
 			
-			while( (readLine = br.readLine()) != null) {  
+			while( (readLine = leituraBuffer.readLine()) != null) {
 				commandOutput += readLine + "@#";
 			}
 			
@@ -80,8 +76,23 @@ class Atendente extends Thread {
 	}
 	
 	//Realiza uma transferência de arquivos
-	private String transferFile(String filename){
-		return filename;
+	private byte[] transferFile(String filename, File file){
+		
+	    byte[] byteArray = null;
+	    
+		try {
+			byteArray = new byte[(int) file.length()];
+			BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
+			bis.read(byteArray, 0, byteArray.length);
+
+			System.out.println("Foi executado o download do arquivo " + filename);
+		} catch (FileNotFoundException e) {
+			System.err.println("Arquivo " + filename + " não encontrado");
+		} catch (IOException e) {
+			System.err.println("Não foi possível ler o arquivo " + filename);
+		}
+		
+		return byteArray;
 	}
 
 	@SuppressWarnings("deprecation")
@@ -112,16 +123,31 @@ class Atendente extends Thread {
 					
 					break;
 				}else if(line.startsWith("receiveFileFromServer")){
-					// Inicia a transferencia do arquivo
-					String[] file = line.split("@#");
-					transferFile(file[1]);
+					// Recebe o nome do arquivo
+					String[] fileName = line.split("@#");
+					
+					// Cria o nome do arquivo
+					File file = new File(fileName[1]);
+					
+					//Envia resposta ao Cliente específico
+					for (int i = 0; i < numbersOfClients; i++) {
+						if (t[i] != null) {
+							t[i].outputStream.write(transferFile(fileName[1], file), 0, (int) file.length());
+							t[i].outputStream.flush();
+						}
+					}
 				}else{
 					// Executa o comando normalmente
 					line = runCommand(line);
+					
+					//Envia resposta ao Cliente específico
+					for (int i = 0; i < numbersOfClients; i++) {
+						if (t[i] != null) {
+							t[i].outputStream.println(line);
+							t[i].outputStream.flush();
+						}
+					}
 				}
-				
-				// Imprime a mensagem para o Cliente
-				printMessageClient(line);
 			}
 			
 		} catch (Exception e) {

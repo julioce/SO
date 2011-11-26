@@ -90,14 +90,14 @@ public class Cliente implements Runnable{
 		try {
 			// Envia o comando que foi clicado
 			outputStream.println(Cliente.command);
-						
-			// Recebe o que foi processado
-			InputStreamReader isr = new InputStreamReader(inputStream);
-			BufferedReader br = new BufferedReader(isr);
-			
+			outputStream.flush();
 			
 			// Determina o que fazer na View baseado no que foi enviado ao Servidor
 			if (Cliente.command.equalsIgnoreCase("ls -p")) {
+				// Recebe o que foi processado
+				InputStreamReader isr = new InputStreamReader(inputStream);
+				BufferedReader br = new BufferedReader(isr);
+				
 				output = br.readLine();
 				print = output.split("@#");
 				View.ServerFileList.clear();
@@ -106,7 +106,11 @@ public class Cliente implements Runnable{
 					View.ServerFileList.addElement(print[i]);
 				}
 				
-			}else if(Cliente.command.startsWith("ls -ltr ")){ 
+			}else if(Cliente.command.startsWith("ls -ltr ")){
+				// Recebe o que foi processado
+				InputStreamReader isr = new InputStreamReader(inputStream);
+				BufferedReader br = new BufferedReader(isr);
+				
 				output = br.readLine();
 				print = output.split("@#");
 				// Abre uma janela modal
@@ -114,10 +118,30 @@ public class Cliente implements Runnable{
 					View.showMessage(print[i]);
 				}
 				
+			}else if(Cliente.command.startsWith("receiveFileFromServer")){
+				// Recebe o que foi processado
+				String[] fileName = Cliente.command.split("@#");
+				
+				// Array buffer de bytes de escrita
+				byte[] mybytearray = new byte[1024];
+				
+				// Lê e escreve o arquivo
+				FileOutputStream fos = new FileOutputStream(fileName[1]);
+			    BufferedOutputStream bos = new BufferedOutputStream(fos);
+			    int bytesRead = inputStream.read(mybytearray, 0, mybytearray.length);
+			    bos.write(mybytearray, 0, bytesRead);
+			    bos.close();
+			    
+			    // Mensagem ao usuário
+			    View.showMessage("Download do arquivo " + fileName[1] + " concluído");
+			    
+			    //Atualiza a listagem de arquivos
+			    Cliente.runLocalCommand("ls -p");
+				
 			}
 			
 		} catch (IOException e) {
-			View.showMessage("Não foi possível ter conexão com o servidor");
+			View.showMessage("Não foi possível obter conexão com o servidor");
 		} catch (NullPointerException e){}
 		
 	}

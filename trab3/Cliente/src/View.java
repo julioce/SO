@@ -80,7 +80,7 @@ public class View extends JPanel implements ActionListener {
 		
 		/* Receive File from Server Button */
 		receiveFileFromServerButton.addActionListener(this);
-		receiveFileFromServerButton.setText("Receber");
+		receiveFileFromServerButton.setText("Download");
 		receiveFileFromServerButton.setActionCommand("receiveFileFromServer");
 		receiveFileFromServerButton.setToolTipText("Clique aqui para receber o arquivo selecionado do Servidor");
 		receiveFileFromServerButton.setBounds(10, 205, 125, 25);
@@ -199,20 +199,18 @@ public class View extends JPanel implements ActionListener {
 			}
 		}
 		
+		// Comando de listar local
+		if(arg0.getActionCommand().equals("clientList")){
+			Cliente.runLocalCommand("ls -p");
+		}
+		
 		// Comando de informações de arquivos dos Cliente
 		if(arg0.getActionCommand().equals("receiveFileFromServer")){
 			if(ServerList.getSelectedIndex() != -1){
 				Object[] selected = ServerList.getSelectedValues();
 				
-				for(int i=0; i<selected.length; i++){
-					Cliente.execute("receiveFileFromServer@#"+selected[i]);
-				}	
+				Cliente.execute("receiveFileFromServer@#"+selected[0]);
 			}
-		}
-		
-		// Comando de listar local
-		if(arg0.getActionCommand().equals("clientList")){
-			Cliente.runLocalCommand("ls -p");
 		}
 		
 		// Comando de desconectar

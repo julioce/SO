@@ -1,6 +1,5 @@
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -15,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
@@ -23,13 +23,12 @@ public class View extends JPanel implements ActionListener {
 	private static final long serialVersionUID = -8464482670221083273L;
 
 	/* Cria tudo: Janela, entidades, label, botão... */
-	public static JFrame window = new JFrame("Cliente - Trabalho 3 - SO");
-	
-	public static JLabel labelTitulo = new JLabel();
+	public static JFrame window = new JFrame("Cliente de Arquivos- Trabalho 3 - SO");
 	
 	public static JLabel labelHost = new JLabel();
 	public static JTextField hostField = new JTextField();
 	public static JButton connectButton = new JButton();
+	public static JButton disconnectButton = new JButton();
 	
 	public static JButton listServerButton = new JButton();
 	public static JButton listClientButton = new JButton();
@@ -37,6 +36,8 @@ public class View extends JPanel implements ActionListener {
 	public static JButton fileInfoClientButton = new JButton();
 	public static JButton downloadFileFromServerButton = new JButton();
 	public static JButton uploadFileToServerButton = new JButton();
+	public static JButton showLocalFileButton = new JButton();
+	public static JButton deleteLocalFileButton = new JButton();
 	
 	public static JLabel labelServer = new JLabel();
 	public static DefaultListModel ServerFileList = new DefaultListModel();
@@ -46,96 +47,114 @@ public class View extends JPanel implements ActionListener {
 	public static DefaultListModel ClientFileList = new DefaultListModel();
 	public static JList ClientList = new JList(ClientFileList);
 	
-	public static JButton disconnectButton = new JButton();
+	public static JLabel openedFileLabel = new JLabel();
+	public static JTextArea openedFile = new JTextArea();
+	
 	
 	public View(){
-		/* Label do trabalho */
-		labelTitulo.setText("Cliente de Arquivos");
-		labelTitulo.setFont(new Font("Arial", Font.BOLD, 22));
-		labelTitulo.setBounds((800/2)-105, 10, (600/2)+105, 30);
-		
 		/* Campo de host */
 		labelHost.setText("Host");
-		labelHost.setBounds(15, 55, 40, 25);
-		hostField.setText("");
-		hostField.setBounds(50, 55, 140, 25);
+		labelHost.setBounds(15, 25, 40, 25);
+		hostField.setText("localhost");
+		hostField.setBounds(50, 25, 140, 25);
 		connectButton.addActionListener(this);
 		connectButton.setText("Conectar");
 		connectButton.setActionCommand("connect");
 		connectButton.setToolTipText("Clique aqui para conectar ao servidor");
-		connectButton.setBounds(190, 55, 120, 25);
+		connectButton.setBounds(190, 25, 120, 25);
+		
+		/* Disconnect button */
+		disconnectButton.addActionListener(this);
+		disconnectButton.setText("Desconectar");
+		disconnectButton.setActionCommand("disconnect");
+		disconnectButton.setToolTipText("Clique aqui para desconectar do Servidor");
+		disconnectButton.setBounds(660, 25, 125, 25);
 		
 		/* List Server Button */
 		listServerButton.addActionListener(this);
 		listServerButton.setText("Listar");
 		listServerButton.setActionCommand("serverList");
 		listServerButton.setToolTipText("Clique aqui para listar os arquivos no Servidor");
-		listServerButton.setBounds(10, 125, 125, 25);
+		listServerButton.setBounds(10, 95, 125, 25);
 		
 		/* Server Info Button */
 		fileInfoServerButton.addActionListener(this);
 		fileInfoServerButton.setText("Informações");
 		fileInfoServerButton.setActionCommand("infoServer");
 		fileInfoServerButton.setToolTipText("Clique aqui para mais informações do Servidor");
-		fileInfoServerButton.setBounds(10, 165, 125, 25);
+		fileInfoServerButton.setBounds(10, 135, 125, 25);
 		
 		/* Download File from Server Button */
 		downloadFileFromServerButton.addActionListener(this);
 		downloadFileFromServerButton.setText("Download");
 		downloadFileFromServerButton.setActionCommand("receiveFileFromServer");
 		downloadFileFromServerButton.setToolTipText("Clique aqui para receber o arquivo selecionado do Servidor");
-		downloadFileFromServerButton.setBounds(10, 205, 125, 25);
+		downloadFileFromServerButton.setBounds(10, 175, 125, 25);
 		
 		/* Server File List */
 		labelServer.setText("Servidor");
-		labelServer.setBounds(170, 105, 70, 25);
+		labelServer.setBounds(180, 75, 70, 25);
 		ServerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		ServerList.setLayoutOrientation(JList.VERTICAL);
 		ServerList.setVisibleRowCount(-1);
-		ServerList.setBounds(140, 130, 245, 430);
+		ServerList.setBounds(140, 100, 245, 200);
 		
 		/* List Client Button */
 		listClientButton.addActionListener(this);
 		listClientButton.setText("Listar");
 		listClientButton.setActionCommand("clientList");
 		listClientButton.setToolTipText("Clique aqui para listar os arquivos Locais");
-		listClientButton.setBounds(660, 125, 125, 25);
+		listClientButton.setBounds(660, 95, 125, 25);
 
 		/* Client Info Button */
 		fileInfoClientButton.addActionListener(this);
 		fileInfoClientButton.setText("Informações");
 		fileInfoClientButton.setActionCommand("infoClient");
 		fileInfoClientButton.setToolTipText("Clique aqui para mais informações do Cliente");
-		fileInfoClientButton.setBounds(660, 165, 125, 25);
+		fileInfoClientButton.setBounds(660, 135, 125, 25);
 		
 		/* Client File List */
 		labelClient.setText("Local");
-		labelClient.setBounds(590, 105, 50, 25);
+		labelClient.setBounds(580, 75, 50, 25);
 		ClientList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		ClientList.setLayoutOrientation(JList.VERTICAL);
 		ClientList.setVisibleRowCount(-1);
-		ClientList.setBounds(410, 130, 245, 430);
+		ClientList.setBounds(410, 100, 245, 200);
 		
 		/* Upload File from Client Button */
 		uploadFileToServerButton.addActionListener(this);
 		uploadFileToServerButton.setText("Upload");
 		uploadFileToServerButton.setActionCommand("sendFileToServer");
 		uploadFileToServerButton.setToolTipText("Clique aqui para enviar o arquivo selecionado ao Servidor");
-		uploadFileToServerButton.setBounds(660, 205, 125, 25);
-
-		/* Disconnect button */
-		disconnectButton.addActionListener(this);
-		disconnectButton.setText("Desconectar");
-		disconnectButton.setActionCommand("disconnect");
-		disconnectButton.setToolTipText("Clique aqui para desconectar do Servidor");
-		disconnectButton.setBounds(660, 55, 125, 25);
+		uploadFileToServerButton.setBounds(660, 175, 125, 25);
+		
+		/* Delete File from Client Button */
+		deleteLocalFileButton.addActionListener(this);
+		deleteLocalFileButton.setText("Deletar arquivo");
+		deleteLocalFileButton.setActionCommand("deleteLocalFile");
+		deleteLocalFileButton.setToolTipText("Clique aqui para deletar o arquivo local");
+		deleteLocalFileButton.setBounds(660, 250, 125, 25);
+		
+		/* Client show File */
+		showLocalFileButton.addActionListener(this);
+		showLocalFileButton.setText("Abrir arquivo");
+		showLocalFileButton.setActionCommand("openLocalFile");
+		showLocalFileButton.setToolTipText("Clique aqui para abrir o arquivo local");
+		showLocalFileButton.setBounds(660, 215, 125, 25);
+		
+		/* Opened File Label */
+		openedFileLabel.setText("Arquivo ");
+		openedFileLabel.setBounds(20, 320, 325, 25);
+		openedFile.setText("");
+		openedFile.setToolTipText("Arquivo aberto do Cliente");
+		openedFile.setBounds(20, 345, 760, 215);
 		
 		switchButtons(false);
 		/* Adiciona tudo a janela */
-		window.add(labelTitulo);
 		window.add(labelHost);
 		window.add(hostField);
 		window.add(connectButton);
+		window.add(disconnectButton);
 		
 		window.add(listServerButton);
 		window.add(downloadFileFromServerButton);
@@ -144,12 +163,15 @@ public class View extends JPanel implements ActionListener {
 		window.add(fileInfoClientButton);
 		window.add(listClientButton);
 		window.add(uploadFileToServerButton);
-		window.add(disconnectButton);
+		window.add(showLocalFileButton);
+		window.add(deleteLocalFileButton);
 		
 		window.add(labelServer);
 		window.add(ServerList);
 		window.add(labelClient);
 		window.add(ClientList);
+		window.add(openedFile);
+		window.add(openedFileLabel);
 		window.add(this);
 		window.add(new Canvas());
 		
@@ -177,15 +199,20 @@ public class View extends JPanel implements ActionListener {
 					// Desabilita o input de host
 					switchButtons(true);
 				}
-				
 			}
+		}
+		// Comando de desconectar
+		if(arg0.getActionCommand().equals("disconnect")){
+			Cliente.execute("disconnect");
+			
+			// Habilita o input de host
+			switchButtons(false);
 		}
 		
 		// Comando de listar Servidor
 		if(arg0.getActionCommand().equals("serverList")){
 			Cliente.execute("ls -p");
 		}
-		
 		// Comando de informações de arquivos dos Servidor
 		if(arg0.getActionCommand().equals("infoServer")){
 			if(ServerList.getSelectedIndex() != -1){
@@ -196,7 +223,6 @@ public class View extends JPanel implements ActionListener {
 				}	
 			}
 		}
-
 		// Commando para receber arquivos do Servidor
 		if(arg0.getActionCommand().equals("receiveFileFromServer")){
 			if(ServerList.getSelectedIndex() != -1){
@@ -206,12 +232,11 @@ public class View extends JPanel implements ActionListener {
 			}
 		}
 
-		// Comando de listar local
+		// Comando de listar arquivos locais
 		if(arg0.getActionCommand().equals("clientList")){
 			Cliente.runLocalCommand("ls -p");
 		}
-		
-		// Commando para receber arquivos do Servidor
+		// Commando para mostrar detalhe do arquivo Local
 		if(arg0.getActionCommand().equals("infoClient")){
 			if(ClientList.getSelectedIndex() != -1){
 				Object[] selected = ClientList.getSelectedValues();
@@ -221,7 +246,6 @@ public class View extends JPanel implements ActionListener {
 				}	
 			}
 		}
-		
 		// Comando para enviar arquivos para o Servidor
 		if(arg0.getActionCommand().equals("sendFileToServer")){
 			if(ClientList.getSelectedIndex() != -1){
@@ -230,15 +254,25 @@ public class View extends JPanel implements ActionListener {
 				Cliente.execute("sendFileToServer@#"+selected[0]);	
 			}
 		}
-		
-		
-		// Comando de desconectar
-		if(arg0.getActionCommand().equals("disconnect")){
-			Cliente.execute("disconnect");
-			
-			// Habilita o input de host
-			switchButtons(false);
+		// Comando exibir o arquivo local
+		if(arg0.getActionCommand().equals("openLocalFile")){
+			if(ClientList.getSelectedIndex() != -1){
+				Object[] selected = ClientList.getSelectedValues();
+				
+				openedFileLabel.setText(openedFileLabel.getText()+selected[0]);
+				Cliente.runLocalCommand("openLocalFile@#" + selected[0]);	
+			}
 		}
+		// Comando deletar o arquivo local
+		if(arg0.getActionCommand().equals("deleteLocalFile")){
+			if(ClientList.getSelectedIndex() != -1){
+				Object[] selected = ClientList.getSelectedValues();
+				
+				Cliente.runLocalCommand("deleteLocalFile@#" + selected[0]);	
+			}
+		}
+		
+		
 	}
 	
 	private void switchButtons(boolean status){
@@ -258,6 +292,8 @@ public class View extends JPanel implements ActionListener {
 		listClientButton.setEnabled(status);
 		fileInfoClientButton.setEnabled(status);
 		uploadFileToServerButton.setEnabled(status);
+		showLocalFileButton.setEnabled(status);
+		deleteLocalFileButton.setEnabled(status);
 		
 		disconnectButton.setEnabled(status);
 		
@@ -265,6 +301,9 @@ public class View extends JPanel implements ActionListener {
 		ServerList.setEnabled(status);
 		labelClient.setEnabled(status);
 		ClientList.setEnabled(status);
+		
+		openedFile.setEnabled(status);
+		openedFileLabel.setEnabled(status);
 	}
 
 	// Abre uma janela com a mensagem passada
@@ -282,16 +321,19 @@ class Canvas extends JComponent {
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 		
 		g2.setPaint(new Color(230, 230, 230));
-		g2.fillRect(10, 47, 780, 40);
-		g2.fillRect(10, 102, 385, 465);
-		g2.fillRect(400, 101, 391, 466);
+		g2.fillRect(10, 17, 780, 40);
+		g2.fillRect(10, 72, 385, 235);
+		g2.fillRect(400, 71, 391, 236);
+		g2.fillRect(10, 319, 782, 249);
 		
 		g2.setPaint(new Color(180, 180, 180));
-		g2.drawRect(9, 46, 781, 41);
-		g2.drawRect(9, 101, 386, 466);
-		g2.drawRect(409, 129, 246, 431);
-		g2.drawRect(400, 101, 391, 466);
-		g2.drawRect(139, 129, 246, 431);
+		g2.drawRect(9, 16, 781, 41);
+		g2.drawRect(9, 71, 386, 236);
+		g2.drawRect(409, 99, 246, 201);
+		g2.drawRect(400, 71, 391, 236);
+		g2.drawRect(139, 99, 246, 201);
+		g2.drawRect(19, 344, 761, 216);
+		g2.drawRect(9, 319, 782, 250);
 		
 	}
 }

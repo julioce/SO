@@ -1,4 +1,10 @@
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.LinkedList;
+import java.util.List;
 
 public class Servidor {
 
@@ -7,6 +13,8 @@ public class Servidor {
 	static int numberOfClients = 5;
 	static Socket clientSocket = null;
 	static ServerSocket serverSocket = null;
+	static List<String> localFiles = new LinkedList<String>();
+	static List<Integer> localFilesStatus = new LinkedList<Integer>();
 
 	// Limite de 5 clientes
 	static Atendente t[] = new Atendente[numberOfClients];
@@ -27,6 +35,59 @@ public class Servidor {
 	public void setPortNumber(int portNumber) {
 		this.portNumber = portNumber;
 	}
+	
+	// Configura os arquivos correntes
+	public static void setFiles() {
+		Process process = null;
+		String file = null;
+		
+		// Tenta executar o comando
+		try {
+			Runtime runtime = Runtime.getRuntime();
+			process = runtime.exec("ls -p");
+		} catch (Exception e) {
+			System.out.println("Erro ao executar pegar os arquivos locais.");
+		}
+		
+		// Tenta ler a saida do comando
+		try {
+			InputStream is = process.getInputStream();
+			InputStreamReader isr = new InputStreamReader(is);
+			BufferedReader br = new BufferedReader(isr);
+			
+			Servidor.localFiles.clear();
+			while((file = br.readLine()) != null){
+				// Lê somente os arquivos
+				if(!file.endsWith("/")){
+					Servidor.localFiles.add(file);
+				}
+			}
+			
+		} catch (Exception e) {
+			System.out.println("Erro ao obter saida do comando de listar arquivos locais.");
+		}
+	}
+	
+	// Seta os valores de acesso ao arquivo
+	public static void setFilesStatus(){
+		Servidor.localFilesStatus.clear();
+		
+		for(int i=0; i<localFiles.size(); i++){
+			Servidor.localFilesStatus.add(1);
+		}
+	}
+	
+	public static void acquire(String fileName){
+		Servidor.localFilesStatus.set(Servidor.localFiles.indexOf(fileName), 0);
+	}
+	
+	public static void release(String fileName){
+		Servidor.localFilesStatus.set(Servidor.localFiles.indexOf(fileName), 1);
+	}
+	
+	public static int getSemaphoreStatus(String fileName){
+		return Servidor.localFilesStatus.get(Servidor.localFiles.indexOf(fileName));
+	}
 
 	public void startServidor() {
 
@@ -38,9 +99,14 @@ public class Servidor {
 			
 			// Input e output para este socket serao criados na thread do cliente
 			while(true){
+				
 				try {
 					// Cria o objeto do tipo ServerSocket para ouvir e aceitar conexoes
 					clientSocket = serverSocket.accept();
+					
+					// Configura a listagem de arquivos
+					setFiles();
+					setFilesStatus();
 
 					// Cria as threads de Atendentes com o limite de clientes servidos
 					for (int i = 0; i < numberOfClients; i++) {

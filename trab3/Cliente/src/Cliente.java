@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.Scanner;
 
 public class Cliente implements Runnable{
 	
@@ -46,32 +47,57 @@ public class Cliente implements Runnable{
 		Process process = null;
 		String print = null;
 		
-		// Tenta executar o comando
-		try {
-			Runtime runtime = Runtime.getRuntime();
-			process = runtime.exec(command);
-		} catch (Exception e) {
-			View.showMessage("Erro ao executar o comando local.");
-		}
-		
 		// Tenta ler a saida do comando
 		try {
-			InputStream is = process.getInputStream();
-			InputStreamReader isr = new InputStreamReader(is);
-			BufferedReader br = new BufferedReader(isr);
-			
 			// Determina o que fazer na View baseado no que foi enviado ao Servidor	
 			if (command.equalsIgnoreCase("ls -p")) {
+				// Tenta executar o comando
+				try {
+					Runtime runtime = Runtime.getRuntime();
+					process = runtime.exec(command);
+				} catch (Exception e) {
+					View.showMessage("Erro ao executar o comando local.");
+				}
+				
+				InputStream is = process.getInputStream();
+				InputStreamReader isr = new InputStreamReader(is);
+				BufferedReader br = new BufferedReader(isr);
+				
 				View.ClientFileList.clear();
 				while((print = br.readLine()) != null){
-					View.ClientFileList.addElement(print);
+					if(!print.endsWith("/")){
+						View.ClientFileList.addElement(print);
+					}
 				}
 				
 			}else if(command.startsWith("ls -ltr ")){ 
+				// Tenta executar o comando
+				try {
+					Runtime runtime = Runtime.getRuntime();
+					process = runtime.exec(command);
+				} catch (Exception e) {
+					View.showMessage("Erro ao executar o comando local.");
+				}
+				
+				InputStream is = process.getInputStream();
+				InputStreamReader isr = new InputStreamReader(is);
+				BufferedReader br = new BufferedReader(isr);
+				
 				// Abre uma janela modal
 				while((print = br.readLine()) != null){
 					View.showMessage(print);
 				}
+			}else if(command.startsWith("openLocalFile")){
+				String[] fileName = command.split("@#");
+				String text = "";
+				
+				Scanner scanner = new Scanner(new FileInputStream(fileName[1]));
+				
+				// Escreve no textarea
+				while(scanner.hasNextLine()){
+					text += scanner.nextLine() + "\n";
+				}
+				View.openedFile.setText(text);
 			}
 			
 		} catch (Exception e) {
@@ -100,7 +126,9 @@ public class Cliente implements Runnable{
 				View.ServerFileList.clear();
 				for(int i=0; i<print.length; i++){
 					// Imprime no campo
-					View.ServerFileList.addElement(print[i]);
+					if(!print[i].endsWith("/")){
+						View.ServerFileList.addElement(print[i]);
+					}
 				}
 				
 			}else if(Cliente.command.startsWith("ls -ltr ")){

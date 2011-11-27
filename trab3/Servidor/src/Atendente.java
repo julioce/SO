@@ -122,22 +122,36 @@ class Atendente extends Thread {
 					
 					// Limpeza do slot do servidor liberando para outro cliente se conectar
 					cleanServer();
-					
 					break;
+					
 				}else if(line.startsWith("receiveFileFromServer")){
+					
 					// Recebe o nome do arquivo
 					String[] fileName = line.split("@#");
-					
-					// Cria o nome do arquivo
-					File file = new File(fileName[1]);
-					
-					//Envia resposta ao Cliente específico
-					for (int i = 0; i < numbersOfClients; i++) {
-						if (t[i] != null) {
-							t[i].outputStream.write(sendFile(fileName[1], file), 0, (int) file.length());
-							t[i].outputStream.flush();
+
+					// Verifica o estado atual do arquivo
+					if( Servidor.getSemaphoreStatus(fileName[1]) == 1 ){
+						
+						// Entrou na região crítica
+						Servidor.acquire(fileName[1]);
+						// Cria o nome do arquivo
+						File file = new File(fileName[1]);
+						
+						//Envia resposta ao Cliente específico
+						for (int i = 0; i < numbersOfClients; i++) {
+							if (t[i] != null) {
+								t[i].outputStream.write(sendFile(fileName[1], file), 0, (int) file.length());
+								t[i].outputStream.flush();
+							}
 						}
+						// Mensagem no terminal
+						System.out.println("Download do arquivo " + fileName[1] + " concluído");
+						
+						// Saiu da região crítica
+						Servidor.release(fileName[1]);
 					}
+					  
+				    
 				}else if(line.startsWith("sendFileToServer")){
 					// Recebe o que foi processado
 					String[] fileName = line.split("@#");
@@ -154,8 +168,9 @@ class Atendente extends Thread {
 				    byteOutputStream.write(mybytearray, 0, bytesRead);
 				    byteOutputStream.close();
 				    
-				    // Mensagem ao usuário
-				    System.out.println("Download do arquivo " + fileName[1] + " concluído");
+				    // Mensagem no terminal
+				    System.out.println("Upload do arquivo " + fileName[1] + " concluído");
+				    
 				}else{
 					// Executa o comando normalmente
 					line = runCommand(line);

@@ -131,9 +131,9 @@ class Atendente extends Thread {
 
 					// Verifica o estado atual do arquivo
 					if( Servidor.getSemaphoreStatus(fileName[1]) == 1 ){
-						
 						// Entrou na região crítica
 						Servidor.acquire(fileName[1]);
+						
 						// Cria o nome do arquivo
 						File file = new File(fileName[1]);
 						
@@ -149,6 +149,8 @@ class Atendente extends Thread {
 						
 						// Saiu da região crítica
 						Servidor.release(fileName[1]);
+					}else{
+						
 					}
 					  
 				    

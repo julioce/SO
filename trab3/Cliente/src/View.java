@@ -14,7 +14,6 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
@@ -31,12 +30,13 @@ public class View extends JPanel implements ActionListener {
 	public static JButton disconnectButton = new JButton();
 	
 	public static JButton listServerButton = new JButton();
-	public static JButton listClientButton = new JButton();
 	public static JButton fileInfoServerButton = new JButton();
+	public static JButton uploadFileToServerButton = new JButton();
+	public static JButton deleteServerFileButton = new JButton();
+	
+	public static JButton listClientButton = new JButton();
 	public static JButton fileInfoClientButton = new JButton();
 	public static JButton downloadFileFromServerButton = new JButton();
-	public static JButton uploadFileToServerButton = new JButton();
-	public static JButton showLocalFileButton = new JButton();
 	public static JButton deleteLocalFileButton = new JButton();
 	
 	public static JLabel labelServer = new JLabel();
@@ -46,9 +46,6 @@ public class View extends JPanel implements ActionListener {
 	public static JLabel labelClient = new JLabel();
 	public static DefaultListModel ClientFileList = new DefaultListModel();
 	public static JList ClientList = new JList(ClientFileList);
-	
-	public static JLabel openedFileLabel = new JLabel();
-	public static JTextArea openedFile = new JTextArea();
 	
 	
 	public View(){
@@ -91,13 +88,20 @@ public class View extends JPanel implements ActionListener {
 		downloadFileFromServerButton.setToolTipText("Clique aqui para receber o arquivo selecionado do Servidor");
 		downloadFileFromServerButton.setBounds(10, 175, 125, 25);
 		
+		/* Delete File from Client Button */
+		deleteServerFileButton.addActionListener(this);
+		deleteServerFileButton.setText("Deletar arquivo");
+		deleteServerFileButton.setActionCommand("deleteServerFile");
+		deleteServerFileButton.setToolTipText("Clique aqui para deletar o arquivo no Servidor");
+		deleteServerFileButton.setBounds(10, 215, 125, 25);
+		
 		/* Server File List */
 		labelServer.setText("Servidor");
 		labelServer.setBounds(180, 75, 70, 25);
 		ServerList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		ServerList.setLayoutOrientation(JList.VERTICAL);
 		ServerList.setVisibleRowCount(-1);
-		ServerList.setBounds(140, 100, 245, 200);
+		ServerList.setBounds(140, 100, 245, 440);
 		
 		/* List Client Button */
 		listClientButton.addActionListener(this);
@@ -119,7 +123,7 @@ public class View extends JPanel implements ActionListener {
 		ClientList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		ClientList.setLayoutOrientation(JList.VERTICAL);
 		ClientList.setVisibleRowCount(-1);
-		ClientList.setBounds(410, 100, 245, 200);
+		ClientList.setBounds(410, 100, 245, 440);
 		
 		/* Upload File from Client Button */
 		uploadFileToServerButton.addActionListener(this);
@@ -133,21 +137,7 @@ public class View extends JPanel implements ActionListener {
 		deleteLocalFileButton.setText("Deletar arquivo");
 		deleteLocalFileButton.setActionCommand("deleteLocalFile");
 		deleteLocalFileButton.setToolTipText("Clique aqui para deletar o arquivo local");
-		deleteLocalFileButton.setBounds(660, 250, 125, 25);
-		
-		/* Client show File */
-		showLocalFileButton.addActionListener(this);
-		showLocalFileButton.setText("Abrir arquivo");
-		showLocalFileButton.setActionCommand("openLocalFile");
-		showLocalFileButton.setToolTipText("Clique aqui para abrir o arquivo local");
-		showLocalFileButton.setBounds(660, 215, 125, 25);
-		
-		/* Opened File Label */
-		openedFileLabel.setText("Arquivo ");
-		openedFileLabel.setBounds(20, 320, 325, 25);
-		openedFile.setText("");
-		openedFile.setToolTipText("Arquivo aberto do Cliente");
-		openedFile.setBounds(20, 345, 760, 215);
+		deleteLocalFileButton.setBounds(660, 215, 125, 25);
 		
 		switchButtons(false);
 		/* Adiciona tudo a janela */
@@ -159,19 +149,17 @@ public class View extends JPanel implements ActionListener {
 		window.add(listServerButton);
 		window.add(downloadFileFromServerButton);
 		window.add(fileInfoServerButton);
+		window.add(deleteServerFileButton);
 		
 		window.add(fileInfoClientButton);
 		window.add(listClientButton);
 		window.add(uploadFileToServerButton);
-		window.add(showLocalFileButton);
 		window.add(deleteLocalFileButton);
 		
 		window.add(labelServer);
 		window.add(ServerList);
 		window.add(labelClient);
 		window.add(ClientList);
-		window.add(openedFile);
-		window.add(openedFileLabel);
 		window.add(this);
 		window.add(new Canvas());
 		
@@ -231,7 +219,16 @@ public class View extends JPanel implements ActionListener {
 				Cliente.execute("receiveFileFromServer@#"+selected[0]);
 			}
 		}
-
+		// Comando deletar o arquivo local
+		if(arg0.getActionCommand().equals("deleteServerFile")){
+			if(ServerList.getSelectedIndex() != -1){
+				Object[] selected = ServerList.getSelectedValues();
+				
+				Cliente.execute("rm " + selected[0]);
+			}
+		}
+		
+		
 		// Comando de listar arquivos locais
 		if(arg0.getActionCommand().equals("clientList")){
 			Cliente.runLocalCommand("ls -p");
@@ -254,21 +251,12 @@ public class View extends JPanel implements ActionListener {
 				Cliente.execute("sendFileToServer@#"+selected[0]);	
 			}
 		}
-		// Comando exibir o arquivo local
-		if(arg0.getActionCommand().equals("openLocalFile")){
-			if(ClientList.getSelectedIndex() != -1){
-				Object[] selected = ClientList.getSelectedValues();
-				
-				openedFileLabel.setText(openedFileLabel.getText()+selected[0]);
-				Cliente.runLocalCommand("openLocalFile@#" + selected[0]);	
-			}
-		}
 		// Comando deletar o arquivo local
 		if(arg0.getActionCommand().equals("deleteLocalFile")){
 			if(ClientList.getSelectedIndex() != -1){
 				Object[] selected = ClientList.getSelectedValues();
 				
-				Cliente.runLocalCommand("deleteLocalFile@#" + selected[0]);	
+				Cliente.runLocalCommand("rm " + selected[0]);
 			}
 		}
 		
@@ -280,6 +268,7 @@ public class View extends JPanel implements ActionListener {
 		labelHost.setEnabled(!status);
 		hostField.setEnabled(!status);
 		connectButton.setEnabled(!status);
+		disconnectButton.setEnabled(status);
 		if(status){
 			connectButton.setText("Conectado");
 		}else{
@@ -289,21 +278,17 @@ public class View extends JPanel implements ActionListener {
 		listServerButton.setEnabled(status);
 		fileInfoServerButton.setEnabled(status);
 		downloadFileFromServerButton.setEnabled(status);
+		deleteServerFileButton.setEnabled(status);
+		
 		listClientButton.setEnabled(status);
 		fileInfoClientButton.setEnabled(status);
 		uploadFileToServerButton.setEnabled(status);
-		showLocalFileButton.setEnabled(status);
 		deleteLocalFileButton.setEnabled(status);
-		
-		disconnectButton.setEnabled(status);
 		
 		labelServer.setEnabled(status);
 		ServerList.setEnabled(status);
 		labelClient.setEnabled(status);
 		ClientList.setEnabled(status);
-		
-		openedFile.setEnabled(status);
-		openedFileLabel.setEnabled(status);
 	}
 
 	// Abre uma janela com a mensagem passada
@@ -322,18 +307,15 @@ class Canvas extends JComponent {
 		
 		g2.setPaint(new Color(230, 230, 230));
 		g2.fillRect(10, 17, 780, 40);
-		g2.fillRect(10, 72, 385, 235);
-		g2.fillRect(400, 71, 391, 236);
-		g2.fillRect(10, 319, 782, 249);
+		g2.fillRect(10, 72, 385, 475);
+		g2.fillRect(400, 71, 391, 476);
 		
 		g2.setPaint(new Color(180, 180, 180));
 		g2.drawRect(9, 16, 781, 41);
-		g2.drawRect(9, 71, 386, 236);
-		g2.drawRect(409, 99, 246, 201);
-		g2.drawRect(400, 71, 391, 236);
-		g2.drawRect(139, 99, 246, 201);
-		g2.drawRect(19, 344, 761, 216);
-		g2.drawRect(9, 319, 782, 250);
+		g2.drawRect(9, 71, 386, 476);
+		g2.drawRect(409, 99, 246, 441);
+		g2.drawRect(400, 71, 391, 476);
+		g2.drawRect(139, 99, 246, 441);
 		
 	}
 }

@@ -1,6 +1,5 @@
 import java.io.*;
 import java.net.*;
-import java.util.Scanner;
 
 public class Cliente implements Runnable{
 	
@@ -26,7 +25,6 @@ public class Cliente implements Runnable{
 	public static boolean startCliente(){
 		// Tenta abrir o socket com o host e port e abrir streams de input e output
 		try {
-			
 			clientSocket = new Socket(host, portNumber);
 			outputStream = new PrintStream(clientSocket.getOutputStream());
 			inputStream = new DataInputStream(clientSocket.getInputStream());
@@ -42,9 +40,33 @@ public class Cliente implements Runnable{
 		
 	}
 	
+	public static Process executeCommand(String command, String erro){
+		// Tenta executar o comando
+		Process process = null;
+		try {
+			Runtime runtime = Runtime.getRuntime();
+			process = runtime.exec(command);
+		} catch (Exception e) {
+			View.showMessage(erro);
+		}
+		
+		return process;
+	}
+	
+	public static BufferedReader readStream(){
+		// Recebe o que foi processado
+		InputStreamReader isr = new InputStreamReader(inputStream);
+		return new BufferedReader(isr);
+	}
+	
+	public static BufferedReader readProcess(Process process){
+		InputStream is = process.getInputStream();
+		InputStreamReader isr = new InputStreamReader(is);
+		return new BufferedReader(isr);
+	}
+	
 	// Executa o comando solicitado Localmente
 	public static void runLocalCommand(String command){
-		Process process = null;
 		String print = null;
 		
 		// Tenta ler a saida do comando
@@ -52,17 +74,12 @@ public class Cliente implements Runnable{
 			// Determina o que fazer na View baseado no que foi enviado ao Servidor	
 			if (command.equalsIgnoreCase("ls -p")) {
 				// Tenta executar o comando
-				try {
-					Runtime runtime = Runtime.getRuntime();
-					process = runtime.exec(command);
-				} catch (Exception e) {
-					View.showMessage("Erro ao executar o comando local.");
-				}
+				Process process = executeCommand(command, "Erro ao obter a listagem de arquivos locais.");
 				
-				InputStream is = process.getInputStream();
-				InputStreamReader isr = new InputStreamReader(is);
-				BufferedReader br = new BufferedReader(isr);
+				// Lê saida do comando
+				BufferedReader br = readProcess(process);
 				
+				// Gerencia a lista de arquivos
 				View.ClientFileList.clear();
 				while((print = br.readLine()) != null){
 					if(!print.endsWith("/")){
@@ -72,32 +89,25 @@ public class Cliente implements Runnable{
 				
 			}else if(command.startsWith("ls -ltr ")){ 
 				// Tenta executar o comando
-				try {
-					Runtime runtime = Runtime.getRuntime();
-					process = runtime.exec(command);
-				} catch (Exception e) {
-					View.showMessage("Erro ao executar o comando local.");
-				}
+				Process process = executeCommand(command, "Erro ao obter informações do arquivo.");
 				
-				InputStream is = process.getInputStream();
-				InputStreamReader isr = new InputStreamReader(is);
-				BufferedReader br = new BufferedReader(isr);
+				// Lê saida do comando
+				BufferedReader br = readProcess(process);
 				
 				// Abre uma janela modal
 				while((print = br.readLine()) != null){
 					View.showMessage(print);
 				}
-			}else if(command.startsWith("openLocalFile")){
-				String[] fileName = command.split("@#");
-				String text = "";
+			}else if(command.startsWith("rm")){ 
+				// Tenta executar o comando
+				Process process = executeCommand(command, "Erro ao deletar o arquivo local.");
 				
-				Scanner scanner = new Scanner(new FileInputStream(fileName[1]));
+				// Lê saida do comando
+				BufferedReader br = readProcess(process);
+				print = br.readLine();
 				
-				// Escreve no textarea
-				while(scanner.hasNextLine()){
-					text += scanner.nextLine() + "\n";
-				}
-				View.openedFile.setText(text);
+				View.showMessage("Arquivo deletado com sucesso.");
+				Cliente.runLocalCommand("ls =p");
 			}
 			
 		} catch (Exception e) {
@@ -118,8 +128,7 @@ public class Cliente implements Runnable{
 			// Determina o que fazer na View baseado no que foi enviado ao Servidor
 			if (Cliente.command.equalsIgnoreCase("ls -p")) {
 				// Recebe o que foi processado
-				InputStreamReader isr = new InputStreamReader(inputStream);
-				BufferedReader br = new BufferedReader(isr);
+				BufferedReader br = readStream();
 				
 				output = br.readLine();
 				print = output.split("@#");
@@ -133,8 +142,7 @@ public class Cliente implements Runnable{
 				
 			}else if(Cliente.command.startsWith("ls -ltr ")){
 				// Recebe o que foi processado
-				InputStreamReader isr = new InputStreamReader(inputStream);
-				BufferedReader br = new BufferedReader(isr);
+				BufferedReader br = readStream();
 				
 				output = br.readLine();
 				print = output.split("@#");
@@ -190,6 +198,12 @@ public class Cliente implements Runnable{
 				outputStream.write(byteArray,  0, (int) file.length());
 				outputStream.flush();
 				
+			}else if(Cliente.command.startsWith("rm")){
+				// Recebe o que foi processado
+				BufferedReader br = readStream();
+				
+				output = br.readLine();
+				View.showMessage("Arquivo removido do Servidor");
 			}
 			
 		} catch (IOException e) {

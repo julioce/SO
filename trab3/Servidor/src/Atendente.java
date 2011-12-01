@@ -25,8 +25,8 @@ class Atendente extends Thread {
 	public Atendente(int portNumber, Atendente[] t) {
 		// Obtem o ServerSocket para ouvir e aceitar conexoes
 		try {
-			serverSocket = new ServerSocket(portNumber);
-			clientSocket = serverSocket.accept();
+			this.serverSocket = new ServerSocket(portNumber);
+			this.clientSocket = serverSocket.accept();
 		} catch (IOException e) {
 			System.err.println("Erro ao conectar Atendente a porta " + portNumber);
 		}
@@ -48,10 +48,10 @@ class Atendente extends Thread {
 
 		// Fecha o input, output e o socket
 		try {
-			serverSocket.close();
-			clientSocket.close();
-			outputStream.close();
-			inputStream.close();
+			this.serverSocket.close();
+			this.clientSocket.close();
+			this.outputStream.close();
+			this.inputStream.close();
 		} catch (IOException e) {}
 		
 		for (int i = 0; i < numbersOfClients; i++) {
@@ -104,8 +104,6 @@ class Atendente extends Thread {
 			byteArray = new byte[(int) file.length()];
 			BufferedInputStream bis = new BufferedInputStream(new FileInputStream(file));
 			bis.read(byteArray, 0, byteArray.length);
-
-			System.out.println("Foi executado o upload do arquivo " + filename);
 		} catch (FileNotFoundException e) {
 			System.err.println("Arquivo " + filename + " não encontrado");
 		} catch (IOException e) {
@@ -120,8 +118,8 @@ class Atendente extends Thread {
 		String line = null;
 
 		try {
-			inputStream = new DataInputStream(clientSocket.getInputStream());
-			outputStream = new PrintStream(clientSocket.getOutputStream());
+			this.inputStream = new DataInputStream(this.clientSocket.getInputStream());
+			this.outputStream = new PrintStream(this.clientSocket.getOutputStream());
 
 			// Loop de leitura
 			while (true) {
@@ -151,19 +149,14 @@ class Atendente extends Thread {
 						File file = new File(fileName[1]);
 						
 						//Envia resposta ao Cliente específico
-						for (int i = 0; i < numbersOfClients; i++) {
-							if (t[i] != null) {
-								t[i].outputStream.write(sendFile(fileName[1], file), 0, (int) file.length());
-								t[i].outputStream.flush();
-							}
-						}
+						this.outputStream.write(sendFile(fileName[1], file), 0, (int) file.length());
+						this.outputStream.flush();
+						
 						// Mensagem no terminal
 						System.out.println("Download do arquivo " + fileName[1] + " concluído");
 						
 						// Saiu da região crítica
 						Servidor.release(fileName[1]);
-					}else{
-						
 					}
 					  
 				    
@@ -171,32 +164,36 @@ class Atendente extends Thread {
 					// Recebe o que foi processado
 					String[] fileName = line.split("@#");
 					
-					// Array buffer de bytes de escrita
-					byte[] mybytearray = new byte[1024];
-					
-					// Lê o arquivo
-					FileOutputStream fileOutputStream = new FileOutputStream(fileName[1]);
-				    BufferedOutputStream byteOutputStream = new BufferedOutputStream(fileOutputStream);
-				    int bytesRead = inputStream.read(mybytearray, 0, mybytearray.length);
-				    
-				    // Escreve o arquivo
-				    byteOutputStream.write(mybytearray, 0, bytesRead);
-				    byteOutputStream.close();
-				    
-				    // Mensagem no terminal
-				    System.out.println("Upload do arquivo " + fileName[1] + " concluído");
-				    
+					// Verifica o estado atual do arquivo
+					if( Servidor.getSemaphoreStatus(fileName[1]) == 1 ){
+						// Entrou na região crítica
+						Servidor.acquire(fileName[1]);
+						
+						// Array buffer de bytes de escrita
+						byte[] mybytearray = new byte[1024];
+						
+						// Lê o arquivo
+						FileOutputStream fileOutputStream = new FileOutputStream(fileName[1]);
+					    BufferedOutputStream byteOutputStream = new BufferedOutputStream(fileOutputStream);
+					    int bytesRead = inputStream.read(mybytearray, 0, mybytearray.length);
+					    
+					    // Escreve o arquivo
+					    byteOutputStream.write(mybytearray, 0, bytesRead);
+					    byteOutputStream.close();
+					    
+					    // Mensagem no terminal
+					    System.out.println("Upload do arquivo " + fileName[1] + " concluído");
+					    
+					    // Saiu da região crítica
+						Servidor.release(fileName[1]);
+					}
 				}else{
 					// Executa o comando normalmente
 					line = runCommand(line);
 					
 					//Envia resposta ao Cliente específico
-					for (int i = 0; i < numbersOfClients; i++) {
-						if (t[i] != null) {
-							t[i].outputStream.println(line);
-							t[i].outputStream.flush();
-						}
-					}
+					this.outputStream.println(line);
+					this.outputStream.flush();
 				}
 			}
 			

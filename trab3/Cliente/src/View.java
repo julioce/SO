@@ -52,7 +52,7 @@ public class View extends JPanel implements ActionListener {
 		/* Campo de host */
 		labelHost.setText("Host");
 		labelHost.setBounds(15, 25, 40, 25);
-		hostField.setText("localhost");
+		hostField.setText("");
 		hostField.setBounds(50, 25, 140, 25);
 		connectButton.addActionListener(this);
 		connectButton.setText("Conectar");
@@ -72,28 +72,28 @@ public class View extends JPanel implements ActionListener {
 		listServerButton.setText("Listar");
 		listServerButton.setActionCommand("serverList");
 		listServerButton.setToolTipText("Clique aqui para listar os arquivos no Servidor");
-		listServerButton.setBounds(10, 95, 125, 25);
+		listServerButton.setBounds(12, 95, 125, 25);
 		
 		/* Server Info Button */
 		fileInfoServerButton.addActionListener(this);
 		fileInfoServerButton.setText("Informações");
 		fileInfoServerButton.setActionCommand("infoServer");
 		fileInfoServerButton.setToolTipText("Clique aqui para mais informações do Servidor");
-		fileInfoServerButton.setBounds(10, 135, 125, 25);
+		fileInfoServerButton.setBounds(12, 135, 125, 25);
 		
 		/* Download File from Server Button */
 		downloadFileFromServerButton.addActionListener(this);
 		downloadFileFromServerButton.setText("Download");
 		downloadFileFromServerButton.setActionCommand("receiveFileFromServer");
 		downloadFileFromServerButton.setToolTipText("Clique aqui para receber o arquivo selecionado do Servidor");
-		downloadFileFromServerButton.setBounds(10, 175, 125, 25);
+		downloadFileFromServerButton.setBounds(12, 175, 125, 25);
 		
 		/* Delete File from Client Button */
 		deleteServerFileButton.addActionListener(this);
 		deleteServerFileButton.setText("Deletar arquivo");
 		deleteServerFileButton.setActionCommand("deleteServerFile");
 		deleteServerFileButton.setToolTipText("Clique aqui para deletar o arquivo no Servidor");
-		deleteServerFileButton.setBounds(10, 215, 125, 25);
+		deleteServerFileButton.setBounds(12, 215, 125, 25);
 		
 		/* Server File List */
 		labelServer.setText("Servidor");

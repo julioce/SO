@@ -28,8 +28,7 @@ public class Cliente implements Runnable{
 					conected = true;
 				}
 				
-			} catch (Exception e) {
-			}
+			} catch (Exception e) {}
 		}
 		
 		return(conected);
@@ -103,7 +102,7 @@ public class Cliente implements Runnable{
 				print = br.readLine();
 				
 				View.showMessage("Arquivo deletado com sucesso.");
-				Cliente.runLocalCommand("ls =p");
+				Cliente.runLocalCommand("ls -p");
 			}
 			
 		} catch (Exception e) {

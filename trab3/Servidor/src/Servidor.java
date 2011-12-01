@@ -1,8 +1,6 @@
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -11,8 +9,6 @@ public class Servidor {
 	int portNumber;
 	String host;
 	static int numberOfClients = 5;
-	static Socket clientSocket = null;
-	static ServerSocket serverSocket = null;
 	static List<String> localFiles = new LinkedList<String>();
 	static List<Integer> localFilesStatus = new LinkedList<Integer>();
 
@@ -93,39 +89,37 @@ public class Servidor {
 
 		// Inicializa do servidor na porta. Deve ser > 1023 se nao for root
 		try {
-			serverSocket = new ServerSocket(this.portNumber);
-			System.out.println("Servidor criado em " + this.host);
+			
+			System.out.println("Servidor criado em " + host);
 			System.out.println("Foram criadas " + numberOfClients + " Threads Atendentes para " + numberOfClients + " Clientes");
 			
 			// Input e output para este socket serao criados na thread do cliente
 			while(true){
 				
 				try {
-					// Cria o objeto do tipo ServerSocket para ouvir e aceitar conexoes
-					clientSocket = serverSocket.accept();
-					
-					// Configura a listagem de arquivos
+					// Configura a listagem de arquivos para o semáforo
 					setFiles();
 					setFilesStatus();
 
 					// Cria as threads de Atendentes com o limite de clientes servidos
 					for (int i = 0; i < numberOfClients; i++) {
+						
 						if (t[i] == null) {
-							t[i] = new Atendente(clientSocket, t);
+							t[i] = new Atendente((portNumber+i+1), t);
 							t[i].start();
-							System.out.println("Um novo Cliente se conectou a Thread Atendente " + (i+1));
+							System.out.println("Um novo Cliente se conectou a Thread Atendente " + (i+1) + " pela porta " + (portNumber+i+1));
 							break;
 						}
 					}
 					
 				} catch (Exception e) {
-					System.err.println("Erro ao criar Clientes para o Servidor");
+					System.err.println("Erro ao iniciar a Thread Atendente");
 				}
 			}
 			
 			
 		} catch (Exception e) {
-			System.err.println("Erro ao criar o Servidor em " + this.host + " na porta " + this.portNumber);
+			System.err.println("Erro ao criar o Servidor em " + host);
 		}
 		
 	}

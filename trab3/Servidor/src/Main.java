@@ -6,7 +6,7 @@ public class Main {
 
 		// Configura os parametros
 		servidor.setHost("localhost");
-		servidor.setPortNumber(2222);
+		servidor.setPortNumber(2220);
 
 		// Inicia de fato o Servidor
 		servidor.startServidor();

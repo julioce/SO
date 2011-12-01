@@ -178,12 +178,8 @@ public class View extends JPanel implements ActionListener {
 		// Comando de conectar
 		if(arg0.getActionCommand().equals("connect")) {
 			if(!View.hostField.getText().isEmpty()){
-				// Configura os parâmetros
-				Cliente.setHost(View.hostField.getText());
-				Cliente.setPortNumber(2222);
-				
-				// Verifica se foi possível iniciar o cliente
-				if(Cliente.startCliente()){
+				// Configura os parâmetros e tenta iniciar o cliente
+				if(Cliente.startCliente(View.hostField.getText(), 2220)){
 					// Desabilita o input de host
 					switchButtons(true);
 				}

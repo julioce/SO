@@ -10,18 +10,27 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 
 class Atendente extends Thread {
 
-	static int numbersOfClients = 5;
+	int numbersOfClients = 5;
 	DataInputStream inputStream = null;
 	PrintStream outputStream = null;
 	Socket clientSocket = null;
+	ServerSocket serverSocket = null;
 	Atendente t[];
 
-	public Atendente(Socket clientSocket, Atendente[] t) {
-		this.clientSocket = clientSocket;
+	public Atendente(int portNumber, Atendente[] t) {
+		// Obtem o ServerSocket para ouvir e aceitar conexoes
+		try {
+			serverSocket = new ServerSocket(portNumber);
+			clientSocket = serverSocket.accept();
+		} catch (IOException e) {
+			System.err.println("Erro ao conectar Atendente a porta " + portNumber);
+		}
+		
 		this.t = t;
 	}
 	
@@ -36,6 +45,15 @@ class Atendente extends Thread {
 	
 	// Mantem o servidor aberto para outros clientes
 	private void cleanServer() {
+
+		// Fecha o input, output e o socket
+		try {
+			serverSocket.close();
+			clientSocket.close();
+			outputStream.close();
+			inputStream.close();
+		} catch (IOException e) {}
+		
 		for (int i = 0; i < numbersOfClients; i++) {
 			if (t[i] == this) {
 				t[i] = null;
@@ -114,11 +132,6 @@ class Atendente extends Thread {
 				if (line.equalsIgnoreCase("disconnect")) {
 					// Imprime mensagem de saída para o Servidor
 					printMessageOutServer();
-
-					// Fecha o input, output e o socket
-					inputStream.close();
-					outputStream.close();
-					clientSocket.close();
 					
 					// Limpeza do slot do servidor liberando para outro cliente se conectar
 					cleanServer();

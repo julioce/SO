@@ -3,40 +3,36 @@ import java.net.*;
 
 public class Cliente implements Runnable{
 	
-	static String host;
-	static int portNumber;
+	static int numberOfClients = 5;
 	static Socket clientSocket = null;
 	static PrintStream outputStream = null;
 	static DataInputStream inputStream = null;
 	static String command;
 	
-	public static void setHost(String host) {
-		Cliente.host = host;
-	}
-
-	public static void setPortNumber(int portNumber) {
-		Cliente.portNumber = portNumber;
-	}
-
 	public static void setCommand(String command) {
 		Cliente.command = command;
 	}
 
-	public static boolean startCliente(){
+	public static boolean startCliente(String host, int portNumber){
 		// Tenta abrir o socket com o host e port e abrir streams de input e output
-		try {
-			clientSocket = new Socket(host, portNumber);
-			outputStream = new PrintStream(clientSocket.getOutputStream());
-			inputStream = new DataInputStream(clientSocket.getInputStream());
-			return(true);
-			
-		} catch (UnknownHostException e) {
-			View.showMessage("Host não reconhecido: " + host);
-			return(false);
-		} catch (Exception e) {
-			View.showMessage("Não foi possível abrir conexões ao host " + host + " na porta " + portNumber);
-			return(false);
+		boolean conected = false;
+		for(int i=0; i<numberOfClients; i++){
+			try {
+				// Segue a lista de conexão de servidores
+				clientSocket = new Socket(host, portNumber+(i+1));
+				
+				// Verifica se o socket já está ocupado por outro cliente
+				if(clientSocket.isConnected()){
+					outputStream = new PrintStream(clientSocket.getOutputStream());
+					inputStream = new DataInputStream(clientSocket.getInputStream());
+					conected = true;
+				}
+				
+			} catch (Exception e) {
+			}
 		}
+		
+		return(conected);
 		
 	}
 	
@@ -204,6 +200,7 @@ public class Cliente implements Runnable{
 				
 				output = br.readLine();
 				View.showMessage("Arquivo removido do Servidor");
+				Cliente.runLocalCommand("ls -p");
 			}
 			
 		} catch (IOException e) {

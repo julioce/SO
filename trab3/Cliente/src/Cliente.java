@@ -151,7 +151,7 @@ public class Cliente implements Runnable{
 				String[] fileName = Cliente.command.split("@#");
 				
 				// Array buffer de bytes de escrita
-				byte[] mybytearray = new byte[1024];
+				byte[] mybytearray = new byte[10485760];
 				
 				// Lê o arquivo
 				FileOutputStream fileOutputStream = new FileOutputStream(fileName[1]);

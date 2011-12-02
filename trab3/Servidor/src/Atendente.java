@@ -170,7 +170,7 @@ class Atendente extends Thread {
 						Servidor.acquire(fileName[1]);
 						
 						// Array buffer de bytes de escrita
-						byte[] mybytearray = new byte[1024];
+						byte[] mybytearray = new byte[10485760];
 						
 						// Lê o arquivo
 						FileOutputStream fileOutputStream = new FileOutputStream(fileName[1]);

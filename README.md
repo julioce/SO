@@ -1,17 +1,17 @@
 UFRJ - Universidade Federal do Rio de Janeiro
 =============
-Compilação de códigos para a disciplina de Sistemas Operacionais
+Códigos para a disciplina de Sistemas Operacionais
 =============
 
 Estrutura e Uso
 -----------
-Cada diretório listado representa uma tarefa exercida na disciplina e em cada um há os seguintes itens:
-	1. Arquivo .doc ou .pdf descrevendo a tarefa e os requisitos necesários.
-	2. Arquivos fontes com a denominação referente a tarefa e o respectivo item.
-	3. Arquivo relatório em .pdf contendo:
-		3a. Descrição do problema.
-		3b. Implementação realizada.
-		3c. Utilização do software.
+	Cada diretório listado representa uma tarefa exercida na disciplina e em cada um há os seguintes itens:
+		1. Arquivo .doc ou .pdf descrevendo a tarefa e os requisitos necesários.
+		2. Arquivos fontes com a denominação referente a tarefa e o respectivo item.
+		3. Arquivo relatório em .pdf contendo:
+			3a. Descrição do problema.
+			3b. Implementação realizada.
+			3c. Utilização do software.
 
 
 Este README tem apenas como função analisar brevemente o uso/utilidade de cada programa assim como o seu funcionamento básico. Mais detalhes sobre o uso de cada um deve ser feito através da depuração do código fonte.
